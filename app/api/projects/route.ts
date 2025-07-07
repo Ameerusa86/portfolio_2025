@@ -1,4 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
+
+export async function GET() {
+  try {
+    const client = await clientPromise;
+    const db = client.db("portfolio");
+    const projects = await db.collection("projects").find({}).toArray();
+
+    // Convert ObjectId to string for JSON serialization
+    const serializedProjects = projects.map((project) => ({
+      ...project,
+      id: project._id.toString(),
+      _id: undefined,
+    }));
+
+    return NextResponse.json(serializedProjects, { status: 200 });
+  } catch (error) {
+    console.error("❌ Error in GET /api/projects:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -6,8 +31,7 @@ export async function POST(req: NextRequest) {
 
     console.log("Received project:", body);
 
-    const { id, title, description, image, techStack, githubUrl, liveUrl } =
-      body;
+    const { title, description, image, techStack, githubUrl, liveUrl } = body;
 
     // Validate required fields
     if (!title || !description) {
@@ -27,51 +51,35 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Here you can save to your database
-    // For now, just log the project data
-    console.log("Project to save:", {
-      id,
+    // Create project object
+    const project = {
       title,
       description,
-      image,
+      image: image || "",
       techStack: techStack || [],
       githubUrl: githubUrl || "",
       liveUrl: liveUrl || "",
-    });
+      featured: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Save to MongoDB
+    const client = await clientPromise;
+    const db = client.db("portfolio");
+    const result = await db.collection("projects").insertOne(project);
+
+    console.log("✅ Project saved to MongoDB:", result.insertedId);
 
     return NextResponse.json(
-      { message: "Project saved successfully!" },
+      {
+        message: "Project saved successfully!",
+        id: result.insertedId.toString(),
+      },
       { status: 200 }
     );
   } catch (error) {
     console.error("❌ Error in POST /api/projects:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET() {
-  try {
-    // For now, return sample data
-    // In a real app, you'd fetch from your database
-    const projects = [
-      {
-        id: "1",
-        title: "Sample Project",
-        description: "This is a sample project",
-        image: "https://via.placeholder.com/400x300",
-        techStack: ["React", "TypeScript", "Next.js"],
-        githubUrl: "https://github.com",
-        liveUrl: "https://example.com",
-        createdAt: new Date().toISOString(),
-      },
-    ];
-
-    return NextResponse.json(projects, { status: 200 });
-  } catch (error) {
-    console.error("❌ Error in GET /api/projects:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
