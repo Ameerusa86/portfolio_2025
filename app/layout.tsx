@@ -31,13 +31,15 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-background font-sans antialiased flex flex-col",
           geistSans.variable,
           geistMono.variable
         )}
       >
         <Navbar />
-        <main className="container mx-auto px-4 py-10">{children}</main>
+        <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8">
+          {children}
+        </main>
         <Toaster />
         <Footer />
       </body>

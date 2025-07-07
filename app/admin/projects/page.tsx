@@ -69,14 +69,20 @@ export default function AdminProjectsPage() {
   };
 
   return (
-    <section className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Manage Projects</h1>
+    <section className="space-y-6 py-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Manage Projects</h1>
+          <p className="text-muted-foreground">
+            Create, edit, and manage your portfolio projects
+          </p>
+        </div>
         <Button
           onClick={() => {
             setEditingProject(null);
             setModalOpen(true);
           }}
+          className="w-full sm:w-auto"
         >
           Add Project
         </Button>
