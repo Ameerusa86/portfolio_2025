@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import React, { useState } from "react";
-import { Menu, X, Code, Home, User, Briefcase, Mail } from "lucide-react";
+import {
+  Menu,
+  X,
+  Code,
+  Home,
+  User,
+  Briefcase,
+  Mail,
+  FileText,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -16,6 +25,7 @@ const Navbar = () => {
     { name: "Home", href: "/", icon: Home },
     { name: "About", href: "/about", icon: User },
     { name: "Projects", href: "/projects", icon: Briefcase },
+    { name: "Blog", href: "/blog", icon: FileText },
     { name: "Contact", href: "/contact", icon: Mail },
   ];
 
@@ -30,7 +40,7 @@ const Navbar = () => {
                 <Code className="h-5 w-5" />
               </div>
               <span className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                YourName.dev
+                AmeerHasan.dev
               </span>
             </Link>
           </div>

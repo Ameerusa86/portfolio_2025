@@ -8,7 +8,7 @@ import { FolderOpen } from "lucide-react";
 interface Props {
   projects: Project[];
   onEdit: (project: Project) => void;
-  onDelete: (id: string) => void;
+  onDelete: (project: Project) => void;
 }
 
 export function ProjectTable({ projects, onEdit, onDelete }: Props) {

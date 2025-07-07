@@ -6,9 +6,12 @@ import Link from "next/link";
 export function ProjectCard({ project }: { project: Project }) {
   const hasImage = project.image && project.image.trim() !== "";
 
+  // Fallback to ID if slug is not available (for backward compatibility)
+  const projectSlug = project.slug || project.id;
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col">
-      <Link href={`/projects/${project.id}`} className="block">
+      <Link href={`/projects/${projectSlug}`} className="block">
         <div className="relative w-full h-48 bg-muted">
           {hasImage ? (
             <Image
@@ -35,7 +38,7 @@ export function ProjectCard({ project }: { project: Project }) {
       </Link>
       <CardContent className="p-4 space-y-3 flex-1 flex flex-col">
         <div className="flex-1">
-          <Link href={`/projects/${project.id}`} className="block">
+          <Link href={`/projects/${projectSlug}`} className="block">
             <h3 className="text-lg font-semibold line-clamp-2 mb-2 hover:text-primary transition-colors">
               {project.title}
             </h3>

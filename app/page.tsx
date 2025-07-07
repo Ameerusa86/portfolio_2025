@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowRight, Code, Briefcase, User } from "lucide-react";
+import { ArrowRight, Code, Briefcase, User, BookOpen } from "lucide-react";
+import { BlogCard } from "@/components/BlogCard";
+import { sampleBlogPosts } from "@/lib/sample-blogs";
 
 export default function HomePage() {
   const features = [
@@ -24,6 +26,11 @@ export default function HomePage() {
         "Creating intuitive and accessible interfaces that users love to interact with.",
     },
   ];
+
+  // Get featured blog posts for the homepage
+  const featuredBlogPosts = sampleBlogPosts
+    .filter((post) => post.featured)
+    .slice(0, 2);
 
   return (
     <div className="space-y-20 py-12">
@@ -85,6 +92,35 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Latest Blog Posts */}
+      {featuredBlogPosts.length > 0 && (
+        <section className="space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold mb-4">Latest from the Blog</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Insights, tutorials, and thoughts on web development and
+              technology.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {featuredBlogPosts.map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Button variant="outline" asChild>
+              <Link href="/blog">
+                <BookOpen className="h-4 w-4 mr-2" />
+                View All Articles
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="text-center bg-muted rounded-2xl p-12 space-y-6">

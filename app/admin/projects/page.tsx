@@ -35,7 +35,7 @@ export default function AdminProjectsPage() {
   const handleSave = async (project: Project) => {
     try {
       const res = editingProject
-        ? await fetch(`/api/projects/${project.id}`, {
+        ? await fetch(`/api/projects/${project.slug || project.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(project),
@@ -60,8 +60,9 @@ export default function AdminProjectsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    const res = await fetch(`/api/projects/${id}`, {
+  const handleDelete = async (project: Project) => {
+    const identifier = project.slug || project.id;
+    const res = await fetch(`/api/projects/${identifier}`, {
       method: "DELETE",
     });
 

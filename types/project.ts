@@ -1,5 +1,6 @@
 export type Project = {
-  id: string; // UUID or slug
+  id: string; // UUID
+  slug: string; // URL-friendly slug
   title: string;
   description: string;
   image: string; // URL or public path

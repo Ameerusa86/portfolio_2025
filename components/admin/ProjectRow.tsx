@@ -18,16 +18,29 @@ import Link from "next/link";
 interface Props {
   project: Project;
   onEdit: (project: Project) => void;
-  onDelete: (id: string) => void;
+  onDelete: (project: Project) => void;
 }
 
 export function ProjectRow({ project, onEdit, onDelete }: Props) {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    const date = new Date(dateString);
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return `${
+      months[date.getMonth()]
+    } ${date.getDate()}, ${date.getFullYear()}`;
   };
 
   return (
@@ -141,7 +154,7 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onDelete(project.id)}
+                onClick={() => onDelete(project)}
                 className="text-destructive hover:text-destructive hover:bg-destructive/10"
               >
                 <Trash2 className="w-4 h-4" />

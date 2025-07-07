@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { generateSlug } from "@/lib/slug-utils";
 
 export async function GET() {
   try {
@@ -8,10 +9,11 @@ export async function GET() {
     const db = client.db("portfolio");
     const projects = await db.collection("projects").find({}).toArray();
 
-    // Convert ObjectId to string for JSON serialization
+    // Convert ObjectId to string for JSON serialization and ensure slug exists
     const serializedProjects = projects.map((project) => ({
       ...project,
       id: project._id.toString(),
+      slug: project.slug || generateSlug(project.title), // Generate slug if missing
       _id: undefined,
     }));
 
@@ -52,8 +54,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Create project object
+    const slug = generateSlug(title);
     const project = {
       title,
+      slug,
       description,
       image: image || "",
       techStack: techStack || [],

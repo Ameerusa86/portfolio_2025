@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Github, Linkedin, Mail, Heart, Code } from "lucide-react";
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  // Use a static year to avoid hydration mismatch
+  const currentYear = 2025;
 
   const socialLinks = [
     {
@@ -27,6 +28,7 @@ const Footer = () => {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Projects", href: "/projects" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -42,7 +44,7 @@ const Footer = () => {
                 <Code className="h-5 w-5" />
               </div>
               <span className="text-lg font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                YourName.dev
+                AmeerHasan.dev
               </span>
             </div>
             <p className="text-sm text-muted-foreground max-w-xs">
@@ -97,7 +99,7 @@ const Footer = () => {
         <div className="border-t py-6">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-              <span>© {currentYear} YourName.dev. Built with</span>
+              <span>© {currentYear} AmeerHasan.dev. Built with</span>
               <Heart className="h-3 w-3 text-red-500 fill-current" />
               <span>using Next.js & Tailwind CSS</span>
             </div>

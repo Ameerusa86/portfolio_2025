@@ -8,15 +8,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Project } from "@/types/project";
 
 interface ProjectPageProps {
-  params: { id: string };
+  params: { slug: string };
 }
 
-async function getProject(id: string): Promise<Project | null> {
+async function getProject(slug: string): Promise<Project | null> {
   try {
     const response = await fetch(
       `${
         process.env.NEXT_PUBLIC_URL || "http://localhost:3000"
-      }/api/projects/${id}`,
+      }/api/projects/${slug}`,
       {
         cache: "no-store",
       }
@@ -35,18 +35,32 @@ async function getProject(id: string): Promise<Project | null> {
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const project = await getProject(params.id);
+  const { slug } = await params;
+  const project = await getProject(slug);
 
   if (!project) {
     notFound();
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    const date = new Date(dateString);
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return `${
+      months[date.getMonth()]
+    } ${date.getDate()}, ${date.getFullYear()}`;
   };
 
   return (
