@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Github, Linkedin, Mail, Twitter, Heart, Code } from "lucide-react";
+import { Github, Linkedin, Mail, Heart, Code } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -8,18 +8,13 @@ const Footer = () => {
   const socialLinks = [
     {
       name: "GitHub",
-      href: "https://github.com/yourusername",
+      href: "https://github.com/Ameerusa86",
       icon: Github,
     },
     {
       name: "LinkedIn",
-      href: "https://linkedin.com/in/yourusername",
+      href: "https://linkedin.com/in/ameerdev",
       icon: Linkedin,
-    },
-    {
-      name: "Twitter",
-      href: "https://twitter.com/yourusername",
-      icon: Twitter,
     },
     {
       name: "Email",

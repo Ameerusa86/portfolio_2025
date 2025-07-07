@@ -28,16 +28,11 @@ export default function ContactPage() {
   ];
 
   const socialLinks = [
-    { icon: Github, label: "GitHub", href: "https://github.com/yourusername" },
+    { icon: Github, label: "GitHub", href: "https://github.com/Ameerusa86" },
     {
       icon: Linkedin,
       label: "LinkedIn",
-      href: "https://linkedin.com/in/yourusername",
-    },
-    {
-      icon: Twitter,
-      label: "Twitter",
-      href: "https://twitter.com/yourusername",
+      href: "https://www.linkedin.com/in/ameerdev/",
     },
   ];
 
