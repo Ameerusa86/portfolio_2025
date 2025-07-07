@@ -12,6 +12,7 @@ export const sampleProjects: Project[] = [
     githubUrl: "https://github.com/yourusername/portfolio",
     liveUrl: "https://yourportfolio.dev",
     featured: true,
+    published: true,
     createdAt: "2025-01-01T00:00:00.000Z",
   },
   {
@@ -25,6 +26,7 @@ export const sampleProjects: Project[] = [
     githubUrl: "https://github.com/yourusername/ecommerce-dashboard",
     liveUrl: "https://dashboard-demo.vercel.app",
     featured: true,
+    published: true,
     createdAt: "2024-12-15T00:00:00.000Z",
   },
   {
@@ -38,6 +40,7 @@ export const sampleProjects: Project[] = [
     githubUrl: "https://github.com/yourusername/task-manager",
     liveUrl: "https://taskmanager-demo.netlify.app",
     featured: false,
+    published: true,
     createdAt: "2024-11-20T00:00:00.000Z",
   },
   {
@@ -51,6 +54,7 @@ export const sampleProjects: Project[] = [
     githubUrl: "https://github.com/yourusername/weather-app",
     liveUrl: "https://weather-forecast-demo.herokuapp.com",
     featured: false,
+    published: false, // This one is a draft
     createdAt: "2024-10-10T00:00:00.000Z",
   },
   {
@@ -64,6 +68,7 @@ export const sampleProjects: Project[] = [
     githubUrl: "https://github.com/yourusername/ai-chatbot",
     liveUrl: "https://chatbot-demo.fly.dev",
     featured: true,
+    published: true,
     createdAt: "2024-09-05T00:00:00.000Z",
   }
 ];

@@ -8,6 +8,7 @@ export type Project = {
   githubUrl?: string;
   liveUrl?: string;
   featured?: boolean; // For homepage highlights
+  published?: boolean; // Whether the project is published or draft
   createdAt: string; // ISO date string
   updatedAt?: string;
 };

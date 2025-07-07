@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,65 +11,112 @@ import {
   Plus,
   Calendar,
   Activity,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 
+interface DashboardStats {
+  totalProjects: number;
+  publishedProjects: number;
+  draftProjects: number;
+  featuredProjects: number;
+  totalBlogs: number;
+  publishedBlogs: number;
+  draftBlogs: number;
+  pageViews: number;
+  engagement: number;
+  growth: {
+    projects: number;
+    blogs: number;
+    views: number;
+    engagement: number;
+  };
+  recentActivity: Array<{
+    action: string;
+    item: string;
+    time: string;
+  }>;
+}
+
 const AdminPage = () => {
-  const stats = [
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("/api/dashboard");
+        if (!response.ok) {
+          throw new Error("Failed to fetch dashboard stats");
+        }
+        const data = await response.json();
+        setStats(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Error loading dashboard: {error}</p>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return null;
+  }
+
+  const dashboardStats = [
     {
       title: "Total Projects",
-      value: "12",
-      change: "+2 this month",
+      value: stats.totalProjects.toString(),
+      change: `+${stats.growth.projects} this month`,
       icon: FolderOpen,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
     },
     {
       title: "Blog Posts",
-      value: "8",
-      change: "+1 this week",
+      value: stats.totalBlogs.toString(),
+      change: `+${stats.growth.blogs} this week`,
       icon: FileText,
       color: "text-green-600",
       bgColor: "bg-green-50",
     },
     {
       title: "Page Views",
-      value: "1,234",
-      change: "+15% this month",
+      value: stats.pageViews.toLocaleString(),
+      change: `+${stats.growth.views}% this month`,
       icon: Eye,
       color: "text-purple-600",
       bgColor: "bg-purple-50",
     },
     {
       title: "Engagement",
-      value: "89%",
-      change: "+5% this week",
+      value: `${stats.engagement}%`,
+      change: `+${stats.growth.engagement}% this week`,
       icon: TrendingUp,
       color: "text-orange-600",
       bgColor: "bg-orange-50",
-    },
-  ];
-
-  const recentActivity = [
-    {
-      action: "Created new project",
-      item: "E-commerce Dashboard",
-      time: "2 hours ago",
-    },
-    {
-      action: "Updated project",
-      item: "Task Management App",
-      time: "1 day ago",
-    },
-    {
-      action: "Published blog post",
-      item: "React Best Practices",
-      time: "3 days ago",
-    },
-    {
-      action: "Updated portfolio",
-      item: "About page content",
-      time: "1 week ago",
     },
   ];
 
@@ -99,7 +148,7 @@ const AdminPage = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
+        {dashboardStats.map((stat, index) => (
           <Card key={index}>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -162,24 +211,28 @@ const AdminPage = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-start space-x-3 pb-3 border-b border-border last:border-b-0 last:pb-0"
-                >
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">
-                      {activity.action}{" "}
-                      <span className="text-primary">{activity.item}</span>
-                    </p>
-                    <p className="text-xs text-muted-foreground flex items-center mt-1">
-                      <Calendar className="mr-1 h-3 w-3" />
-                      {activity.time}
-                    </p>
+              {stats.recentActivity.length > 0 ? (
+                stats.recentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start space-x-3 pb-3 border-b border-border last:border-b-0 last:pb-0"
+                  >
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">
+                        {activity.action}{" "}
+                        <span className="text-primary">{activity.item}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground flex items-center mt-1">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        {activity.time}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm">No recent activity</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -195,15 +248,15 @@ const AdminPage = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Published</span>
-                <span className="font-medium">10</span>
+                <span className="font-medium">{stats.publishedProjects}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Drafts</span>
-                <span className="font-medium">2</span>
+                <span className="font-medium">{stats.draftProjects}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">Featured</span>
-                <span className="font-medium">3</span>
+                <span className="font-medium">{stats.featuredProjects}</span>
               </div>
               <Button variant="outline" className="w-full mt-4" asChild>
                 <Link href="/admin/projects">Manage Projects</Link>
@@ -220,24 +273,24 @@ const AdminPage = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">
-                  This Month
+                  Total Projects
                 </span>
-                <span className="font-medium">2 new projects</span>
+                <span className="font-medium">{stats.totalProjects}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">
-                  Last Update
+                  Total Blogs
                 </span>
-                <span className="font-medium">2 hours ago</span>
+                <span className="font-medium">{stats.totalBlogs}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">
-                  Total Views
+                  Page Views
                 </span>
-                <span className="font-medium">1,234</span>
+                <span className="font-medium">{stats.pageViews.toLocaleString()}</span>
               </div>
               <Button variant="outline" className="w-full mt-4" asChild>
-                <Link href="/">View Analytics</Link>
+                <Link href="/">View Site</Link>
               </Button>
             </div>
           </CardContent>
