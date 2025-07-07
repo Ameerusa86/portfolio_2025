@@ -231,7 +231,9 @@ const AdminPage = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-muted-foreground text-sm">No recent activity</p>
+                <p className="text-muted-foreground text-sm">
+                  No recent activity
+                </p>
               )}
             </div>
           </CardContent>
@@ -287,7 +289,9 @@ const AdminPage = () => {
                 <span className="text-sm text-muted-foreground">
                   Page Views
                 </span>
-                <span className="font-medium">{stats.pageViews.toLocaleString()}</span>
+                <span className="font-medium">
+                  {stats.pageViews.toLocaleString()}
+                </span>
               </div>
               <Button variant="outline" className="w-full mt-4" asChild>
                 <Link href="/">View Site</Link>
