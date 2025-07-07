@@ -69,12 +69,14 @@ export default function AdminProjectsPage() {
   };
 
   return (
-    <section className="space-y-6 py-8">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Manage Projects</h1>
-          <p className="text-muted-foreground">
-            Create, edit, and manage your portfolio projects
+          <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
+          <p className="text-muted-foreground mt-2">
+            Manage your portfolio projects. Create, edit, and organize your
+            work.
           </p>
         </div>
         <Button
@@ -84,18 +86,67 @@ export default function AdminProjectsPage() {
           }}
           className="w-full sm:w-auto"
         >
+          <span className="mr-2">+</span>
           Add Project
         </Button>
       </div>
 
-      <ProjectTable
-        projects={projects}
-        onEdit={(project) => {
-          setEditingProject(project);
-          setModalOpen(true);
-        }}
-        onDelete={handleDelete}
-      />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-card border rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Total Projects
+              </p>
+              <p className="text-2xl font-bold">{projects.length}</p>
+            </div>
+            <div className="h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <span className="text-primary">📁</span>
+            </div>
+          </div>
+        </div>
+        <div className="bg-card border rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Featured
+              </p>
+              <p className="text-2xl font-bold">
+                {projects.filter((p) => p.featured).length}
+              </p>
+            </div>
+            <div className="h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <span className="text-primary">⭐</span>
+            </div>
+          </div>
+        </div>
+        <div className="bg-card border rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Published
+              </p>
+              <p className="text-2xl font-bold">{projects.length}</p>
+            </div>
+            <div className="h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <span className="text-primary">✅</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Projects Table */}
+      <div className="bg-card border rounded-lg">
+        <ProjectTable
+          projects={projects}
+          onEdit={(project) => {
+            setEditingProject(project);
+            setModalOpen(true);
+          }}
+          onDelete={handleDelete}
+        />
+      </div>
 
       <ProjectFormModal
         open={modalOpen}
@@ -103,6 +154,6 @@ export default function AdminProjectsPage() {
         onSave={handleSave}
         initialData={editingProject}
       />
-    </section>
+    </div>
   );
 }
