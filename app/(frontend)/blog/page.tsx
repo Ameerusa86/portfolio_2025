@@ -116,7 +116,7 @@ function FeaturedPostCard({
 }) {
   // Fallback to ID if slug is not available (for backward compatibility)
   const postSlug = post.slug || post.id;
-  
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full">
       <div className="relative h-64">
@@ -192,7 +192,7 @@ function BlogPostCard({
 }) {
   // Fallback to ID if slug is not available (for backward compatibility)
   const postSlug = post.slug || post.id;
-  
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col">
       <div className="relative h-48">

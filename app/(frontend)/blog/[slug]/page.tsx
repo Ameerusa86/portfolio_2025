@@ -18,7 +18,7 @@ import { sampleBlogPosts } from "@/lib/sample-blogs";
 import { BlogPost } from "@/types/blog";
 
 interface BlogDetailPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {

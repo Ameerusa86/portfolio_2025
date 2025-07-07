@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Project } from "@/types/project";
 
 interface ProjectPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getProject(slug: string): Promise<Project | null> {

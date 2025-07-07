@@ -5,7 +5,7 @@ import { generateSlug } from "@/lib/slug-utils";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
@@ -50,11 +50,11 @@ export async function PUT(
     // Update in MongoDB - try slug first, then fallback to ID
     const client = await clientPromise;
     const db = client.db("portfolio");
-    
+
     let result = await db
       .collection("projects")
       .updateOne({ slug: slug }, { $set: updateData });
-    
+
     // If not found by slug, try by ObjectId (for old projects)
     if (result.matchedCount === 0 && ObjectId.isValid(slug)) {
       result = await db
@@ -83,7 +83,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
@@ -93,11 +93,11 @@ export async function DELETE(
     // Delete from MongoDB - try slug first, then fallback to ID
     const client = await clientPromise;
     const db = client.db("portfolio");
-    
+
     let result = await db.collection("projects").deleteOne({
       slug: slug,
     });
-    
+
     // If not found by slug, try by ObjectId (for old projects)
     if (result.deletedCount === 0 && ObjectId.isValid(slug)) {
       result = await db.collection("projects").deleteOne({
@@ -126,7 +126,7 @@ export async function DELETE(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
@@ -136,15 +136,15 @@ export async function GET(
     // Get from MongoDB
     const client = await clientPromise;
     const db = client.db("portfolio");
-    
+
     // Try to find by slug first, then fallback to ID (for backward compatibility)
     console.log("Searching by slug:", slug);
     let project = await db.collection("projects").findOne({
       slug: slug,
     });
-    
+
     console.log("Found by slug:", project ? "YES" : "NO");
-    
+
     // If not found by slug, try by ObjectId (for old projects)
     if (!project && ObjectId.isValid(slug)) {
       console.log("Trying by ObjectId:", slug);

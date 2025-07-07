@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { sampleProjects } from "@/lib/sample-projects";
+import { sampleBlogPosts } from "@/lib/sample-blogs";
 import { generateSlug } from "@/lib/slug-utils";
 
 export async function GET() {
@@ -14,37 +15,33 @@ export async function GET() {
     console.log("✅ MongoDB connection successful!");
     console.log("Database stats:", stats);
 
-    // Check if we have any projects, if not seed with sample data
-    const projectsCount = await db.collection("projects").countDocuments();
-    
-    if (projectsCount === 0) {
-      console.log("🌱 Seeding database with sample projects...");
-      await db.collection("projects").insertMany(sampleProjects);
-      console.log("✅ Database seeded with sample projects!");
-    } else {
-      // Update existing projects to have slugs if they don't have them
-      console.log("🔄 Updating existing projects with slugs...");
-      const projects = await db.collection("projects").find({ slug: { $exists: false } }).toArray();
-      
-      for (const project of projects) {
-        const slug = generateSlug(project.title);
-        await db.collection("projects").updateOne(
-          { _id: project._id },
-          { $set: { slug: slug } }
-        );
-        console.log(`✅ Updated project "${project.title}" with slug: ${slug}`);
-      }
-    }
+    // Clear existing data and reseed
+    console.log("🗑️ Clearing existing collections...");
+    await db.collection("projects").deleteMany({});
+    await db.collection("blogs").deleteMany({});
+
+    // Seed projects
+    console.log("🌱 Seeding database with sample projects...");
+    await db.collection("projects").insertMany(sampleProjects);
+    console.log(`✅ Inserted ${sampleProjects.length} sample projects!`);
+
+    // Seed blogs
+    console.log("🌱 Seeding database with sample blog posts...");
+    await db.collection("blogs").insertMany(sampleBlogPosts);
+    console.log(`✅ Inserted ${sampleBlogPosts.length} sample blog posts!`);
+
+    const finalStats = await db.stats();
 
     return NextResponse.json(
       {
         success: true,
-        message: "Database connection successful!",
-        database: stats.db,
-        collections: stats.collections,
-        dataSize: stats.dataSize,
-        storageSize: stats.storageSize,
+        message: "Database seeded successfully!",
+        database: finalStats.db,
+        collections: finalStats.collections,
+        dataSize: finalStats.dataSize,
+        storageSize: finalStats.storageSize,
         projectsCount: await db.collection("projects").countDocuments(),
+        blogsCount: await db.collection("blogs").countDocuments(),
       },
       { status: 200 }
     );

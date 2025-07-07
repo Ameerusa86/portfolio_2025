@@ -33,6 +33,7 @@ export function ProjectFormModal({
 
   const [formData, setFormData] = useState<Project>({
     id: "",
+    slug: "",
     title: "",
     description: "",
     image: "",
@@ -52,6 +53,7 @@ export function ProjectFormModal({
       // Reset form when not editing
       setFormData({
         id: "",
+        slug: "",
         title: "",
         description: "",
         image: "",
