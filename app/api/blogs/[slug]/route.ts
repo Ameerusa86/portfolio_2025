@@ -1,32 +1,22 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
-
-interface Params {
-  slug: string;
-}
+import { supabase } from "@/lib/supabase";
 
 export async function GET(
   request: Request,
-  context: { params: Promise<Params> }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await context.params;
-    const db = await getDb();
-
-    // First try to find by slug
-    let blog = await db.collection("blogs").findOne({ slug });
-
-    // If not found by slug, try by ID (fallback for old URLs)
-    if (!blog && ObjectId.isValid(slug)) {
-      blog = await db.collection("blogs").findOne({ _id: new ObjectId(slug) });
-    }
-
-    if (!blog) {
+    const params = await context.params;
+    const slug = params.slug;
+    const { data, error } = await supabase
+      .from("blogs")
+      .select("*")
+      .eq("slug", slug)
+      .single();
+    if (error || !data) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
-
-    return NextResponse.json(blog);
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching blog:", error);
     return NextResponse.json(
@@ -38,39 +28,23 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  context: { params: Promise<Params> }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await context.params;
-    const db = await getDb();
+    const params = await context.params;
+    const slug = params.slug;
     const body = await request.json();
-
     // Remove _id from body if present
     const { _id, ...updateData } = body;
-
-    // Add updated timestamp
-    updateData.updatedAt = new Date();
-
-    // First try to find by slug
-    let blog = await db.collection("blogs").findOne({ slug });
-
-    // If not found by slug, try by ID (fallback for old URLs)
-    if (!blog && ObjectId.isValid(slug)) {
-      blog = await db.collection("blogs").findOne({ _id: new ObjectId(slug) });
+    updateData.updated_at = new Date().toISOString();
+    // Update by slug
+    const { error } = await supabase
+      .from("blogs")
+      .update(updateData)
+      .eq("slug", slug);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
-
-    if (!blog) {
-      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
-    }
-
-    const result = await db
-      .collection("blogs")
-      .updateOne({ _id: blog._id }, { $set: updateData });
-
-    if (result.matchedCount === 0) {
-      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
-    }
-
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error updating blog:", error);
@@ -83,30 +57,16 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  context: { params: Promise<Params> }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = await context.params;
-    const db = await getDb();
-
-    // First try to find by slug
-    let blog = await db.collection("blogs").findOne({ slug });
-
-    // If not found by slug, try by ID (fallback for old URLs)
-    if (!blog && ObjectId.isValid(slug)) {
-      blog = await db.collection("blogs").findOne({ _id: new ObjectId(slug) });
+    const params = await context.params;
+    const slug = params.slug;
+    // Delete by slug
+    const { error } = await supabase.from("blogs").delete().eq("slug", slug);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
-
-    if (!blog) {
-      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
-    }
-
-    const result = await db.collection("blogs").deleteOne({ _id: blog._id });
-
-    if (result.deletedCount === 0) {
-      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
-    }
-
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Error deleting blog:", error);

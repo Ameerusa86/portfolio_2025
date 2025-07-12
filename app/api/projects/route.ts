@@ -1,23 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { supabase } from "@/lib/supabase";
 import { generateSlug } from "@/lib/slug-utils";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const client = await clientPromise;
-    const db = client.db("portfolio");
-    const projects = await db.collection("projects").find({}).toArray();
-
-    // Convert ObjectId to string for JSON serialization and ensure slug exists
-    const serializedProjects = projects.map((project) => ({
+    const isAdmin = req.nextUrl?.searchParams?.get("admin") === "true";
+    let query = supabase.from("projects").select("*");
+    if (!isAdmin) {
+      query = query.eq("published", true);
+    }
+    const { data, error } = await query;
+    if (error) throw error;
+    const projects = (data || []).map((project: any) => ({
       ...project,
-      id: project._id.toString(),
-      slug: project.slug || generateSlug(project.title), // Generate slug if missing
-      _id: undefined,
+      slug: project.slug || generateSlug(project.title),
     }));
-
-    return NextResponse.json(serializedProjects, { status: 200 });
+    return NextResponse.json(projects, { status: 200 });
   } catch (error) {
     console.error("❌ Error in GET /api/projects:", error);
     return NextResponse.json(
@@ -31,54 +29,69 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    console.log("Received project:", body);
+    // Accept both camelCase and snake_case from frontend
+    const title = body.title;
+    const description = body.description;
+    const image = body.image || body.image_url || "";
+    const image_key = body.imageKey || body.image_key || "";
+    const tech_stack = body.techStack || body.tech_stack || [];
+    const github_url = body.githubUrl || body.github_url || "";
+    const live_url = body.liveUrl || body.live_url || "";
+    const published =
+      typeof body.published === "boolean" ? body.published : true;
+    const featured = typeof body.featured === "boolean" ? body.featured : false;
+    const tags = body.tags || [];
+    const status = body.status || "";
+    const order = typeof body.order === "number" ? body.order : null;
 
-    const { title, description, image, techStack, githubUrl, liveUrl } = body;
-
-    // Validate required fields
     if (!title || !description) {
-      console.warn("Missing required fields:", { title, description });
       return NextResponse.json(
         { error: "Title and description are required" },
         { status: 400 }
       );
     }
-
-    // Validate techStack is an array
-    if (techStack && !Array.isArray(techStack)) {
-      console.warn("Tech stack must be an array:", techStack);
+    if (tech_stack && !Array.isArray(tech_stack)) {
       return NextResponse.json(
         { error: "Tech stack must be an array" },
         { status: 400 }
       );
     }
+    if (tags && !Array.isArray(tags)) {
+      return NextResponse.json(
+        { error: "Tags must be an array" },
+        { status: 400 }
+      );
+    }
 
-    // Create project object
     const slug = generateSlug(title);
+    const now = new Date().toISOString();
     const project = {
       title,
       slug,
       description,
-      image: image || "",
-      techStack: techStack || [],
-      githubUrl: githubUrl || "",
-      liveUrl: liveUrl || "",
-      featured: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      image,
+      image_key,
+      tech_stack,
+      github_url,
+      live_url,
+      published,
+      featured,
+      created_at: now,
+      updated_at: now,
+      tags,
+      status,
+      order,
     };
 
-    // Save to MongoDB
-    const client = await clientPromise;
-    const db = client.db("portfolio");
-    const result = await db.collection("projects").insertOne(project);
-
-    console.log("✅ Project saved to MongoDB:", result.insertedId);
-
+    const { data, error } = await supabase
+      .from("projects")
+      .insert([project])
+      .select("id");
+    if (error) throw error;
     return NextResponse.json(
       {
         message: "Project saved successfully!",
-        id: result.insertedId.toString(),
+        id: data && data[0] ? data[0].id : null,
       },
       { status: 200 }
     );

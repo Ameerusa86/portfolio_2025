@@ -43,6 +43,13 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
     } ${date.getDate()}, ${date.getFullYear()}`;
   };
 
+  // Defensive: support both camelCase and snake_case, and default arrays/strings
+  // Use type assertions to access possible snake_case fields from Supabase
+  const techStack = project.techStack || (project as any).tech_stack || [];
+  const githubUrl = project.githubUrl || (project as any).github_url || "";
+  const liveUrl = project.liveUrl || (project as any).live_url || "";
+  const createdAt = project.createdAt || (project as any).created_at || "";
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardContent className="p-6">
@@ -53,7 +60,7 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
               {project.image ? (
                 <Image
                   src={project.image}
-                  alt={project.title}
+                  alt={project.title || ""}
                   fill
                   className="object-cover"
                   onError={(e) => {
@@ -74,7 +81,7 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <h3 className="text-lg font-semibold truncate">
-                    {project.title}
+                    {project.title || ""}
                   </h3>
                   {project.featured && (
                     <Badge variant="secondary" className="text-xs">
@@ -82,21 +89,27 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
                       Featured
                     </Badge>
                   )}
+                  <Badge
+                    variant={project.published ? "default" : "outline"}
+                    className="text-xs"
+                  >
+                    {project.published ? "Published" : "Draft"}
+                  </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                  {project.description}
+                  {project.description || ""}
                 </p>
 
                 {/* Tech Stack */}
                 <div className="flex flex-wrap gap-1 mb-3">
-                  {project.techStack.slice(0, 4).map((tech) => (
+                  {techStack.slice(0, 4).map((tech: string) => (
                     <Badge key={tech} variant="outline" className="text-xs">
                       {tech}
                     </Badge>
                   ))}
-                  {project.techStack.length > 4 && (
+                  {techStack.length > 4 && (
                     <Badge variant="outline" className="text-xs">
-                      +{project.techStack.length - 4} more
+                      +{techStack.length - 4} more
                     </Badge>
                   )}
                 </div>
@@ -105,7 +118,7 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
-                    {formatDate(project.createdAt)}
+                    {formatDate(createdAt)}
                   </div>
                 </div>
               </div>
@@ -116,10 +129,10 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
           <div className="flex flex-col sm:flex-row gap-2 lg:flex-col lg:w-32">
             {/* External Links */}
             <div className="flex gap-2 mb-2">
-              {project.liveUrl && (
+              {liveUrl && (
                 <Button variant="outline" size="sm" asChild>
                   <Link
-                    href={project.liveUrl}
+                    href={liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -127,10 +140,10 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
                   </Link>
                 </Button>
               )}
-              {project.githubUrl && (
+              {githubUrl && (
                 <Button variant="outline" size="sm" asChild>
                   <Link
-                    href={project.githubUrl}
+                    href={githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

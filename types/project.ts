@@ -1,14 +1,18 @@
 export type Project = {
-  id: string; // UUID
-  slug: string; // URL-friendly slug
+  id: string;
+  slug: string;
   title: string;
   description: string;
-  image: string; // URL or public path
-  techStack: string[]; // ['Next.js', 'TypeScript', 'Tailwind CSS']
-  githubUrl?: string;
-  liveUrl?: string;
-  featured?: boolean; // For homepage highlights
-  published?: boolean; // Whether the project is published or draft
-  createdAt: string; // ISO date string
-  updatedAt?: string;
+  image: string;
+  image_key: string;
+  tech_stack: string[];
+  github_url: string;
+  live_url: string;
+  featured: boolean;
+  published: boolean;
+  created_at: string;
+  updated_at?: string;
+  order?: number;
+  tags?: string[];
+  status?: string;
 };

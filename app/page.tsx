@@ -40,7 +40,7 @@ export default function HomePage() {
           <h1 className="text-4xl font-bold sm:text-6xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
             Hi, I'm{" "}
             <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              Your Name
+              Ameer Hasan
             </span>
           </h1>
           <p className="max-w-2xl mx-auto text-muted-foreground text-xl">

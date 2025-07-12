@@ -1,21 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { supabase } from "@/lib/supabase";
 import { generateSlug } from "@/lib/slug-utils";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
 ) {
   try {
-    const { slug } = await params;
+    // Next.js 14+ app router: context may be a Promise
+    const ctx =
+      typeof context === "object" && "then" in context
+        ? await context
+        : context;
+    const { slug } = ctx.params;
+
     const body = await req.json();
+    const {
+      title,
+      description,
+      image,
+      imageKey,
+      techStack,
+      githubUrl,
+      liveUrl,
+      published,
+      featured,
+    } = body;
 
-    console.log("Updating project:", slug, body);
-
-    const { title, description, image, techStack, githubUrl, liveUrl } = body;
-
-    // Validate required fields
     if (!title || !description) {
       return NextResponse.json(
         { error: "Title and description are required" },
@@ -23,7 +34,6 @@ export async function PUT(
       );
     }
 
-    // Validate techStack is an array
     if (techStack && !Array.isArray(techStack)) {
       return NextResponse.json(
         { error: "Tech stack must be an array" },
@@ -31,42 +41,35 @@ export async function PUT(
       );
     }
 
-    // Update project object
+    // Map camelCase to snake_case for Supabase
     const updateData: any = {
       title,
       description,
       image: image || "",
-      techStack: techStack || [],
-      githubUrl: githubUrl || "",
-      liveUrl: liveUrl || "",
-      updatedAt: new Date(),
+      image_key: imageKey || "",
+      tech_stack: Array.isArray(techStack) ? techStack : [],
+      github_url: githubUrl || "",
+      live_url: liveUrl || "",
+      updated_at: new Date().toISOString(),
     };
 
-    // Update slug if title changed
-    if (title) {
-      updateData.slug = generateSlug(title);
+    if (typeof published === "boolean") {
+      updateData.published = published;
     }
 
-    // Update in MongoDB - try slug first, then fallback to ID
-    const client = await clientPromise;
-    const db = client.db("portfolio");
-
-    let result = await db
-      .collection("projects")
-      .updateOne({ slug: slug }, { $set: updateData });
-
-    // If not found by slug, try by ObjectId (for old projects)
-    if (result.matchedCount === 0 && ObjectId.isValid(slug)) {
-      result = await db
-        .collection("projects")
-        .updateOne({ _id: new ObjectId(slug) }, { $set: updateData });
+    if (typeof featured === "boolean") {
+      updateData.featured = featured;
     }
 
-    if (result.matchedCount === 0) {
-      return NextResponse.json({ error: "Project not found" }, { status: 404 });
-    }
+    const { error } = await supabase
+      .from("projects")
+      .update(updateData)
+      .eq("slug", slug);
 
-    console.log("✅ Project updated in MongoDB:", slug);
+    if (error) {
+      console.error("Error updating project:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 
     return NextResponse.json(
       { message: "Project updated successfully!" },
@@ -83,36 +86,57 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
 ) {
   try {
-    const { slug } = await params;
+    // Next.js 14+ app router: context may be a Promise
+    const ctx =
+      typeof context === "object" && "then" in context
+        ? await context
+        : context;
+    const { slug } = ctx.params;
+    console.log("Attempting to delete project with slug:", slug);
 
-    console.log("Deleting project:", slug);
+    // Find the project by slug
+    const { data, error: fetchError } = await supabase
+      .from("projects")
+      .select("id, image_key")
+      .eq("slug", slug)
+      .single();
 
-    // Delete from MongoDB - try slug first, then fallback to ID
-    const client = await clientPromise;
-    const db = client.db("portfolio");
-
-    let result = await db.collection("projects").deleteOne({
-      slug: slug,
-    });
-
-    // If not found by slug, try by ObjectId (for old projects)
-    if (result.deletedCount === 0 && ObjectId.isValid(slug)) {
-      result = await db.collection("projects").deleteOne({
-        _id: new ObjectId(slug),
-      });
+    if (fetchError) {
+      console.error("Error fetching project:", fetchError);
+      return NextResponse.json({ error: fetchError.message }, { status: 500 });
     }
 
-    if (result.deletedCount === 0) {
+    if (!data) {
+      console.error("Project not found with slug:", slug);
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    console.log("✅ Project deleted from MongoDB:", slug);
+    // Delete image from storage if present
+    if (data.image_key) {
+      try {
+        await supabase.storage.from("project-images").remove([data.image_key]);
+      } catch (err) {
+        console.error("Failed to delete image from storage:", err);
+        // Continue deletion even if image removal fails
+      }
+    }
+
+    // Delete the project
+    const { error: deleteError } = await supabase
+      .from("projects")
+      .delete()
+      .eq("slug", slug);
+
+    if (deleteError) {
+      console.error("Error deleting project:", deleteError);
+      return NextResponse.json({ error: deleteError.message }, { status: 500 });
+    }
 
     return NextResponse.json(
-      { message: "Project deleted successfully!" },
+      { message: "Project deleted successfully" },
       { status: 200 }
     );
   } catch (error) {
@@ -126,50 +150,27 @@ export async function DELETE(
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
 ) {
   try {
-    const { slug } = await params;
+    // Next.js 14+ app router: context may be a Promise
+    const ctx =
+      typeof context === "object" && "then" in context
+        ? await context
+        : context;
+    const { slug } = ctx.params;
 
-    console.log("Getting project with slug:", slug);
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("slug", slug)
+      .single();
 
-    // Get from MongoDB
-    const client = await clientPromise;
-    const db = client.db("portfolio");
-
-    // Try to find by slug first, then fallback to ID (for backward compatibility)
-    console.log("Searching by slug:", slug);
-    let project = await db.collection("projects").findOne({
-      slug: slug,
-    });
-
-    console.log("Found by slug:", project ? "YES" : "NO");
-
-    // If not found by slug, try by ObjectId (for old projects)
-    if (!project && ObjectId.isValid(slug)) {
-      console.log("Trying by ObjectId:", slug);
-      project = await db.collection("projects").findOne({
-        _id: new ObjectId(slug),
-      });
-      console.log("Found by ObjectId:", project ? "YES" : "NO");
-    }
-
-    if (!project) {
-      console.log("No project found with slug/id:", slug);
+    if (error || !data) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    console.log("Found project:", project.title, "with slug:", project.slug);
-
-    // Convert ObjectId to string for JSON serialization and ensure slug exists
-    const serializedProject = {
-      ...project,
-      id: project._id.toString(),
-      slug: project.slug || generateSlug(project.title), // Generate slug if missing
-      _id: undefined,
-    };
-
-    return NextResponse.json(serializedProject, { status: 200 });
+    return NextResponse.json(data);
   } catch (error) {
     console.error("❌ Error in GET /api/projects/[slug]:", error);
     return NextResponse.json(

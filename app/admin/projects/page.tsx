@@ -5,11 +5,11 @@ import { Project } from "@/types/project";
 import { ProjectTable } from "@/components/admin/ProjectTable";
 import { ProjectFormModal } from "@/components/admin/ProjectFormModal";
 import { Button } from "@/components/ui/button";
-
 export default function AdminProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
 
   useEffect(() => {
     fetchProjects();
@@ -17,14 +17,12 @@ export default function AdminProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch("/api/projects");
-
+      const res = await fetch("/api/projects?admin=true");
       if (!res.ok) {
         const errorText = await res.text();
         console.error("Fetch failed:", errorText);
         return;
       }
-
       const data = await res.json();
       setProjects(data);
     } catch (error) {
@@ -61,13 +59,39 @@ export default function AdminProjectsPage() {
   };
 
   const handleDelete = async (project: Project) => {
-    const identifier = project.slug || project.id;
-    const res = await fetch(`/api/projects/${identifier}`, {
-      method: "DELETE",
-    });
+    if (!project || (!project.slug && !project.id)) {
+      console.error("Invalid project: missing both slug and id");
+      return;
+    }
 
-    if (res.ok) fetchProjects();
+    try {
+      const identifier = project.slug || project.id;
+      console.log("Deleting project:", { identifier, project });
+
+      const res = await fetch(`/api/projects/${identifier}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Delete failed:", errorData);
+        throw new Error(errorData.error || "Failed to delete project");
+      }
+
+      await fetchProjects(); // Refresh the list
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      // You can add toast notification here if you want to show error to user
+    }
   };
+
+  // Filtering logic
+  const filteredProjects =
+    filter === "all"
+      ? projects
+      : filter === "published"
+      ? projects.filter((p) => p.published)
+      : projects.filter((p) => !p.published);
 
   return (
     <div className="space-y-6">
@@ -89,6 +113,32 @@ export default function AdminProjectsPage() {
         >
           <span className="mr-2">+</span>
           Add Project
+        </Button>
+      </div>
+
+      {/* Filter Bar */}
+      <div className="flex gap-2 items-center mb-2">
+        <span className="font-medium text-sm">Filter:</span>
+        <Button
+          variant={filter === "all" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setFilter("all")}
+        >
+          All
+        </Button>
+        <Button
+          variant={filter === "published" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setFilter("published")}
+        >
+          Published
+        </Button>
+        <Button
+          variant={filter === "draft" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setFilter("draft")}
+        >
+          Draft
         </Button>
       </div>
 
@@ -128,7 +178,9 @@ export default function AdminProjectsPage() {
               <p className="text-sm font-medium text-muted-foreground">
                 Published
               </p>
-              <p className="text-2xl font-bold">{projects.length}</p>
+              <p className="text-2xl font-bold">
+                {projects.filter((p) => p.published).length}
+              </p>
             </div>
             <div className="h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center">
               <span className="text-primary">✅</span>
@@ -140,7 +192,7 @@ export default function AdminProjectsPage() {
       {/* Projects Table */}
       <div className="bg-card border rounded-lg">
         <ProjectTable
-          projects={projects}
+          projects={filteredProjects}
           onEdit={(project) => {
             setEditingProject(project);
             setModalOpen(true);

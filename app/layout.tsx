@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name – Full Stack Developer",
+  title: "Ameer Hasan – Full Stack Developer",
   description:
     "Portfolio site built with Next.js 15, TypeScript, and Tailwind CSS.",
 };
