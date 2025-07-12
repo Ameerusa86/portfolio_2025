@@ -1,50 +1,65 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/mongodb";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 interface RecentActivity {
   action: string;
   item: string;
   time: string;
-  createdAt: Date;
+  created_at: string;
 }
 
 export async function GET() {
   try {
-    const db = await getDb();
-
     // Get project counts
-    const totalProjects = await db.collection("projects").countDocuments();
-    const publishedProjects = await db
-      .collection("projects")
-      .countDocuments({ published: true });
-    const draftProjects = totalProjects - publishedProjects;
-    const featuredProjects = await db
-      .collection("projects")
-      .countDocuments({ featured: true });
+    const { count: totalProjects } = await supabase
+      .from("projects")
+      .select("*", { count: "exact", head: true });
 
-    // Get blog counts
-    const totalBlogs = await db.collection("blogs").countDocuments();
-    const publishedBlogs = await db
-      .collection("blogs")
-      .countDocuments({ status: "published" });
-    const draftBlogs = await db
-      .collection("blogs")
-      .countDocuments({ status: "draft" });
+    const { count: publishedProjects } = await supabase
+      .from("projects")
+      .select("*", { count: "exact", head: true })
+      .eq("published", true);
 
-    // Get recent projects and blogs for activity
-    const recentProjects = await db
-      .collection("projects")
-      .find({})
-      .sort({ createdAt: -1 })
-      .limit(2)
-      .toArray();
+    const { count: featuredProjects } = await supabase
+      .from("projects")
+      .select("*", { count: "exact", head: true })
+      .eq("featured", true);
 
-    const recentBlogs = await db
-      .collection("blogs")
-      .find({})
-      .sort({ createdAt: -1 })
-      .limit(2)
-      .toArray();
+    const draftProjects = (totalProjects || 0) - (publishedProjects || 0);
+
+    // Get blog counts (assuming blogs table exists, if not we'll use 0)
+    const { count: totalBlogs } = await supabase
+      .from("blogs")
+      .select("*", { count: "exact", head: true });
+
+    const { count: publishedBlogs } = await supabase
+      .from("blogs")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "published");
+
+    const { count: draftBlogs } = await supabase
+      .from("blogs")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "draft");
+
+    // Get recent projects for activity
+    const { data: recentProjects } = await supabase
+      .from("projects")
+      .select("title, created_at")
+      .order("created_at", { ascending: false })
+      .limit(2);
+
+    // Get recent blogs for activity (handle if table doesn't exist)
+    const { data: recentBlogs } = await supabase
+      .from("blogs")
+      .select("title, created_at")
+      .order("created_at", { ascending: false })
+      .limit(2);
 
     // Mock page views and engagement data (you can replace with real analytics later)
     const pageViews = Math.floor(Math.random() * 2000) + 1000; // Random between 1000-3000
@@ -57,54 +72,63 @@ export async function GET() {
     const engagementGrowth = Math.floor(Math.random() * 10) + 1;
 
     // Create recent activity from recent projects and blogs
-    const recentActivity: RecentActivity[] = [];
+    const recentActivity: (RecentActivity & { created_at_date: Date })[] = [];
 
     // Add recent projects
-    recentProjects.forEach((project: any) => {
-      const createdAt = project.createdAt
-        ? new Date(project.createdAt)
-        : new Date();
-      const timeAgo = getTimeAgo(createdAt);
-      recentActivity.push({
-        action: "Created new project",
-        item: project.title,
-        time: timeAgo,
-        createdAt: createdAt,
+    if (recentProjects) {
+      recentProjects.forEach((project: any) => {
+        const createdAt = project.created_at
+          ? new Date(project.created_at)
+          : new Date();
+        const timeAgo = getTimeAgo(createdAt);
+        recentActivity.push({
+          action: "Created new project",
+          item: project.title,
+          time: timeAgo,
+          created_at: project.created_at,
+          created_at_date: createdAt,
+        });
       });
-    });
+    }
 
     // Add recent blogs
-    recentBlogs.forEach((blog: any) => {
-      const createdAt = blog.createdAt ? new Date(blog.createdAt) : new Date();
-      const timeAgo = getTimeAgo(createdAt);
-      recentActivity.push({
-        action: "Published blog post",
-        item: blog.title,
-        time: timeAgo,
-        createdAt: createdAt,
+    if (recentBlogs) {
+      recentBlogs.forEach((blog: any) => {
+        const createdAt = blog.created_at
+          ? new Date(blog.created_at)
+          : new Date();
+        const timeAgo = getTimeAgo(createdAt);
+        recentActivity.push({
+          action: "Published blog post",
+          item: blog.title,
+          time: timeAgo,
+          created_at: blog.created_at,
+          created_at_date: createdAt,
+        });
       });
-    });
+    }
 
     // Sort by creation date and take the 4 most recent
     recentActivity.sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.created_at_date).getTime() -
+        new Date(a.created_at_date).getTime()
     );
     const limitedActivity = recentActivity.slice(0, 4);
 
-    // Remove createdAt from the response as it's only used for sorting
+    // Remove created_at_date from the response as it's only used for sorting
     const cleanActivity = limitedActivity.map(
-      ({ createdAt, ...activity }) => activity
+      ({ created_at_date, ...activity }) => activity
     );
 
     const stats = {
-      totalProjects,
-      publishedProjects,
+      totalProjects: totalProjects || 0,
+      publishedProjects: publishedProjects || 0,
       draftProjects,
-      featuredProjects,
-      totalBlogs,
-      publishedBlogs,
-      draftBlogs,
+      featuredProjects: featuredProjects || 0,
+      totalBlogs: totalBlogs || 0,
+      publishedBlogs: publishedBlogs || 0,
+      draftBlogs: draftBlogs || 0,
       pageViews,
       engagement,
       growth: {

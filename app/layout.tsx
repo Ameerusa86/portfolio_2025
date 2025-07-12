@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
+import { ConditionalWrapper } from "@/components/ConditionalWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ameer Hasan – Full Stack Developer",
+  title: "Ameer Hasan – Portfolio",
   description:
     "Portfolio site built with Next.js 15, TypeScript, and Tailwind CSS.",
 };
@@ -36,12 +37,8 @@ export default function RootLayout({
           geistMono.variable
         )}
       >
-        <Navbar />
-        <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8">
-          {children}
-        </main>
+        <ConditionalWrapper>{children}</ConditionalWrapper>
         <Toaster />
-        <Footer />
       </body>
     </html>
   );

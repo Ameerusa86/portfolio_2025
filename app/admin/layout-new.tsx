@@ -66,14 +66,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" className="bg-white/95 backdrop-blur-sm border-r border-gray-200/50 shadow-xl">
+      <Sidebar
+        collapsible="icon"
+        className="bg-white/95 backdrop-blur-sm border-r border-gray-200/50 shadow-xl"
+      >
         <SidebarHeader className="border-b border-gray-200/50 bg-gradient-to-r from-blue-50/50 to-indigo-50/50">
           <div className="flex items-center space-x-3 px-4 py-3">
             <div className="h-10 w-10 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-white/20">
               <span className="text-white font-bold">A</span>
             </div>
             <div className="group-data-[collapsible=icon]:hidden">
-              <h1 className="font-bold text-lg text-gray-900">AmeerHasan.dev</h1>
+              <h1 className="font-bold text-lg text-gray-900">
+                AmeerHasan.dev
+              </h1>
               <p className="text-xs text-gray-500">Admin Panel</p>
             </div>
           </div>
@@ -88,7 +93,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   <User className="h-4 w-4 text-white" />
                 </div>
                 <div className="group-data-[collapsible=icon]:hidden">
-                  <p className="text-sm font-medium text-gray-900">Ameer Hasan</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    Ameer Hasan
+                  </p>
                   <p className="text-xs text-gray-500">Administrator</p>
                 </div>
               </div>
@@ -115,12 +122,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                       )}
                     >
                       <Link href={item.url}>
-                        <item.icon className={cn(
-                          "transition-all duration-200",
-                          pathname === item.url 
-                            ? "text-white drop-shadow-sm" 
-                            : "text-gray-400 group-hover:text-gray-600"
-                        )} />
+                        <item.icon
+                          className={cn(
+                            "transition-all duration-200",
+                            pathname === item.url
+                              ? "text-white drop-shadow-sm"
+                              : "text-gray-400 group-hover:text-gray-600"
+                          )}
+                        />
                         <span className="font-medium">{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -150,12 +159,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                       )}
                     >
                       <Link href={item.url}>
-                        <item.icon className={cn(
-                          "transition-all duration-200",
-                          pathname === item.url 
-                            ? "text-white drop-shadow-sm" 
-                            : "text-gray-400 group-hover:text-gray-600"
-                        )} />
+                        <item.icon
+                          className={cn(
+                            "transition-all duration-200",
+                            pathname === item.url
+                              ? "text-white drop-shadow-sm"
+                              : "text-gray-400 group-hover:text-gray-600"
+                          )}
+                        />
                         <span className="font-medium">{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -169,9 +180,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <SidebarFooter className="p-4 border-t border-gray-200 bg-gray-50">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                className="text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl"
-              >
+              <SidebarMenuButton className="text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors rounded-xl">
                 <LogOut className="group-hover:text-red-600 transition-colors" />
                 <span>Sign out</span>
               </SidebarMenuButton>
@@ -189,7 +198,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <span className="text-white font-bold text-sm">A</span>
             </div>
             <div>
-              <h1 className="font-bold text-lg text-gray-900">AmeerHasan.dev</h1>
+              <h1 className="font-bold text-lg text-gray-900">
+                AmeerHasan.dev
+              </h1>
               <p className="text-xs text-gray-500">Admin Panel</p>
             </div>
           </div>
