@@ -38,7 +38,7 @@ export default function RootLayout({
         )}
       >
         <ConditionalWrapper>{children}</ConditionalWrapper>
-        <Toaster />
+        <Toaster position="top-center" richColors={true} />
       </body>
     </html>
   );

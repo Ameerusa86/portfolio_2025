@@ -51,7 +51,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       icon: FolderOpen,
     },
     {
-      title: "Blog Posts",
+      title: "Blogs",
       url: "/admin/blogs",
       icon: FileText,
     },
