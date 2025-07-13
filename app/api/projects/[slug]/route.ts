@@ -7,12 +7,13 @@ export async function PUT(
   context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
 ) {
   try {
-    // Next.js 14+ app router: context may be a Promise
+    // Next.js 15+ app router: context and params may be Promises
     const ctx =
       typeof context === "object" && "then" in context
         ? await context
         : context;
-    const { slug } = ctx.params;
+    const params = await ctx.params;
+    const { slug } = params;
 
     const body = await req.json();
     const {
@@ -89,12 +90,13 @@ export async function DELETE(
   context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
 ) {
   try {
-    // Next.js 14+ app router: context may be a Promise
+    // Next.js 15+ app router: context and params may be Promises
     const ctx =
       typeof context === "object" && "then" in context
         ? await context
         : context;
-    const { slug } = ctx.params;
+    const params = await ctx.params;
+    const { slug } = params;
     console.log("Attempting to delete project with slug:", slug);
 
     // Find the project by slug
@@ -153,12 +155,13 @@ export async function GET(
   context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
 ) {
   try {
-    // Next.js 14+ app router: context may be a Promise
+    // Next.js 15+ app router: context and params may be Promises
     const ctx =
       typeof context === "object" && "then" in context
         ? await context
         : context;
-    const { slug } = ctx.params;
+    const params = await ctx.params;
+    const { slug } = params;
 
     const { data, error } = await supabase
       .from("projects")

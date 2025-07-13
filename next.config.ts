@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@uploadthing/react", "@uploadthing/shared"],
+  devIndicators: false,
   experimental: {
     serverActions: {
       bodySizeLimit: "10mb",
@@ -16,13 +16,13 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "utfs.io",
-        pathname: "/**",
+        hostname: "zieedwpkkscmcujajpth.supabase.co",
+        pathname: "/storage/v1/object/public/project-images/**",
       },
       {
         protocol: "https",
         hostname: "zieedwpkkscmcujajpth.supabase.co",
-        pathname: "/storage/v1/object/public/project-images/**",
+        pathname: "/storage/v1/object/public/blog-images/**",
       },
     ],
   },
