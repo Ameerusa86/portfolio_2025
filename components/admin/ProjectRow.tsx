@@ -45,10 +45,10 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
 
   // Defensive: support both camelCase and snake_case, and default arrays/strings
   // Use type assertions to access possible snake_case fields from Supabase
-  const techStack = project.techStack || (project as any).tech_stack || [];
-  const githubUrl = project.githubUrl || (project as any).github_url || "";
-  const liveUrl = project.liveUrl || (project as any).live_url || "";
-  const createdAt = project.createdAt || (project as any).created_at || "";
+  const techStack = (project as any).tech_stack || [];
+  const githubUrl = (project as any).github_url || "";
+  const liveUrl = project.live_url || "";
+  const createdAt = project.created_at || "";
 
   return (
     <Card className="hover:shadow-md transition-shadow">
