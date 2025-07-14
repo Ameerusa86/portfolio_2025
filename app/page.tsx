@@ -79,7 +79,12 @@ export default function HomePage() {
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Link>
             </Button>
-            <Button variant="outline" size="lg" asChild className="text-lg px-8 py-4">
+            <Button
+              variant="outline"
+              size="lg"
+              asChild
+              className="text-lg px-8 py-4"
+            >
               <Link href="/contact">Get In Touch</Link>
             </Button>
           </div>
@@ -90,14 +95,16 @@ export default function HomePage() {
       <section className="w-full py-20 lg:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-6">What I Bring to the Table</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+              What I Bring to the Table
+            </h2>
             <p className="text-muted-foreground text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
               Combining technical expertise with creative problem-solving to
               deliver outstanding results.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {features.map((feature, index) => (
               <Card
                 key={index}
@@ -109,8 +116,12 @@ export default function HomePage() {
                       <feature.icon className="h-8 w-8" />
                     </div>
                   </div>
-                  <h3 className="text-xl lg:text-2xl font-semibold">{feature.title}</h3>
-                  <p className="text-muted-foreground text-base lg:text-lg leading-relaxed">{feature.description}</p>
+                  <h3 className="text-xl lg:text-2xl font-semibold">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground text-base lg:text-lg leading-relaxed">
+                    {feature.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -123,7 +134,9 @@ export default function HomePage() {
         <section className="w-full py-20 lg:py-32 bg-gradient-to-br from-gray-50 to-blue-50/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold mb-6">Latest from the Blog</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+                Latest from the Blog
+              </h2>
               <p className="text-muted-foreground text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
                 Insights, tutorials, and thoughts on web development and
                 technology.
@@ -145,7 +158,12 @@ export default function HomePage() {
             </div>
 
             <div className="text-center">
-              <Button variant="outline" size="lg" asChild className="text-lg px-8 py-4">
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="text-lg px-8 py-4"
+              >
                 <Link href="/blog">
                   <BookOpen className="h-5 w-5 mr-2" />
                   View All Articles
@@ -161,7 +179,9 @@ export default function HomePage() {
       <section className="w-full py-20 lg:py-32 bg-gradient-to-br from-primary/5 via-blue-50/50 to-indigo-100/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center bg-white/80 backdrop-blur-sm rounded-3xl p-12 lg:p-20 shadow-xl border border-white/50">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-6">Ready to Start Your Project?</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+              Ready to Start Your Project?
+            </h2>
             <p className="text-muted-foreground text-lg lg:text-xl max-w-2xl mx-auto mb-8 leading-relaxed">
               Let's work together to bring your ideas to life with modern web
               technologies.
@@ -170,7 +190,12 @@ export default function HomePage() {
               <Button size="lg" asChild className="text-lg px-8 py-4">
                 <Link href="/contact">Start a Conversation</Link>
               </Button>
-              <Button variant="outline" size="lg" asChild className="text-lg px-8 py-4">
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="text-lg px-8 py-4"
+              >
                 <Link href="/about">Learn More About Me</Link>
               </Button>
             </div>

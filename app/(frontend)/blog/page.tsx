@@ -98,24 +98,23 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
       {/* Hero Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10" />
-        <div className="absolute top-0 left-1/4 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+      <section className="relative min-h-[60vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 sm:py-24">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-lg text-blue-600 text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4 mr-2" />
             Latest Insights & Tutorials
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
             Blog
           </h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Discover insights, tutorials, and thoughts on web development,
             technology, and the craft of building exceptional digital
             experiences.
@@ -123,152 +122,154 @@ export default function BlogPage() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        {/* Search and Filter Section */}
-        <div className="mb-12">
-          <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg">
-            <div className="flex flex-col md:flex-row gap-4">
-              {/* Search */}
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input
-                  placeholder="Search articles..."
-                  className="pl-12 h-12 bg-white/70 dark:bg-gray-800/70 border-white/30 focus:border-primary/50 rounded-xl"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+      <div className="w-full py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+          {/* Search and Filter Section */}
+          <div className="mb-12">
+            <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg">
+              <div className="flex flex-col md:flex-row gap-4">
+                {/* Search */}
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                  <Input
+                    placeholder="Search articles..."
+                    className="pl-12 h-12 bg-white/70 dark:bg-gray-800/70 border-white/30 focus:border-primary/50 rounded-xl"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
 
-              {/* Tag Filter */}
-              <div className="relative min-w-[200px]">
-                <div className="relative">
-                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
-                  <select
-                    value={selectedTag}
-                    onChange={(e) => setSelectedTag(e.target.value)}
-                    className="h-12 w-full pl-10 pr-4 bg-white/70 dark:bg-gray-800/70 border border-white/30 focus:border-primary/50 rounded-xl text-sm appearance-none cursor-pointer"
-                  >
-                    <option value="">All Tags</option>
-                    {allTags.map((tag) => (
-                      <option key={tag} value={tag}>
-                        {tag}
-                      </option>
-                    ))}
-                  </select>
+                {/* Tag Filter */}
+                <div className="relative min-w-[200px]">
+                  <div className="relative">
+                    <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
+                    <select
+                      value={selectedTag}
+                      onChange={(e) => setSelectedTag(e.target.value)}
+                      className="h-12 w-full pl-10 pr-4 bg-white/70 dark:bg-gray-800/70 border border-white/30 focus:border-primary/50 rounded-xl text-sm appearance-none cursor-pointer"
+                    >
+                      <option value="">All Tags</option>
+                      {allTags.map((tag) => (
+                        <option key={tag} value={tag}>
+                          {tag}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {loading ? (
-          <BlogSkeleton />
-        ) : (
-          <>
-            {/* Featured Posts */}
-            {featuredPosts.length > 0 && (
-              <section className="mb-20">
-                <div className="flex items-center mb-8">
-                  <div className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full w-12 mr-4" />
-                  <h2 className="text-3xl font-bold">Featured Articles</h2>
-                  <div className="h-1 bg-gradient-to-r from-secondary to-transparent rounded-full flex-1 ml-4" />
-                </div>
+          {loading ? (
+            <BlogSkeleton />
+          ) : (
+            <>
+              {/* Featured Posts */}
+              {featuredPosts.length > 0 && (
+                <section className="mb-20">
+                  <div className="flex items-center mb-8">
+                    <div className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full w-12 mr-4" />
+                    <h2 className="text-3xl font-bold">Featured Articles</h2>
+                    <div className="h-1 bg-gradient-to-r from-secondary to-transparent rounded-full flex-1 ml-4" />
+                  </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {featuredPosts.map((post) => (
-                    <FeaturedPostCard
-                      key={post.id}
-                      post={post}
-                      formatDate={formatDate}
-                    />
-                  ))}
-                </div>
-              </section>
-            )}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {featuredPosts.map((post) => (
+                      <FeaturedPostCard
+                        key={post.id}
+                        post={post}
+                        formatDate={formatDate}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )}
 
-            {/* Recent Posts */}
-            {recentPosts.length > 0 ? (
-              <section>
-                <div className="flex items-center mb-8">
-                  <div className="h-1 bg-gradient-to-r from-secondary to-primary rounded-full w-12 mr-4" />
-                  <h2 className="text-3xl font-bold">Recent Articles</h2>
-                  <div className="h-1 bg-gradient-to-r from-primary to-transparent rounded-full flex-1 ml-4" />
-                </div>
+              {/* Recent Posts */}
+              {recentPosts.length > 0 ? (
+                <section>
+                  <div className="flex items-center mb-8">
+                    <div className="h-1 bg-gradient-to-r from-secondary to-primary rounded-full w-12 mr-4" />
+                    <h2 className="text-3xl font-bold">Recent Articles</h2>
+                    <div className="h-1 bg-gradient-to-r from-primary to-transparent rounded-full flex-1 ml-4" />
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {recentPosts.map((post) => (
-                    <BlogPostCard
-                      key={post.id}
-                      post={post}
-                      formatDate={formatDate}
-                    />
-                  ))}
-                </div>
-              </section>
-            ) : (
-              !loading &&
-              filteredBlogs.length === 0 && (
-                <div className="text-center py-20">
-                  <div className="text-6xl mb-4">📝</div>
-                  <h3 className="text-2xl font-semibold mb-2">
-                    No Articles Found
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {recentPosts.map((post) => (
+                      <BlogPostCard
+                        key={post.id}
+                        post={post}
+                        formatDate={formatDate}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ) : (
+                !loading &&
+                filteredBlogs.length === 0 && (
+                  <div className="text-center py-20">
+                    <div className="text-6xl mb-4">📝</div>
+                    <h3 className="text-2xl font-semibold mb-2">
+                      No Articles Found
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      {searchTerm || selectedTag
+                        ? "Try adjusting your search or filter criteria."
+                        : "No blog posts have been published yet."}
+                    </p>
+                    {(searchTerm || selectedTag) && (
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setSearchTerm("");
+                          setSelectedTag("");
+                        }}
+                      >
+                        Clear Filters
+                      </Button>
+                    )}
+                  </div>
+                )
+              )}
+            </>
+          )}
+
+          {/* Newsletter Signup */}
+          <section className="mt-24">
+            <Card className="relative overflow-hidden bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border-0 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-50" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl transform translate-x-20 -translate-y-20" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl transform -translate-x-10 translate-y-10" />
+
+              <CardContent className="relative p-12 text-center">
+                <div className="max-w-2xl mx-auto">
+                  <h3 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    Stay in the Loop
                   </h3>
-                  <p className="text-muted-foreground mb-6">
-                    {searchTerm || selectedTag
-                      ? "Try adjusting your search or filter criteria."
-                      : "No blog posts have been published yet."}
+                  <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                    Get the latest articles, insights, and tutorials delivered
+                    directly to your inbox. Join our community of developers and
+                    tech enthusiasts.
                   </p>
-                  {(searchTerm || selectedTag) && (
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setSearchTerm("");
-                        setSelectedTag("");
-                      }}
-                    >
-                      Clear Filters
+                  <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                    <Input
+                      placeholder="Enter your email address"
+                      type="email"
+                      className="flex-1 h-12 bg-white/80 dark:bg-gray-800/80 border-white/50 focus:border-primary/50 rounded-xl"
+                    />
+                    <Button className="h-12 px-8 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl font-medium">
+                      Subscribe
                     </Button>
-                  )}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    No spam, unsubscribe at any time. We respect your privacy.
+                  </p>
                 </div>
-              )
-            )}
-          </>
-        )}
-
-        {/* Newsletter Signup */}
-        <section className="mt-24">
-          <Card className="relative overflow-hidden bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border-0 shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-50" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl transform translate-x-20 -translate-y-20" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl transform -translate-x-10 translate-y-10" />
-
-            <CardContent className="relative p-12 text-center">
-              <div className="max-w-2xl mx-auto">
-                <h3 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                  Stay in the Loop
-                </h3>
-                <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                  Get the latest articles, insights, and tutorials delivered
-                  directly to your inbox. Join our community of developers and
-                  tech enthusiasts.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                  <Input
-                    placeholder="Enter your email address"
-                    type="email"
-                    className="flex-1 h-12 bg-white/80 dark:bg-gray-800/80 border-white/50 focus:border-primary/50 rounded-xl"
-                  />
-                  <Button className="h-12 px-8 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl font-medium">
-                    Subscribe
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  No spam, unsubscribe at any time. We respect your privacy.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
+              </CardContent>
+            </Card>
+          </section>
+        </div>
       </div>
     </div>
   );

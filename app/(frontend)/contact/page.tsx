@@ -42,7 +42,7 @@ export default function ContactPage() {
       <section className="relative overflow-hidden min-h-[50vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
-        
+
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center space-y-6">
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
@@ -92,7 +92,9 @@ export default function ContactPage() {
               </div>
 
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-white/50 shadow-lg">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900">Follow Me</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gray-900">
+                  Follow Me
+                </h3>
                 <div className="flex space-x-4">
                   {socialLinks.map((social, index) => (
                     <a
@@ -113,56 +115,64 @@ export default function ContactPage() {
             {/* Contact Form */}
             <Card className="bg-white/80 backdrop-blur-sm border-white/50 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-gray-900">Send me a message</CardTitle>
+                <CardTitle className="text-gray-900">
+                  Send me a message
+                </CardTitle>
               </CardHeader>
               <CardContent>
-              <form className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="text-sm font-medium">
-                      First Name
-                    </label>
-                    <Input id="firstName" placeholder="John" />
+                <form className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="firstName"
+                        className="text-sm font-medium"
+                      >
+                        First Name
+                      </label>
+                      <Input id="firstName" placeholder="John" />
+                    </div>
+                    <div>
+                      <label htmlFor="lastName" className="text-sm font-medium">
+                        Last Name
+                      </label>
+                      <Input id="lastName" placeholder="Doe" />
+                    </div>
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="text-sm font-medium">
-                      Last Name
+                    <label htmlFor="email" className="text-sm font-medium">
+                      Email
                     </label>
-                    <Input id="lastName" placeholder="Doe" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                    />
                   </div>
-                </div>
-                <div>
-                  <label htmlFor="email" className="text-sm font-medium">
-                    Email
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="john@example.com"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="subject" className="text-sm font-medium">
-                    Subject
-                  </label>
-                  <Input id="subject" placeholder="Project Discussion" />
-                </div>
-                <div>
-                  <label htmlFor="message" className="text-sm font-medium">
-                    Message
-                  </label>
-                  <Textarea
-                    id="message"
-                    placeholder="Tell me about your project..."
-                    rows={5}
-                  />
-                </div>
-                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                  Send Message
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <div>
+                    <label htmlFor="subject" className="text-sm font-medium">
+                      Subject
+                    </label>
+                    <Input id="subject" placeholder="Project Discussion" />
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="text-sm font-medium">
+                      Message
+                    </label>
+                    <Textarea
+                      id="message"
+                      placeholder="Tell me about your project..."
+                      rows={5}
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
+                    Send Message
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

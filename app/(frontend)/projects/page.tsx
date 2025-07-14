@@ -204,7 +204,7 @@ const ProjectsPage = () => {
       {/* Stats Section */}
       <section className="w-full bg-white py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-12">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="text-3xl font-bold text-blue-600 mb-1">
                 {stats.total}
@@ -243,162 +243,162 @@ const ProjectsPage = () => {
           {/* Filters and Search */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg mb-8">
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
-                <Input
-                  placeholder="Search projects..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full sm:w-80 bg-white/80 border-gray-200 focus:bg-white focus:border-blue-400 transition-all"
-                />
+              <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
+                  <Input
+                    placeholder="Search projects..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 w-full sm:w-80 bg-white/80 border-gray-200 focus:bg-white focus:border-blue-400 transition-all"
+                  />
+                </div>
+
+                <select
+                  value={selectedTech}
+                  onChange={(e) => setSelectedTech(e.target.value)}
+                  className="px-4 py-2 rounded-lg border border-gray-200 bg-white/80 text-gray-700 focus:bg-white focus:border-blue-400 transition-all min-w-48"
+                >
+                  <option value="">All Technologies</option>
+                  {allTechnologies.map((tech) => (
+                    <option key={tech} value={tech}>
+                      {tech}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <select
-                value={selectedTech}
-                onChange={(e) => setSelectedTech(e.target.value)}
-                className="px-4 py-2 rounded-lg border border-gray-200 bg-white/80 text-gray-700 focus:bg-white focus:border-blue-400 transition-all min-w-48"
-              >
-                <option value="">All Technologies</option>
-                {allTechnologies.map((tech) => (
-                  <option key={tech} value={tech}>
-                    {tech}
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={viewMode === "grid" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className={
+                    viewMode === "grid"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                      : "bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                  }
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className={
+                    viewMode === "list"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+                      : "bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                  }
+                >
+                  <List className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === "grid" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("grid")}
-                className={
-                  viewMode === "grid"
-                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                    : "bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                }
-              >
-                <Grid3X3 className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === "list" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("list")}
-                className={
-                  viewMode === "list"
-                    ? "bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-                    : "bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                }
-              >
-                <List className="w-4 h-4" />
-              </Button>
+            {(searchTerm || selectedTech) && (
+              <div className="mt-4 flex items-center gap-2">
+                <span className="text-sm text-gray-700 font-medium">
+                  Filters active:
+                </span>
+                {searchTerm && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-blue-100 text-blue-900 border border-blue-200"
+                  >
+                    Search: "{searchTerm}"
+                    <button
+                      onClick={() => setSearchTerm("")}
+                      className="ml-2 hover:text-blue-700 text-blue-600 font-bold"
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                )}
+                {selectedTech && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-purple-100 text-purple-900 border border-purple-200"
+                  >
+                    Tech: {selectedTech}
+                    <button
+                      onClick={() => setSelectedTech("")}
+                      className="ml-2 hover:text-purple-700 text-purple-600 font-bold"
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Results Info */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <p className="text-gray-600">
+                Showing{" "}
+                <span className="font-semibold text-gray-900">
+                  {filteredProjects.length}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-gray-900">
+                  {projects.length}
+                </span>{" "}
+                projects
+              </p>
+              {filteredProjects.length > 0 && (
+                <p className="text-sm text-gray-500">
+                  Updated {new Date().toLocaleDateString()}
+                </p>
+              )}
             </div>
           </div>
 
-          {(searchTerm || selectedTech) && (
-            <div className="mt-4 flex items-center gap-2">
-              <span className="text-sm text-gray-700 font-medium">
-                Filters active:
-              </span>
-              {searchTerm && (
-                <Badge
-                  variant="secondary"
-                  className="bg-blue-100 text-blue-900 border border-blue-200"
+          {/* Projects Grid/List */}
+          {filteredProjects.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="w-8 h-8 text-gray-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                No projects found
+              </h3>
+              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                {searchTerm || selectedTech
+                  ? "Try adjusting your search criteria or filters to find what you're looking for."
+                  : "No projects are available at the moment. Check back later for updates!"}
+              </p>
+              {(searchTerm || selectedTech) && (
+                <Button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedTech("");
+                  }}
+                  variant="outline"
+                  className="bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                 >
-                  Search: "{searchTerm}"
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="ml-2 hover:text-blue-700 text-blue-600 font-bold"
-                  >
-                    ×
-                  </button>
-                </Badge>
+                  Clear Filters
+                </Button>
               )}
-              {selectedTech && (
-                <Badge
-                  variant="secondary"
-                  className="bg-purple-100 text-purple-900 border border-purple-200"
-                >
-                  Tech: {selectedTech}
-                  <button
-                    onClick={() => setSelectedTech("")}
-                    className="ml-2 hover:text-purple-700 text-purple-600 font-bold"
-                  >
-                    ×
-                  </button>
-                </Badge>
-              )}
+            </div>
+          ) : (
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                  : "space-y-6"
+              }
+            >
+              {filteredProjects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  viewMode={viewMode}
+                />
+              ))}
             </div>
           )}
-        </div>
-
-        {/* Results Info */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <p className="text-gray-600">
-              Showing{" "}
-              <span className="font-semibold text-gray-900">
-                {filteredProjects.length}
-              </span>{" "}
-              of{" "}
-              <span className="font-semibold text-gray-900">
-                {projects.length}
-              </span>{" "}
-              projects
-            </p>
-            {filteredProjects.length > 0 && (
-              <p className="text-sm text-gray-500">
-                Updated {new Date().toLocaleDateString()}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Projects Grid/List */}
-        {filteredProjects.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Search className="w-8 h-8 text-gray-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No projects found
-            </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              {searchTerm || selectedTech
-                ? "Try adjusting your search criteria or filters to find what you're looking for."
-                : "No projects are available at the moment. Check back later for updates!"}
-            </p>
-            {(searchTerm || selectedTech) && (
-              <Button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedTech("");
-                }}
-                variant="outline"
-                className="bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-              >
-                Clear Filters
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div
-            className={
-              viewMode === "grid"
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                : "space-y-6"
-            }
-          >
-            {filteredProjects.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                viewMode={viewMode}
-              />
-            ))}
-          </div>
-        )}
         </div>
       </section>
     </div>
