@@ -29,6 +29,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
+    console.log("POST request body:", body); // Debug log
+
     // Accept both camelCase and snake_case from frontend
     const title = body.title;
     const description = body.description;
@@ -43,6 +45,14 @@ export async function POST(req: NextRequest) {
     const tags = body.tags || [];
     const status = body.status || "";
     const order = typeof body.order === "number" ? body.order : null;
+
+    console.log("Processed data:", {
+      title,
+      description,
+      tech_stack,
+      github_url,
+      live_url,
+    }); // Debug log
 
     if (!title || !description) {
       return NextResponse.json(

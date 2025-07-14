@@ -166,7 +166,12 @@ export default function ProjectForm({
         image: imageUrl,
         imageKey: imageKey,
         tech_stack: techStack,
+        // Make sure we're using the correct field names
+        github_url: formData.github_url,
+        live_url: formData.live_url,
       };
+
+      console.log("Submitting project data:", projectData); // Debug log
 
       await onSubmit(projectData);
     } catch (error) {

@@ -11,17 +11,20 @@ export async function PUT(
     const { slug } = params;
 
     const body = await req.json();
-    const {
-      title,
-      description,
-      image,
-      imageKey,
-      techStack,
-      githubUrl,
-      liveUrl,
-      published,
-      featured,
-    } = body;
+
+    console.log("PUT request body:", body); // Debug log
+
+    // Accept both camelCase and snake_case from frontend
+    const title = body.title;
+    const description = body.description;
+    const image = body.image || body.image_url || "";
+    const imageKey = body.imageKey || body.image_key || "";
+    const techStack = body.techStack || body.tech_stack || [];
+    const githubUrl = body.githubUrl || body.github_url || "";
+    const liveUrl = body.liveUrl || body.live_url || "";
+    const published =
+      typeof body.published === "boolean" ? body.published : true;
+    const featured = typeof body.featured === "boolean" ? body.featured : false;
 
     if (!title || !description) {
       return NextResponse.json(
@@ -48,6 +51,8 @@ export async function PUT(
       live_url: liveUrl || "",
       updated_at: new Date().toISOString(),
     };
+
+    console.log("Update data to send to Supabase:", updateData); // Debug log
 
     if (typeof published === "boolean") {
       updateData.published = published;
