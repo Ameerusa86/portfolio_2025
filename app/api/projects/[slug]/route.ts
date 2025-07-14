@@ -57,10 +57,37 @@ export async function PUT(
       updateData.featured = featured;
     }
 
-    const { error } = await supabase
-      .from("projects")
-      .update(updateData)
-      .eq("slug", slug);
+    // Determine if it's a slug, UUID, or numeric ID
+    let updateQuery;
+
+    // Check if it's a UUID (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    // Check if it's a numeric ID
+    const isNumericId = /^\d+$/.test(slug);
+
+    if (uuidRegex.test(slug)) {
+      // It's a UUID, search by id
+      console.log("Detected UUID, searching by id:", slug);
+      updateQuery = supabase.from("projects").update(updateData).eq("id", slug);
+    } else if (isNumericId) {
+      // It's a numeric ID, search by id
+      console.log("Detected numeric ID, searching by id:", slug);
+      updateQuery = supabase
+        .from("projects")
+        .update(updateData)
+        .eq("id", parseInt(slug));
+    } else {
+      // It's a slug, search by slug
+      console.log("Detected slug, searching by slug:", slug);
+      updateQuery = supabase
+        .from("projects")
+        .update(updateData)
+        .eq("slug", slug);
+    }
+
+    const { error } = await updateQuery;
 
     if (error) {
       console.error("Error updating project:", error);
@@ -87,14 +114,45 @@ export async function DELETE(
   try {
     const params = await context.params;
     const { slug } = params;
-    console.log("Attempting to delete project with slug:", slug);
+    console.log("Attempting to delete project with identifier:", slug);
 
-    // Find the project by slug
-    const { data, error: fetchError } = await supabase
-      .from("projects")
-      .select("id, image_key")
-      .eq("slug", slug)
-      .single();
+    // Determine if it's a slug, UUID, or numeric ID
+    let findQuery;
+
+    // Check if it's a UUID (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    // Check if it's a numeric ID
+    const isNumericId = /^\d+$/.test(slug);
+
+    if (uuidRegex.test(slug)) {
+      // It's a UUID, search by id
+      console.log("Detected UUID, searching by id:", slug);
+      findQuery = supabase
+        .from("projects")
+        .select("id, image_key")
+        .eq("id", slug)
+        .single();
+    } else if (isNumericId) {
+      // It's a numeric ID, search by id
+      console.log("Detected numeric ID, searching by id:", slug);
+      findQuery = supabase
+        .from("projects")
+        .select("id, image_key")
+        .eq("id", parseInt(slug))
+        .single();
+    } else {
+      // It's a slug, search by slug
+      console.log("Detected slug, searching by slug:", slug);
+      findQuery = supabase
+        .from("projects")
+        .select("id, image_key")
+        .eq("slug", slug)
+        .single();
+    }
+
+    const { data, error: fetchError } = await findQuery;
 
     if (fetchError) {
       console.error("Error fetching project:", fetchError);
@@ -102,7 +160,7 @@ export async function DELETE(
     }
 
     if (!data) {
-      console.error("Project not found with slug:", slug);
+      console.error("Project not found with identifier:", slug);
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
@@ -116,11 +174,11 @@ export async function DELETE(
       }
     }
 
-    // Delete the project
+    // Delete the project using the id we found
     const { error: deleteError } = await supabase
       .from("projects")
       .delete()
-      .eq("slug", slug);
+      .eq("id", data.id);
 
     if (deleteError) {
       console.error("Error deleting project:", deleteError);
@@ -148,11 +206,35 @@ export async function GET(
     const params = await context.params;
     const { slug } = params;
 
-    const { data, error } = await supabase
-      .from("projects")
-      .select("*")
-      .eq("slug", slug)
-      .single();
+    // Determine if it's a slug, UUID, or numeric ID
+    let query;
+
+    // Check if it's a UUID (format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    // Check if it's a numeric ID
+    const isNumericId = /^\d+$/.test(slug);
+
+    if (uuidRegex.test(slug)) {
+      // It's a UUID, search by id
+      console.log("Detected UUID, searching by id:", slug);
+      query = supabase.from("projects").select("*").eq("id", slug).single();
+    } else if (isNumericId) {
+      // It's a numeric ID, search by id
+      console.log("Detected numeric ID, searching by id:", slug);
+      query = supabase
+        .from("projects")
+        .select("*")
+        .eq("id", parseInt(slug))
+        .single();
+    } else {
+      // It's a slug, search by slug
+      console.log("Detected slug, searching by slug:", slug);
+      query = supabase.from("projects").select("*").eq("slug", slug).single();
+    }
+
+    const { data, error } = await query;
 
     if (error || !data) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });

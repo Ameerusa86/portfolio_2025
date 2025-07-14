@@ -32,8 +32,26 @@ export default function ProjectFormModal({
     setIsSubmitting(true);
 
     try {
-      const url = isEdit ? `/api/projects/${project.slug}` : "/api/projects";
+      // Use slug if available, otherwise fall back to id
+      const identifier = isEdit ? project?.slug || project?.id : null;
+      const url = isEdit ? `/api/projects/${identifier}` : "/api/projects";
       const method = isEdit ? "PUT" : "POST";
+
+      console.log("Submitting project:", {
+        isEdit,
+        identifier,
+        url,
+        projectData,
+        project: project
+          ? { id: project.id, slug: project.slug, title: project.title }
+          : null,
+      });
+
+      if (isEdit && !identifier) {
+        throw new Error(
+          "Cannot update project: missing identifier (both slug and id are undefined)"
+        );
+      }
 
       const response = await fetch(url, {
         method,
@@ -43,9 +61,18 @@ export default function ProjectFormModal({
         body: JSON.stringify(projectData),
       });
 
+      console.log("Response status:", response.status);
+
       if (!response.ok) {
-        throw new Error(`Failed to ${isEdit ? "update" : "create"} project`);
+        const errorText = await response.text();
+        console.error("Server error response:", errorText);
+        throw new Error(
+          `Failed to ${isEdit ? "update" : "create"} project: ${errorText}`
+        );
       }
+
+      const result = await response.json();
+      console.log("Success response:", result);
 
       toast.success(`Project ${isEdit ? "updated" : "created"} successfully!`);
       onProjectUpdated();

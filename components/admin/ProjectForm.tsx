@@ -12,6 +12,7 @@ import ImagePicker from "@/components/ImagePicker";
 import { Project } from "@/types/project";
 import { toast } from "sonner";
 import { Loader2, Globe, Github, Star, Eye } from "lucide-react";
+import { uploadImageFile } from "@/lib/supabase-upload";
 
 interface ProjectFormProps {
   project?: Project | null;
@@ -150,28 +151,20 @@ export default function ProjectForm({
         .filter((tech) => tech.length > 0);
 
       let imageUrl = formData.image;
+      let imageKey = "";
 
       // Upload new image if selected
       if (selectedFile) {
-        const formDataForUpload = new FormData();
-        formDataForUpload.append("file", selectedFile);
-
-        const uploadResponse = await fetch("/api/uploadthing", {
-          method: "POST",
-          body: formDataForUpload,
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error("Failed to upload image");
-        }
-
-        const uploadResult = await uploadResponse.json();
+        // Use Supabase upload instead of uploadthing
+        const uploadResult = await uploadImageFile(selectedFile);
         imageUrl = uploadResult.url;
+        imageKey = uploadResult.key;
       }
 
       const projectData = {
         ...formData,
         image: imageUrl,
+        imageKey: imageKey,
         tech_stack: techStack,
       };
 
