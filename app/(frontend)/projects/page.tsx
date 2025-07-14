@@ -83,41 +83,43 @@ const ProjectsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
+      <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
         {/* Hero Section Skeleton */}
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden min-h-[40vh]">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
-          <div className="relative max-w-7xl mx-auto px-4 py-24">
-            <div className="text-center space-y-6">
-              <div className="h-16 bg-gradient-to-r from-slate-200 to-slate-300 rounded-lg animate-pulse mx-auto max-w-2xl" />
-              <div className="h-6 bg-slate-200 rounded-lg animate-pulse mx-auto max-w-3xl" />
-              <div className="h-6 bg-slate-200 rounded-lg animate-pulse mx-auto max-w-2xl" />
+          <div className="relative w-full h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-6 max-w-4xl mx-auto">
+              <div className="h-16 bg-gradient-to-r from-slate-200 to-slate-300 rounded-lg animate-pulse" />
+              <div className="h-6 bg-slate-200 rounded-lg animate-pulse" />
+              <div className="h-6 bg-slate-200 rounded-lg animate-pulse max-w-3xl mx-auto" />
             </div>
           </div>
         </div>
 
         {/* Stats Skeleton */}
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-            {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg"
-              >
-                <div className="h-8 bg-slate-200 rounded-lg animate-pulse mb-2" />
-                <div className="h-4 bg-slate-200 rounded-lg animate-pulse" />
-              </div>
-            ))}
-          </div>
+        <div className="w-full bg-white py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg"
+                >
+                  <div className="h-8 bg-slate-200 rounded-lg animate-pulse mb-2" />
+                  <div className="h-4 bg-slate-200 rounded-lg animate-pulse" />
+                </div>
+              ))}
+            </div>
 
-          {/* Projects Grid Skeleton */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-white/80 backdrop-blur-sm rounded-2xl h-96 animate-pulse border border-white/50 shadow-lg"
-              />
-            ))}
+            {/* Projects Grid Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white/80 backdrop-blur-sm rounded-2xl h-96 animate-pulse border border-white/50 shadow-lg"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -126,7 +128,7 @@ const ProjectsPage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 flex items-center justify-center">
+      <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 flex items-center justify-center">
         <div className="max-w-md mx-auto text-center bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-white/50 shadow-lg">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-2xl">⚠️</span>
@@ -147,14 +149,14 @@ const ProjectsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden min-h-[70vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
 
-        <div className="relative max-w-7xl mx-auto px-4 py-24">
-          <div className="text-center space-y-6">
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+          <div className="text-center space-y-6 sm:space-y-8">
             <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-white/50 shadow-lg mb-6">
               <Star className="w-4 h-4 text-yellow-500" />
               <span className="text-sm font-medium text-gray-700">
@@ -162,11 +164,11 @@ const ProjectsPage = () => {
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
               My Projects
             </h1>
 
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               A curated collection of innovative projects showcasing
               cutting-edge technologies, creative solutions, and professional
               development expertise.
@@ -200,41 +202,47 @@ const ProjectsPage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="text-3xl font-bold text-blue-600 mb-1">
-              {stats.total}
+      <section className="w-full bg-white py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-3xl font-bold text-blue-600 mb-1">
+                {stats.total}
+              </div>
+              <div className="text-sm text-gray-600 font-medium">
+                Total Projects
+              </div>
             </div>
-            <div className="text-sm text-gray-600 font-medium">
-              Total Projects
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-3xl font-bold text-purple-600 mb-1">
+                {stats.featured}
+              </div>
+              <div className="text-sm text-gray-600 font-medium">Featured</div>
             </div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="text-3xl font-bold text-purple-600 mb-1">
-              {stats.featured}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-3xl font-bold text-teal-600 mb-1">
+                {stats.technologies}
+              </div>
+              <div className="text-sm text-gray-600 font-medium">
+                Technologies
+              </div>
             </div>
-            <div className="text-sm text-gray-600 font-medium">Featured</div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="text-3xl font-bold text-teal-600 mb-1">
-              {stats.technologies}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-3xl font-bold text-green-600 mb-1">
+                {stats.published}
+              </div>
+              <div className="text-sm text-gray-600 font-medium">Published</div>
             </div>
-            <div className="text-sm text-gray-600 font-medium">
-              Technologies
-            </div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300">
-            <div className="text-3xl font-bold text-green-600 mb-1">
-              {stats.published}
-            </div>
-            <div className="text-sm text-gray-600 font-medium">Published</div>
           </div>
         </div>
+      </section>
 
-        {/* Filters and Search */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg mb-8">
-          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+      {/* Main Content Section */}
+      <section className="w-full py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Filters and Search */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg mb-8">
+            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
@@ -391,6 +399,7 @@ const ProjectsPage = () => {
             ))}
           </div>
         )}
+        </div>
       </section>
     </div>
   );

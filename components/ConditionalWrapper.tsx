@@ -18,16 +18,14 @@ export function ConditionalWrapper({ children }: ConditionalWrapperProps) {
     return <>{children}</>;
   }
 
-  // Frontend routes get the traditional layout with navbar, footer, and responsive container
+  // Frontend routes get full-screen layout with navbar and footer
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 w-full">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          {children}
-        </div>
+        {children}
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

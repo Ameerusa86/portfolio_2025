@@ -37,74 +37,85 @@ export default function ContactPage() {
   ];
 
   return (
-    <section className="py-12">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold mb-4">Get In Touch</h1>
-          <p className="text-xl text-muted-foreground">
-            Let's discuss your project or just say hello
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-2xl font-semibold mb-6">
-                Contact Information
-              </h2>
-              <div className="space-y-4">
-                {contactInfo.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <item.icon className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {item.label}
-                      </p>
-                      {item.href ? (
-                        <a
-                          href={item.href}
-                          className="text-foreground hover:text-primary transition-colors"
-                        >
-                          {item.value}
-                        </a>
-                      ) : (
-                        <p className="text-foreground">{item.value}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Follow Me</h3>
-              <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
-                  >
-                    <social.icon className="h-5 w-5" />
-                    <span className="sr-only">{social.label}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
+    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden min-h-[50vh] flex items-center">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
+        
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center space-y-6">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
+              Get In Touch
+            </h1>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Let's discuss your project or just say hello
+            </p>
           </div>
+        </div>
+      </section>
 
-          {/* Contact Form */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Send me a message</CardTitle>
-            </CardHeader>
-            <CardContent>
+      {/* Main Content */}
+      <section className="w-full py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Contact Information */}
+            <div className="space-y-8">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-white/50 shadow-lg">
+                <h2 className="text-2xl font-semibold mb-6 text-gray-900">
+                  Contact Information
+                </h2>
+                <div className="space-y-4">
+                  {contactInfo.map((item, index) => (
+                    <div key={index} className="flex items-center space-x-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600/10 text-blue-600">
+                        <item.icon className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">
+                          {item.label}
+                        </p>
+                        {item.href ? (
+                          <a
+                            href={item.href}
+                            className="text-gray-900 hover:text-blue-600 transition-colors"
+                          >
+                            {item.value}
+                          </a>
+                        ) : (
+                          <p className="text-gray-900">{item.value}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-white/50 shadow-lg">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900">Follow Me</h3>
+                <div className="flex space-x-4">
+                  {socialLinks.map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-colors"
+                    >
+                      <social.icon className="h-5 w-5" />
+                      <span className="sr-only">{social.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <Card className="bg-white/80 backdrop-blur-sm border-white/50 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-gray-900">Send me a message</CardTitle>
+              </CardHeader>
+              <CardContent>
               <form className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -146,14 +157,15 @@ export default function ContactPage() {
                     rows={5}
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                   Send Message
                 </Button>
               </form>
             </CardContent>
           </Card>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

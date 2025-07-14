@@ -29,10 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="h-full">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased flex flex-col",
+          "h-full bg-background font-sans antialiased",
           geistSans.variable,
           geistMono.variable
         )}

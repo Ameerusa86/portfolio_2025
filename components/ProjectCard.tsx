@@ -328,7 +328,7 @@ export function ProjectCard({
                 View Live Demo
               </Link>
             )}
-            {project.github_url && !project.live_url && (
+            {/* {project.github_url && !project.live_url && (
               <Link
                 href={project.github_url}
                 target="_blank"
@@ -345,7 +345,7 @@ export function ProjectCard({
                 <Github className="w-4 h-4" />
                 View Source Code
               </Link>
-            )}
+            )} */}
           </div>
         )}
       </CardContent>
