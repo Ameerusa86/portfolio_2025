@@ -4,15 +4,10 @@ import { generateSlug } from "@/lib/slug-utils";
 
 export async function PUT(
   req: NextRequest,
-  context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    // Next.js 15+ app router: context and params may be Promises
-    const ctx =
-      typeof context === "object" && "then" in context
-        ? await context
-        : context;
-    const params = await ctx.params;
+    const params = await context.params;
     const { slug } = params;
 
     const body = await req.json();
@@ -87,15 +82,10 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    // Next.js 15+ app router: context and params may be Promises
-    const ctx =
-      typeof context === "object" && "then" in context
-        ? await context
-        : context;
-    const params = await ctx.params;
+    const params = await context.params;
     const { slug } = params;
     console.log("Attempting to delete project with slug:", slug);
 
@@ -152,15 +142,10 @@ export async function DELETE(
 
 export async function GET(
   req: NextRequest,
-  context: { params: { slug: string } } | Promise<{ params: { slug: string } }>
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    // Next.js 15+ app router: context and params may be Promises
-    const ctx =
-      typeof context === "object" && "then" in context
-        ? await context
-        : context;
-    const params = await ctx.params;
+    const params = await context.params;
     const { slug } = params;
 
     const { data, error } = await supabase

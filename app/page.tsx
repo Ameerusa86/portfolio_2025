@@ -1,11 +1,36 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowRight, Code, Briefcase, User, BookOpen } from "lucide-react";
 import { BlogCard } from "@/components/BlogCard";
-import { sampleBlogPosts } from "@/lib/sample-blogs";
+import { BlogPost } from "@/types/blog";
+import { BlogService } from "@/lib/blog-service";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+  const [featuredBlogPosts, setFeaturedBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedBlogs = async () => {
+      try {
+        const blogs = await BlogService.getBlogs({
+          status: "published",
+          featured: true,
+          limit: 2,
+        });
+        setFeaturedBlogPosts(blogs);
+      } catch (error) {
+        console.error("Failed to fetch featured blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedBlogs();
+  }, []);
   const features = [
     {
       icon: Code,
@@ -26,11 +51,6 @@ export default function HomePage() {
         "Creating intuitive and accessible interfaces that users love to interact with.",
     },
   ];
-
-  // Get featured blog posts for the homepage
-  const featuredBlogPosts = sampleBlogPosts
-    .filter((post) => post.featured)
-    .slice(0, 2);
 
   return (
     <div className="space-y-20 py-12">
@@ -105,9 +125,17 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {featuredBlogPosts.map((post) => (
-              <BlogCard key={post.id} post={post} />
-            ))}
+            {loading ? (
+              // Loading skeleton
+              <>
+                <div className="bg-muted rounded-lg h-64 animate-pulse" />
+                <div className="bg-muted rounded-lg h-64 animate-pulse" />
+              </>
+            ) : (
+              featuredBlogPosts.map((post) => (
+                <BlogCard key={post.id} post={post} />
+              ))
+            )}
           </div>
 
           <div className="text-center">

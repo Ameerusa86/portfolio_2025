@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, User, ArrowRight } from "lucide-react";
 import { BlogPost } from "@/types/blog";
+import { getBlogImageUrl } from "@/lib/supabase-storage";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -43,7 +44,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
         <div className="relative h-64">
           {post.image ? (
             <Image
-              src={post.image}
+              src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
               alt={post.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -86,11 +87,11 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
               </div>
               <div className="flex items-center">
                 <Calendar className="h-3 w-3 mr-1" />
-                {formatDate(post.publishedAt)}
+                {formatDate(post.published_at || post.created_at)}
               </div>
               <div className="flex items-center">
                 <Clock className="h-3 w-3 mr-1" />
-                {post.readTime} min read
+                {post.read_time} min read
               </div>
             </div>
           </div>
@@ -111,7 +112,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
       <div className="relative h-48">
         {post.image ? (
           <Image
-            src={post.image}
+            src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
             alt={post.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -144,11 +145,11 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center">
             <Calendar className="h-3 w-3 mr-1" />
-            {formatDate(post.publishedAt)}
+            {formatDate(post.published_at || post.created_at)}
           </div>
           <div className="flex items-center">
             <Clock className="h-3 w-3 mr-1" />
-            {post.readTime} min
+            {post.read_time} min
           </div>
         </div>
       </CardContent>

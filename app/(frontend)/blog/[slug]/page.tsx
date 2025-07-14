@@ -14,17 +14,37 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { sampleBlogPosts } from "@/lib/sample-blogs";
 import { BlogPost } from "@/types/blog";
+import { BlogService } from "@/lib/blog-service";
+import { getBlogImageUrl } from "@/lib/supabase-storage";
 
 interface BlogDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
 async function getBlogPost(slug: string): Promise<BlogPost | null> {
-  // In a real app, this would fetch from an API or database
-  const post = sampleBlogPosts.find((post) => post.slug === slug);
-  return post || null;
+  try {
+    return await BlogService.getBlog(slug);
+  } catch (error) {
+    console.error("Error fetching blog post:", error);
+    return null;
+  }
+}
+
+async function getRelatedPosts(
+  currentSlug: string,
+  tags: string[]
+): Promise<BlogPost[]> {
+  try {
+    const allPosts = await BlogService.getBlogs({ status: "published" });
+    return allPosts
+      .filter((post) => post.slug !== currentSlug)
+      .filter((post) => tags.some((tag) => post.tags.includes(tag)))
+      .slice(0, 3);
+  } catch (error) {
+    console.error("Error fetching related posts:", error);
+    return [];
+  }
 }
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
@@ -34,6 +54,8 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   if (!post) {
     notFound();
   }
+
+  const relatedPosts = await getRelatedPosts(slug, post.tags);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -55,13 +77,6 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       months[date.getMonth()]
     } ${date.getDate()}, ${date.getFullYear()}`;
   };
-
-  const relatedPosts = sampleBlogPosts
-    .filter(
-      (p) =>
-        p.slug !== post.slug && p.tags.some((tag) => post.tags.includes(tag))
-    )
-    .slice(0, 3);
 
   return (
     <div className="py-8">
@@ -107,11 +122,11 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </div>
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2" />
-                <span>{formatDate(post.publishedAt)}</span>
+                <span>{formatDate(post.published_at || post.created_at)}</span>
               </div>
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-2" />
-                <span>{post.readTime} min read</span>
+                <span>{post.read_time} min read</span>
               </div>
               <div className="flex items-center">
                 <BookOpen className="h-4 w-4 mr-2" />
@@ -133,7 +148,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
           {post.image && (
             <div className="relative aspect-video rounded-lg overflow-hidden mb-8 bg-muted">
               <Image
-                src={post.image}
+                src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
                 alt={post.title}
                 fill
                 className="object-cover"
@@ -257,7 +272,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
                     </p>
                     <div className="flex items-center text-xs text-muted-foreground">
                       <Clock className="h-3 w-3 mr-1" />
-                      {relatedPost.readTime} min read
+                      {relatedPost.read_time} min read
                     </div>
                   </CardContent>
                 </Card>

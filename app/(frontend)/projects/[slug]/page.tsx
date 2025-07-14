@@ -6,6 +6,7 @@ import { ArrowLeft, ExternalLink, Github, Calendar, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Project } from "@/types/project";
+import { getProjectImageUrl } from "@/lib/supabase-storage";
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -86,10 +87,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </p>
             </div>
             <div className="flex gap-3">
-              {project.liveUrl && (
+              {project.live_url && (
                 <Button asChild>
                   <Link
-                    href={project.liveUrl}
+                    href={project.live_url}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -98,10 +99,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                   </Link>
                 </Button>
               )}
-              {project.githubUrl && (
+              {project.github_url && (
                 <Button variant="outline" asChild>
                   <Link
-                    href={project.githubUrl}
+                    href={project.github_url}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -117,11 +118,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
             <div className="flex items-center">
               <Calendar className="mr-2 h-4 w-4" />
-              {formatDate(project.createdAt)}
+              {formatDate(project.created_at)}
             </div>
             <div className="flex items-center">
               <Tag className="mr-2 h-4 w-4" />
-              {project.techStack.length} Technologies
+              {project.tech_stack.length} Technologies
             </div>
           </div>
         </div>
@@ -131,7 +132,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <div className="mb-8">
             <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
               <Image
-                src={project.image}
+                src={
+                  getProjectImageUrl(project.image) ||
+                  "/placeholder-project.jpg"
+                }
                 alt={project.title}
                 fill
                 className="object-cover"
@@ -191,7 +195,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <CardContent className="pt-6">
                 <h3 className="font-semibold mb-4">Technologies Used</h3>
                 <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((tech, index) => (
+                  {project.tech_stack.map((tech: string, index: number) => (
                     <span
                       key={index}
                       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground"
@@ -208,9 +212,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <CardContent className="pt-6">
                 <h3 className="font-semibold mb-4">Project Links</h3>
                 <div className="space-y-3">
-                  {project.liveUrl && (
+                  {project.live_url && (
                     <Link
-                      href={project.liveUrl}
+                      href={project.live_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -219,9 +223,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                       Live Demo
                     </Link>
                   )}
-                  {project.githubUrl && (
+                  {project.github_url && (
                     <Link
-                      href={project.githubUrl}
+                      href={project.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -241,13 +245,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Created</span>
-                    <span>{formatDate(project.createdAt)}</span>
+                    <span>{formatDate(project.created_at)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Updated</span>
                     <span>
-                      {project.updatedAt
-                        ? formatDate(project.updatedAt)
+                      {project.updated_at
+                        ? formatDate(project.updated_at)
                         : "N/A"}
                     </span>
                   </div>

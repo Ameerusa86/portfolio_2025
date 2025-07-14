@@ -1,103 +1,270 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User, ArrowRight, Search } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  User,
+  ArrowRight,
+  Search,
+  Filter,
+  Sparkles,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { sampleBlogPosts } from "@/lib/sample-blogs";
 import { BlogPost } from "@/types/blog";
+import { BlogService } from "@/lib/blog-service";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getBlogImageUrl } from "@/lib/supabase-storage";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function BlogPage() {
-  const featuredPosts = sampleBlogPosts.filter((post) => post.featured);
-  const recentPosts = sampleBlogPosts
-    .filter((post) => !post.featured)
-    .slice(0, 6);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTag, setSelectedTag] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadBlogs();
+  }, []);
+
+  const loadBlogs = async () => {
+    try {
+      setLoading(true);
+      const data = await BlogService.getBlogs({ status: "published" });
+      setBlogs(data);
+      setError(null);
+    } catch (err) {
+      console.error("Failed to load blogs:", err);
+      setError("Failed to load blog posts. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    return `${
-      months[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()}`;
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(date);
   };
 
+  // Filter blogs based on search and tag
+  const filteredBlogs = blogs.filter((blog) => {
+    const matchesSearch =
+      blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      blog.excerpt?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTag = !selectedTag || blog.tags.includes(selectedTag);
+    return matchesSearch && matchesTag;
+  });
+
+  const featuredPosts = filteredBlogs.filter((post) => post.featured);
+  const recentPosts = filteredBlogs.filter((post) => !post.featured);
+
+  // Get all unique tags for filter dropdown
+  const allTags = Array.from(
+    new Set(blogs.flatMap((blog) => blog.tags))
+  ).sort();
+
+  if (error) {
+    return (
+      <div className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-8 max-w-md mx-auto">
+            <h2 className="text-xl font-semibold text-destructive mb-2">
+              Error Loading Blog
+            </h2>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={loadBlogs} variant="outline">
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Insights, tutorials, and thoughts on web development, technology,
-            and the craft of building digital experiences.
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
+      {/* Hero Section */}
+      <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-secondary/10" />
+        <div className="absolute top-0 left-1/4 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+            <Sparkles className="w-4 h-4 mr-2" />
+            Latest Insights & Tutorials
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+            Blog
+          </h1>
+
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Discover insights, tutorials, and thoughts on web development,
+            technology, and the craft of building exceptional digital
+            experiences.
           </p>
         </div>
+      </section>
 
-        {/* Search Bar */}
-        <div className="max-w-md mx-auto mb-12">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input placeholder="Search articles..." className="pl-10" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        {/* Search and Filter Section */}
+        <div className="mb-12">
+          <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg">
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* Search */}
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                <Input
+                  placeholder="Search articles..."
+                  className="pl-12 h-12 bg-white/70 dark:bg-gray-800/70 border-white/30 focus:border-primary/50 rounded-xl"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              {/* Tag Filter */}
+              <div className="relative min-w-[200px]">
+                <div className="relative">
+                  <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4 z-10" />
+                  <select
+                    value={selectedTag}
+                    onChange={(e) => setSelectedTag(e.target.value)}
+                    className="h-12 w-full pl-10 pr-4 bg-white/70 dark:bg-gray-800/70 border border-white/30 focus:border-primary/50 rounded-xl text-sm appearance-none cursor-pointer"
+                  >
+                    <option value="">All Tags</option>
+                    {allTags.map((tag) => (
+                      <option key={tag} value={tag}>
+                        {tag}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Featured Posts */}
-        {featuredPosts.length > 0 && (
-          <section className="mb-16">
-            <h2 className="text-2xl font-bold mb-8">Featured Articles</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {featuredPosts.map((post) => (
-                <FeaturedPostCard
-                  key={post.id}
-                  post={post}
-                  formatDate={formatDate}
-                />
-              ))}
-            </div>
-          </section>
+        {loading ? (
+          <BlogSkeleton />
+        ) : (
+          <>
+            {/* Featured Posts */}
+            {featuredPosts.length > 0 && (
+              <section className="mb-20">
+                <div className="flex items-center mb-8">
+                  <div className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full w-12 mr-4" />
+                  <h2 className="text-3xl font-bold">Featured Articles</h2>
+                  <div className="h-1 bg-gradient-to-r from-secondary to-transparent rounded-full flex-1 ml-4" />
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {featuredPosts.map((post) => (
+                    <FeaturedPostCard
+                      key={post.id}
+                      post={post}
+                      formatDate={formatDate}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Recent Posts */}
+            {recentPosts.length > 0 ? (
+              <section>
+                <div className="flex items-center mb-8">
+                  <div className="h-1 bg-gradient-to-r from-secondary to-primary rounded-full w-12 mr-4" />
+                  <h2 className="text-3xl font-bold">Recent Articles</h2>
+                  <div className="h-1 bg-gradient-to-r from-primary to-transparent rounded-full flex-1 ml-4" />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {recentPosts.map((post) => (
+                    <BlogPostCard
+                      key={post.id}
+                      post={post}
+                      formatDate={formatDate}
+                    />
+                  ))}
+                </div>
+              </section>
+            ) : (
+              !loading &&
+              filteredBlogs.length === 0 && (
+                <div className="text-center py-20">
+                  <div className="text-6xl mb-4">📝</div>
+                  <h3 className="text-2xl font-semibold mb-2">
+                    No Articles Found
+                  </h3>
+                  <p className="text-muted-foreground mb-6">
+                    {searchTerm || selectedTag
+                      ? "Try adjusting your search or filter criteria."
+                      : "No blog posts have been published yet."}
+                  </p>
+                  {(searchTerm || selectedTag) && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSearchTerm("");
+                        setSelectedTag("");
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              )
+            )}
+          </>
         )}
 
-        {/* Recent Posts */}
-        <section>
-          <h2 className="text-2xl font-bold mb-8">Recent Articles</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {recentPosts.map((post) => (
-              <BlogPostCard key={post.id} post={post} formatDate={formatDate} />
-            ))}
-          </div>
-        </section>
-
         {/* Newsletter Signup */}
-        <section className="mt-20">
-          <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
-            <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold mb-4">Stay Updated</h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                Get the latest articles and insights delivered directly to your
-                inbox. No spam, unsubscribe at any time.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <Input
-                  placeholder="Enter your email"
-                  type="email"
-                  className="flex-1"
-                />
-                <Button>Subscribe</Button>
+        <section className="mt-24">
+          <Card className="relative overflow-hidden bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border-0 shadow-2xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-50" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl transform translate-x-20 -translate-y-20" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl transform -translate-x-10 translate-y-10" />
+
+            <CardContent className="relative p-12 text-center">
+              <div className="max-w-2xl mx-auto">
+                <h3 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  Stay in the Loop
+                </h3>
+                <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+                  Get the latest articles, insights, and tutorials delivered
+                  directly to your inbox. Join our community of developers and
+                  tech enthusiasts.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                  <Input
+                    placeholder="Enter your email address"
+                    type="email"
+                    className="flex-1 h-12 bg-white/80 dark:bg-gray-800/80 border-white/50 focus:border-primary/50 rounded-xl"
+                  />
+                  <Button className="h-12 px-8 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl font-medium">
+                    Subscribe
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  No spam, unsubscribe at any time. We respect your privacy.
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -114,68 +281,77 @@ function FeaturedPostCard({
   post: BlogPost;
   formatDate: (date: string) => string;
 }) {
-  // Fallback to ID if slug is not available (for backward compatibility)
-  const postSlug = post.slug || post.id;
-
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full">
-      <div className="relative h-64">
+    <Card className="group relative overflow-hidden bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-white/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+      <div className="relative h-80 overflow-hidden">
         {post.image ? (
           <Image
-            src={post.image}
+            src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
             alt={post.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-            <span className="text-4xl">📖</span>
+          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <span className="text-6xl opacity-50">📖</span>
           </div>
         )}
-        <div className="absolute top-4 left-4">
-          <Badge className="bg-primary text-primary-foreground">Featured</Badge>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        <div className="absolute top-6 left-6">
+          <Badge className="bg-gradient-to-r from-primary to-secondary text-white shadow-lg px-3 py-1">
+            <Sparkles className="w-3 h-3 mr-1" />
+            Featured
+          </Badge>
         </div>
       </div>
-      <CardContent className="p-6">
-        <div className="flex flex-wrap gap-2 mb-3">
-          {post.tags.slice(0, 3).map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">
+
+      <CardContent className="p-8">
+        <div className="flex flex-wrap gap-2 mb-4">
+          {post.tags.slice(0, 3).map((tag: string) => (
+            <Badge
+              key={tag}
+              variant="secondary"
+              className="text-xs px-3 py-1 bg-primary/10 text-primary border-primary/20"
+            >
               {tag}
             </Badge>
           ))}
         </div>
 
-        <Link href={`/blog/${postSlug}`} className="block group">
-          <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
+        <Link href={`/blog/${post.slug}`} className="block group/title">
+          <h3 className="text-2xl font-bold mb-4 group-hover/title:text-primary transition-colors duration-300 line-clamp-2 leading-tight">
             {post.title}
           </h3>
         </Link>
 
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+        <p className="text-muted-foreground mb-6 line-clamp-3 leading-relaxed">
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+        <div className="flex items-center justify-between text-sm text-muted-foreground mb-6">
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
-              <User className="h-3 w-3 mr-1" />
-              {post.author}
+              <User className="h-4 w-4 mr-1.5" />
+              {post.author || "Admin"}
             </div>
             <div className="flex items-center">
-              <Calendar className="h-3 w-3 mr-1" />
-              {formatDate(post.publishedAt)}
+              <Calendar className="h-4 w-4 mr-1.5" />
+              {formatDate(post.published_at || post.created_at)}
             </div>
             <div className="flex items-center">
-              <Clock className="h-3 w-3 mr-1" />
-              {post.readTime} min read
+              <Clock className="h-4 w-4 mr-1.5" />
+              {post.read_time} min read
             </div>
           </div>
         </div>
 
-        <Button variant="outline" className="w-full group" asChild>
-          <Link href={`/blog/${postSlug}`}>
-            Read More
-            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+        <Button
+          className="w-full group/btn bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white shadow-lg"
+          asChild
+        >
+          <Link href={`/blog/${post.slug}`}>
+            Read Full Article
+            <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
           </Link>
         </Button>
       </CardContent>
@@ -190,55 +366,127 @@ function BlogPostCard({
   post: BlogPost;
   formatDate: (date: string) => string;
 }) {
-  // Fallback to ID if slug is not available (for backward compatibility)
-  const postSlug = post.slug || post.id;
-
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col">
-      <div className="relative h-48">
+    <Card className="group relative overflow-hidden bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-white/20 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
+      <div className="relative h-56 overflow-hidden">
         {post.image ? (
           <Image
-            src={post.image}
+            src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
             alt={post.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
-            <span className="text-3xl">📖</span>
+          <div className="w-full h-full bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center">
+            <span className="text-4xl opacity-50">📖</span>
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
       </div>
-      <CardContent className="p-4 flex-1 flex flex-col">
-        <div className="flex flex-wrap gap-1 mb-3">
-          {post.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs">
+
+      <CardContent className="p-6 flex-1 flex flex-col">
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {post.tags.slice(0, 2).map((tag: string) => (
+            <Badge
+              key={tag}
+              variant="outline"
+              className="text-xs px-2 py-1 bg-primary/5 text-primary border-primary/20"
+            >
               {tag}
             </Badge>
           ))}
         </div>
 
-        <Link href={`/blog/${postSlug}`} className="block group flex-1">
-          <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+        <Link href={`/blog/${post.slug}`} className="block group/title flex-1">
+          <h3 className="text-xl font-bold mb-3 group-hover/title:text-primary transition-colors duration-300 line-clamp-2 leading-tight">
             {post.title}
           </h3>
         </Link>
 
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
+        <p className="text-muted-foreground text-sm mb-6 line-clamp-3 flex-1 leading-relaxed">
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
           <div className="flex items-center">
             <Calendar className="h-3 w-3 mr-1" />
-            {formatDate(post.publishedAt)}
+            {formatDate(post.published_at || post.created_at)}
           </div>
           <div className="flex items-center">
             <Clock className="h-3 w-3 mr-1" />
-            {post.readTime} min
+            {post.read_time} min
           </div>
         </div>
+
+        <Button
+          variant="outline"
+          className="w-full group/btn border-primary/20 hover:bg-primary/10 hover:border-primary/40"
+          asChild
+        >
+          <Link href={`/blog/${post.slug}`}>
+            Read More
+            <ArrowRight className="ml-2 h-3 w-3 group-hover/btn:translate-x-1 transition-transform duration-300" />
+          </Link>
+        </Button>
       </CardContent>
     </Card>
+  );
+}
+
+function BlogSkeleton() {
+  return (
+    <div className="space-y-16">
+      {/* Featured Posts Skeleton */}
+      <div>
+        <Skeleton className="h-8 w-64 mb-8" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <Card key={i} className="overflow-hidden">
+              <Skeleton className="h-80 w-full" />
+              <div className="p-8 space-y-4">
+                <div className="flex gap-2">
+                  <Skeleton className="h-6 w-16" />
+                  <Skeleton className="h-6 w-20" />
+                </div>
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+                <div className="flex justify-between">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent Posts Skeleton */}
+      <div>
+        <Skeleton className="h-8 w-64 mb-8" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i} className="overflow-hidden">
+              <Skeleton className="h-56 w-full" />
+              <div className="p-6 space-y-4">
+                <div className="flex gap-2">
+                  <Skeleton className="h-5 w-12" />
+                  <Skeleton className="h-5 w-16" />
+                </div>
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+                <div className="flex justify-between">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

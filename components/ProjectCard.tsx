@@ -2,8 +2,11 @@ import { Project } from "@/types/project";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import { getProjectImageUrl } from "@/lib/supabase-storage";
 
 export function ProjectCard({ project }: { project: Project }) {
+  const imageUrl =
+    getProjectImageUrl(project.image) || "/placeholder-project.jpg";
   const hasImage = project.image && project.image.trim() !== "";
 
   // Fallback to ID if slug is not available (for backward compatibility)
@@ -15,12 +18,12 @@ export function ProjectCard({ project }: { project: Project }) {
         <div className="relative w-full h-48 bg-muted">
           {hasImage ? (
             <Image
-              src={project.image}
+              src={imageUrl}
               alt={project.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {
-                console.error("Image failed to load:", project.image);
+                console.error("Image failed to load:", imageUrl);
                 e.currentTarget.style.display = "none";
               }}
             />
@@ -48,7 +51,8 @@ export function ProjectCard({ project }: { project: Project }) {
           </p>
 
           <div className="flex flex-wrap gap-2">
-            {project.techStack?.map((tech) => (
+            {" "}
+            {project.tech_stack?.map((tech: string) => (
               <span
                 key={tech}
                 className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-md font-medium"
@@ -66,9 +70,9 @@ export function ProjectCard({ project }: { project: Project }) {
           >
             View Details
           </Link>
-          {project.githubUrl && (
+          {project.github_url && (
             <Link
-              href={project.githubUrl}
+              href={project.github_url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 text-center py-2 px-3 border rounded-md hover:bg-muted transition-colors"
@@ -77,9 +81,9 @@ export function ProjectCard({ project }: { project: Project }) {
               GitHub
             </Link>
           )}
-          {project.liveUrl && (
+          {project.live_url && (
             <Link
-              href={project.liveUrl}
+              href={project.live_url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 text-center py-2 px-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
