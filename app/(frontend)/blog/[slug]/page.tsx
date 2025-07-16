@@ -20,7 +20,14 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { BlogPost } from "@/types/blog";
 
-export default async function Page({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
   const { slug } = params;
   let post: BlogPost | null = null;
   let relatedPosts: BlogPost[] = [];
