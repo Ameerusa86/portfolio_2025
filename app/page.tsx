@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ArrowRight, Code, Briefcase, User, BookOpen } from "lucide-react";
 import { BlogCard } from "@/components/BlogCard";
 import { BlogPost } from "@/types/blog";
-import { BlogService } from "@/lib/blog-service";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
@@ -16,11 +15,14 @@ export default function HomePage() {
   useEffect(() => {
     const fetchFeaturedBlogs = async () => {
       try {
-        const blogs = await BlogService.getBlogs({
-          status: "published",
-          featured: true,
-          limit: 2,
-        });
+        setLoading(true);
+        const response = await fetch(
+          "/api/blogs?status=published&featured=true&limit=2"
+        );
+        if (!response.ok) {
+          throw new Error(`Failed to fetch blogs: ${response.statusText}`);
+        }
+        const blogs = await response.json();
         setFeaturedBlogPosts(blogs);
       } catch (error) {
         console.error("Failed to fetch featured blogs:", error);

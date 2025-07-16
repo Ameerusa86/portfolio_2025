@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BlogPost } from "@/types/blog";
-import { BlogService } from "@/lib/blog-service";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getBlogImageUrl } from "@/lib/supabase-storage";
 import {
@@ -42,7 +41,11 @@ export default function BlogPage() {
   const loadBlogs = async () => {
     try {
       setLoading(true);
-      const data = await BlogService.getBlogs({ status: "published" });
+      const response = await fetch("/api/blogs?status=published");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch blogs: ${response.statusText}`);
+      }
+      const data = await response.json();
       setBlogs(data);
       setError(null);
     } catch (err) {
