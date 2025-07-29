@@ -19,13 +19,6 @@ import { Input } from "@/components/ui/input";
 import { BlogPost } from "@/types/blog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getBlogImageUrl } from "@/lib/supabase-storage";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);

@@ -9,7 +9,6 @@ import {
   ArrowLeft,
   ExternalLink,
   Github,
-  Calendar,
   Tag,
   ChevronRight,
   Star,
@@ -48,10 +47,6 @@ interface Project {
   featured?: boolean;
 }
 
-interface ProjectPageProps {
-  params: Promise<{ slug: string }>;
-}
-
 // Move to client-side data fetching
 export default function ProjectPage() {
   const params = useParams();
@@ -59,7 +54,6 @@ export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     const fetchProject = async () => {

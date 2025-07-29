@@ -12,7 +12,6 @@ import {
   Tag,
   Heart,
   Award,
-  Code,
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,22 +20,29 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BlogPost } from "@/types/blog";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
+  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function Page({ params, searchParams }: PageProps) {
-  const { slug } = params;
+export default async function Page({ params }: PageProps) {
+  const { slug } = await params;
   let post: BlogPost | null = null;
   let relatedPosts: BlogPost[] = [];
 
   try {
     // Fetch the blog post
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/blogs/${slug}`
-    );
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NODE_ENV === "production"
+      ? "https://your-domain.vercel.app"
+      : "http://localhost:3000";
+
+    const response = await fetch(`${baseUrl}/api/blogs/${slug}`, {
+      cache: "no-store", // Ensure fresh data
+    });
+
     if (!response.ok) {
       if (response.status === 404) {
         notFound();
@@ -48,7 +54,10 @@ export default async function Page({ params, searchParams }: PageProps) {
     // Fetch related posts if we have tags
     if (post?.tags?.length) {
       const allPostsResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/blogs?status=published`
+        `${baseUrl}/api/blogs?status=published`,
+        {
+          cache: "no-store",
+        }
       );
       if (allPostsResponse.ok) {
         const allPosts: BlogPost[] = await allPostsResponse.json();

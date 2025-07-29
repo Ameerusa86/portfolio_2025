@@ -3,29 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import BlogTable from "@/components/admin/BlogTable";
 import BlogFormModal from "@/components/admin/BlogFormModal";
 import { BlogFormData } from "@/components/admin/BlogForm";
 import { BlogPost } from "@/types/blog";
-import { BlogService } from "@/lib/blog-service";
 import { toast } from "sonner";
-import {
-  Plus,
-  Search,
-  Filter,
-  BarChart3,
-  Eye,
-  Clock,
-  Star,
-  FileText,
-  Users,
-  TrendingUp,
-  Zap,
-  Calendar,
-  Hash,
-} from "lucide-react";
+import { Plus, Search, Filter, Eye, Clock, Star, FileText } from "lucide-react";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -47,7 +31,11 @@ export default function BlogsPage() {
   const loadBlogs = async () => {
     try {
       setIsLoading(true);
-      const blogData = await BlogService.getBlogs();
+      const response = await fetch("/api/blogs");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch blogs: ${response.statusText}`);
+      }
+      const blogData = await response.json();
       setBlogs(blogData);
       setFilteredBlogs(blogData);
     } catch (error) {
@@ -106,7 +94,12 @@ export default function BlogsPage() {
         label: "Delete",
         onClick: async () => {
           try {
-            await BlogService.deleteBlog(blogSlug);
+            const response = await fetch(`/api/blogs/${blogSlug}`, {
+              method: "DELETE",
+            });
+            if (!response.ok) {
+              throw new Error(`Failed to delete blog: ${response.statusText}`);
+            }
             setBlogs((prev) => prev.filter((blog) => blog.slug !== blogSlug));
             toast.success("✅ Blog post deleted successfully", {
               description: `"${blogTitle}" has been permanently removed.`,
@@ -134,7 +127,17 @@ export default function BlogsPage() {
     status: "published" | "draft"
   ) => {
     try {
-      const updatedBlog = await BlogService.updateBlog(blogSlug, { status });
+      const response = await fetch(`/api/blogs/${blogSlug}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to update blog status: ${response.statusText}`);
+      }
+      const updatedBlog = await response.json();
       setBlogs((prev) =>
         prev.map((blog) => (blog.slug === blogSlug ? updatedBlog : blog))
       );
@@ -158,7 +161,19 @@ export default function BlogsPage() {
 
   const handleToggleFeatured = async (blogSlug: string, featured: boolean) => {
     try {
-      const updatedBlog = await BlogService.updateBlog(blogSlug, { featured });
+      const response = await fetch(`/api/blogs/${blogSlug}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ featured }),
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to update blog featured status: ${response.statusText}`
+        );
+      }
+      const updatedBlog = await response.json();
       setBlogs((prev) =>
         prev.map((blog) => (blog.slug === blogSlug ? updatedBlog : blog))
       );
@@ -195,10 +210,22 @@ export default function BlogsPage() {
           featured: blogData.featured || false,
           status: blogData.status,
         };
-        const updatedBlog = await BlogService.updateBlog(
-          selectedBlog.slug,
-          updateData
+        const updatedBlogResponse = await fetch(
+          `/api/blogs/${selectedBlog.slug}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updateData),
+          }
         );
+        if (!updatedBlogResponse.ok) {
+          throw new Error(
+            `Failed to update blog: ${updatedBlogResponse.statusText}`
+          );
+        }
+        const updatedBlog = await updatedBlogResponse.json();
         setBlogs((prev) =>
           prev.map((blog) =>
             blog.slug === selectedBlog.slug ? updatedBlog : blog
@@ -219,7 +246,17 @@ export default function BlogsPage() {
           featured: blogData.featured || false,
           status: blogData.status,
         };
-        const newBlog = await BlogService.createBlog(createData);
+        const response = await fetch("/api/blogs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(createData),
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to create blog: ${response.statusText}`);
+        }
+        const newBlog = await response.json();
         setBlogs((prev) => [newBlog, ...prev]);
         toast.success("🎉 Blog post created successfully", {
           description: `"${blogData.title}" has been added to your blog collection.`,

@@ -3,16 +3,7 @@
 import { ProjectCard } from "@/components/ProjectCard";
 import { Project } from "@/types/project";
 import React, { useEffect, useState } from "react";
-import {
-  Search,
-  Filter,
-  Grid3X3,
-  List,
-  Star,
-  Code,
-  Zap,
-  Award,
-} from "lucide-react";
+import { Search, Grid3X3, List, Star, Code, Zap, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
