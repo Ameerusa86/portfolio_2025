@@ -10,8 +10,8 @@ export default function ContactPage() {
     {
       icon: Mail,
       label: "Email",
-      value: "your.email@example.com",
-      href: "mailto:your.email@example.com",
+      value: "ameer.hasan.dev@gmail.com",
+      href: "mailto:ameer.hasan.dev@gmail.com",
     },
     {
       icon: Phone,
@@ -22,7 +22,7 @@ export default function ContactPage() {
     {
       icon: MapPin,
       label: "Location",
-      value: "Your City, Country",
+      value: "United States, NC",
       href: null,
     },
   ];

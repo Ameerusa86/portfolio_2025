@@ -19,7 +19,7 @@ const Footer = () => {
     },
     {
       name: "Email",
-      href: "mailto:your.email@example.com",
+      href: "mailto:ameer.hasan.dev@gmail.com",
       icon: Mail,
     },
   ];
