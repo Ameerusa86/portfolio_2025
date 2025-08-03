@@ -6,6 +6,30 @@ const supabase = createClient(
 );
 
 export class ImageUploadService {
+  // Upload profile image via API endpoint
+  static async uploadProfileImage(file: File): Promise<string> {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/upload/profile", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to upload image");
+      }
+
+      const data = await response.json();
+      return data.filePath;
+    } catch (error) {
+      console.error("Profile image upload error:", error);
+      throw error;
+    }
+  }
+
   // Upload image to Supabase Storage
   static async uploadBlogImage(file: File): Promise<string> {
     try {

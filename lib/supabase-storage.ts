@@ -64,3 +64,21 @@ export function getBlogImageUrl(
 
   return getSupabaseImageUrl("blog-images", imagePath);
 }
+
+/**
+ * Get the public URL for a profile image
+ * @param imagePath - The image path/key from the database
+ * @returns The public URL or null
+ */
+export function getProfileImageUrl(
+  imagePath: string | null | undefined
+): string | null {
+  if (!imagePath) return null;
+
+  // If it's already an external URL, return it as-is
+  if (isExternalUrl(imagePath)) {
+    return imagePath;
+  }
+
+  return getSupabaseImageUrl("profile-images", imagePath);
+}

@@ -24,6 +24,11 @@ const nextConfig: NextConfig = {
         hostname: "zieedwpkkscmcujajpth.supabase.co",
         pathname: "/storage/v1/object/public/blog-images/**",
       },
+      {
+        protocol: "https",
+        hostname: "zieedwpkkscmcujajpth.supabase.co",
+        pathname: "/storage/v1/object/public/profile-images/**",
+      },
     ],
   },
 };

@@ -55,6 +55,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       url: "/admin/blogs",
       icon: FileText,
     },
+    {
+      title: "About",
+      url: "/admin/about",
+      icon: User,
+    },
   ];
 
   const otherNavigation = [
