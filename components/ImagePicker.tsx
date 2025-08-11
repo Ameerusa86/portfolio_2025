@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface Props {
   onChange: (file: File) => void;
@@ -34,11 +35,14 @@ export default function ImagePicker({ onChange, previewUrl }: Props) {
   return (
     <div>
       {displayPreview && (
-        <img
-          src={displayPreview}
-          alt="Preview"
-          className="w-full h-48 rounded-lg object-cover mb-2"
-        />
+        <div className="relative w-full h-48 mb-2">
+          <Image
+            src={displayPreview}
+            alt="Preview"
+            fill
+            className="rounded-lg object-cover"
+          />
+        </div>
       )}
       <Button
         type="button"

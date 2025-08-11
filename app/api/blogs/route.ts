@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
-import { BlogPost, CreateBlogData } from "@/types/blog";
+import { CreateBlogData } from "@/types/blog";
 import { generateSlug } from "@/lib/slug-utils";
 
 const supabase = createClient(

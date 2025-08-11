@@ -91,7 +91,7 @@ export default function ProjectPage() {
           text: project.description,
           url: window.location.href,
         });
-      } catch (err) {
+      } catch {
         // User cancelled sharing or sharing failed
       }
     } else {
@@ -329,7 +329,7 @@ export default function ProjectPage() {
                     Technology Stack
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {project.technologies.map((tech, index) => (
+                    {project.technologies.map((tech) => (
                       <Card
                         key={tech}
                         className="text-center p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10"

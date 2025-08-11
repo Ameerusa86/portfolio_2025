@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,15 +11,8 @@ import ImagePicker from "@/components/ImagePicker";
 import { BlogPost } from "@/types/blog";
 import { ImageUploadService } from "@/lib/image-upload";
 import { toast } from "sonner";
-import {
-  Loader2,
-  Globe,
-  Calendar,
-  Star,
-  Eye,
-  FileText,
-  Clock,
-} from "lucide-react";
+import Image from "next/image";
+import { Loader2, Calendar, Star, Eye, FileText, Clock } from "lucide-react";
 
 interface BlogFormProps {
   blog?: BlogPost | null;
@@ -116,7 +108,10 @@ export default function BlogForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleChange = (field: keyof BlogFormData, value: any) => {
+  const handleChange = (
+    field: keyof BlogFormData,
+    value: string | boolean | Date | number | string[]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {

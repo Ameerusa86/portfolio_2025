@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { generateSlug } from "@/lib/slug-utils";
 
 export async function PUT(
   req: NextRequest,
@@ -41,7 +40,7 @@ export async function PUT(
     }
 
     // Map camelCase to snake_case for Supabase
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       title,
       description,
       image: image || "",

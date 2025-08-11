@@ -17,7 +17,6 @@ import {
   FileText,
   Code,
   Target,
-  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";

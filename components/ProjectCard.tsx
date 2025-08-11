@@ -123,7 +123,7 @@ export function ProjectCard({
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {project.tech_stack.map((tech: string, index) => (
+                  {project.tech_stack.map((tech: string) => (
                     <Badge
                       key={tech}
                       className="bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-200/60 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-300 px-3 py-1.5 text-xs font-medium"

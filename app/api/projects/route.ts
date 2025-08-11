@@ -11,9 +11,9 @@ export async function GET(req: NextRequest) {
     }
     const { data, error } = await query;
     if (error) throw error;
-    const projects = (data || []).map((project: any) => ({
+    const projects = (data || []).map((project: Record<string, unknown>) => ({
       ...project,
-      slug: project.slug || generateSlug(project.title),
+      slug: project.slug || generateSlug(project.title as string),
     }));
     return NextResponse.json(projects, { status: 200 });
   } catch (error) {

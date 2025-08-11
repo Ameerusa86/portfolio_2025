@@ -76,16 +76,16 @@ export async function GET() {
 
     // Add recent projects
     if (recentProjects) {
-      recentProjects.forEach((project: any) => {
+      recentProjects.forEach((project: Record<string, unknown>) => {
         const createdAt = project.created_at
-          ? new Date(project.created_at)
+          ? new Date(project.created_at as string)
           : new Date();
         const timeAgo = getTimeAgo(createdAt);
         recentActivity.push({
           action: "Created new project",
-          item: project.title,
+          item: project.title as string,
           time: timeAgo,
-          created_at: project.created_at,
+          created_at: project.created_at as string,
           created_at_date: createdAt,
         });
       });
@@ -93,16 +93,16 @@ export async function GET() {
 
     // Add recent blogs
     if (recentBlogs) {
-      recentBlogs.forEach((blog: any) => {
+      recentBlogs.forEach((blog: Record<string, unknown>) => {
         const createdAt = blog.created_at
-          ? new Date(blog.created_at)
+          ? new Date(blog.created_at as string)
           : new Date();
         const timeAgo = getTimeAgo(createdAt);
         recentActivity.push({
           action: "Published blog post",
-          item: blog.title,
+          item: blog.title as string,
           time: timeAgo,
-          created_at: blog.created_at,
+          created_at: blog.created_at as string,
           created_at_date: createdAt,
         });
       });
@@ -118,6 +118,7 @@ export async function GET() {
 
     // Remove created_at_date from the response as it's only used for sorting
     const cleanActivity = limitedActivity.map(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ({ created_at_date, ...activity }) => activity
     );
 

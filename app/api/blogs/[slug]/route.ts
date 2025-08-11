@@ -43,7 +43,7 @@ export async function PUT(
     const body = await req.json();
 
     // Build update object with only provided fields
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updated_at: new Date().toISOString(),
     };
 

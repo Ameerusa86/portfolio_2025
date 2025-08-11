@@ -14,7 +14,7 @@ async function getAboutData(): Promise<AboutData> {
 
   try {
     const response = await fetch(`${baseUrl}/api/about`, {
-      cache: "no-store", // Disable caching for testing
+      next: { revalidate: 60 }, // Revalidate every 60 seconds
     });
 
     if (!response.ok) {
