@@ -45,8 +45,10 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
 
   // Defensive: support both camelCase and snake_case, and default arrays/strings
   // Use type assertions to access possible snake_case fields from Supabase
-  const techStack = ((project as Record<string, unknown>).tech_stack || []) as string[];
-  const githubUrl = ((project as Record<string, unknown>).github_url || "") as string;
+  const techStack = ((project as Record<string, unknown>).tech_stack ||
+    []) as string[];
+  const githubUrl = ((project as Record<string, unknown>).github_url ||
+    "") as string;
   const liveUrl = (project.live_url || "") as string;
   const createdAt = (project.created_at || "") as string;
 
@@ -54,7 +56,7 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
     <Card className="group relative overflow-hidden bg-white/90 backdrop-blur-sm border border-gray-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-blue-200/60">
       {/* Glass morphism background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-purple-500/3 to-indigo-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-      
+
       <CardContent className="p-6 relative">
         <div className="flex flex-col space-y-4">
           {/* Header Row */}

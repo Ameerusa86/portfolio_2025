@@ -8,16 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AboutData, CreateAboutData, UpdateAboutData } from "@/types/about";
-import {
-  Save,
-  Plus,
-  X,
-  Eye,
-  User,
-  FileText,
-  Code,
-  Target,
-} from "lucide-react";
+import { Save, Plus, X, Eye, User, FileText, Code, Target } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import ImagePicker from "@/components/ImagePicker";

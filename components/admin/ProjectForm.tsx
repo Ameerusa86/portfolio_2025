@@ -115,7 +115,10 @@ export default function ProjectForm({
     }
   };
 
-  const handleChange = (field: keyof ProjectFormData, value: string | boolean | Date | number | string[]) => {
+  const handleChange = (
+    field: keyof ProjectFormData,
+    value: string | boolean | Date | number | string[]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {

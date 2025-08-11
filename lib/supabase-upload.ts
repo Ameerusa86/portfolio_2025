@@ -8,13 +8,11 @@ export async function uploadImageFile(
     .toString(36)
     .substring(2, 8)}.${fileExt}`;
   const bucket = "project-images";
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(filePath, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type,
-    });
+  const { error } = await supabase.storage.from(bucket).upload(filePath, file, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: file.type,
+  });
   if (error) throw error;
   const { data: publicUrlData } = supabase.storage
     .from(bucket)

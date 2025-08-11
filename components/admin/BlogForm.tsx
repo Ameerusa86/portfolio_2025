@@ -435,11 +435,12 @@ export default function BlogForm({
             </CardHeader>
             <CardContent className="space-y-6 p-6">
               {formData.image && (
-                <div className="mb-6">
-                  <img
+                <div className="mb-6 relative w-full h-80">
+                  <Image
                     src={formData.image}
                     alt="Blog featured image"
-                    className="w-full h-80 object-cover rounded-xl border-2 border-gray-200 shadow-lg"
+                    fill
+                    className="object-cover rounded-xl border-2 border-gray-200 shadow-lg"
                   />
                 </div>
               )}
