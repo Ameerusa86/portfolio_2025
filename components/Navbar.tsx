@@ -50,7 +50,7 @@ const Navbar = () => {
   return (
     <header
       className={
-        "sticky top-3 z-50 w-full px-3 transition-all duration-300 " +
+        "sticky top-4 z-50 w-full px-4 transition-all duration-300 " +
         (isScrolled ? "" : "")
       }
       role="banner"
@@ -61,12 +61,13 @@ const Navbar = () => {
       >
         Skip to content
       </a>
-      <div className="mx-auto max-w-7xl">
-        <div className="relative rounded-full bg-[#080707]/95 text-white shadow-[0_2px_6px_-1px_rgba(0,0,0,.5),0_0_0_1px_rgba(255,255,255,.06)] ring-1 ring-white/10 backdrop-blur-md">
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-16 px-6 gap-4">
+      <div className="mx-auto max-w-6xl">
+        <div className="relative rounded-3xl bg-gradient-to-r from-white/85 via-white/80 to-white/70 text-zinc-800 shadow-[0_2px_6px_-1px_rgba(0,0,0,.15),0_0_0_1px_rgba(0,0,0,.05)] ring-1 ring-zinc-200 backdrop-blur-md">
+          {/* Desktop Navigation */}
+          <div className="hidden md:grid grid-cols-[1fr_auto_1fr] items-center h-16 px-8 gap-6">
             {/* Left nav */}
             <nav
-              className="hidden md:flex items-center gap-8 text-sm font-medium"
+              className="flex items-center gap-6 text-sm font-medium"
               aria-label="Primary"
             >
               {navigationItems.map((item) => {
@@ -79,15 +80,15 @@ const Navbar = () => {
                     key={item.name}
                     href={item.href}
                     className={
-                      "relative transition-colors hover:text-white " +
-                      (active ? "text-white" : "text-zinc-400")
+                      "relative px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-zinc-900 " +
+                      (active ? "text-zinc-900 bg-gradient-to-r from-blue-50 to-purple-50" : "text-zinc-500")
                     }
                     aria-current={active ? "page" : undefined}
                   >
                     {item.name}
                     <span
                       className={
-                        "absolute left-0 right-0 -bottom-1 h-[2px] rounded-full bg-white/90 transform origin-left scale-x-0 transition-transform duration-300 " +
+                        "absolute left-3 right-3 -bottom-1 h-[2px] rounded-full bg-gradient-to-r from-blue-500/80 to-purple-500/80 transform origin-left scale-x-0 transition-transform duration-300 " +
                         (active ? "scale-x-100" : "group-hover:scale-x-100")
                       }
                       aria-hidden="true"
@@ -101,58 +102,48 @@ const Navbar = () => {
             <div className="justify-self-center">
               <Link
                 href="/"
-                className="font-extrabold text-lg tracking-wide select-none"
+                className="font-extrabold text-lg tracking-wide select-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
               >
                 AmeerHasan.dev
               </Link>
             </div>
 
-            {/* Right actions */}
-            <div className="hidden md:flex items-center justify-end gap-6 text-sm font-medium">
-              <Link
-                href="/admin"
-                className="text-zinc-300 hover:text-white transition-colors"
-              >
-                Login
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center rounded-full bg-orange-500 px-6 py-2 text-sm font-semibold text-white shadow hover:bg-orange-400 active:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 transition-colors"
-              >
-                Start Testing
-              </Link>
-            </div>
+            {/* Right side now empty spacer for symmetry */}
+            <div className="flex items-center justify-end gap-6 text-sm font-medium" />
+          </div>
 
-            {/* Mobile: brand left, burger right overlaying grid (shown only < md) */}
-            <div className="flex md:hidden col-span-3 items-center justify-between w-full">
-              <Link href="/" className="font-bold tracking-wide text-base py-2">
-                AmeerHasan.dev
-              </Link>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleMenu}
-                className="h-9 w-9 p-0 text-white hover:bg-white/10"
-                aria-expanded={isMenuOpen}
-                aria-label="Toggle navigation menu"
-              >
-                {isMenuOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
-                )}
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </div>
+          {/* Mobile Navigation */}
+          <div className="flex md:hidden items-center h-16 px-6 justify-between">
+            <Link
+              href="/"
+              className="font-extrabold text-lg tracking-wide bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+            >
+              AmeerHasan.dev
+            </Link>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleMenu}
+              className="h-9 w-9 p-0 text-zinc-700 hover:bg-zinc-900/5"
+              aria-expanded={isMenuOpen}
+              aria-label="Toggle navigation menu"
+            >
+              {isMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+              <span className="sr-only">Toggle menu</span>
+            </Button>
           </div>
 
           {/* Mobile dropdown */}
           <div
             className={`md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out ${
-              isMenuOpen ? "max-h-96" : "max-h-0"
+              isMenuOpen ? "max-h-72" : "max-h-0"
             }`}
           >
-            <div className="px-6 pb-6 space-y-4">
+            <div className="px-6 py-4 space-y-1 border-t border-zinc-200/70">
               <nav className="flex flex-col gap-3" aria-label="Mobile Primary">
                 {navigationItems.map((item) => {
                   const active =
@@ -164,10 +155,10 @@ const Navbar = () => {
                       key={item.name}
                       href={item.href}
                       className={
-                        "text-sm font-medium transition-colors " +
+                        "px-3 py-2 rounded-lg text-base font-medium transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-zinc-900 " +
                         (active
-                          ? "text-white"
-                          : "text-zinc-300 hover:text-white")
+                          ? "text-zinc-900 bg-gradient-to-r from-blue-50 to-purple-50"
+                          : "text-zinc-600")
                       }
                     >
                       {item.name}
@@ -175,20 +166,6 @@ const Navbar = () => {
                   );
                 })}
               </nav>
-              <div className="flex items-center gap-4 pt-2">
-                <Link
-                  href="/admin"
-                  className="text-sm font-medium text-zinc-300 hover:text-white"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex flex-1 items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-orange-400 active:bg-orange-500 transition-colors"
-                >
-                  Start Testing
-                </Link>
-              </div>
             </div>
           </div>
         </div>
