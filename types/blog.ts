@@ -13,6 +13,7 @@ export interface BlogPost {
   read_time: number;
   featured: boolean;
   status: "published" | "draft";
+  views?: number;
 }
 
 export interface BlogFormData {

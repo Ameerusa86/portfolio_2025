@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { BlogPost } from "@/types/blog";
+import ReadingProgress from "@/components/ReadingProgress";
+import { generateSlug } from "@/lib/slug-utils";
 
 interface PageProps {
   params: Promise<{
@@ -51,20 +53,50 @@ export default async function Page({ params }: PageProps) {
     }
     post = await response.json();
 
-    // Fetch related posts if we have tags
-    if (post?.tags?.length) {
-      const allPostsResponse = await fetch(
-        `${baseUrl}/api/blogs?status=published`,
-        {
-          cache: "no-store",
-        }
-      );
-      if (allPostsResponse.ok) {
-        const allPosts: BlogPost[] = await allPostsResponse.json();
-        relatedPosts = allPosts
-          .filter((p) => p.slug !== slug)
-          .filter((p) => p.tags.some((tag: string) => post?.tags.includes(tag)))
-          .slice(0, 3);
+    // Fetch and score related posts (tag overlap + recency) with graceful fallback
+    const allPostsResponse = await fetch(
+      `${baseUrl}/api/blogs?status=published`,
+      { cache: "no-store" }
+    );
+    if (allPostsResponse.ok) {
+      const allPosts: BlogPost[] = await allPostsResponse.json();
+      const now = Date.now();
+      const PRIMARY_LIMIT = 3;
+      const TAG_WEIGHT = 10; // weight per overlapping tag
+      const RECENCY_DECAY_DAYS = 30; // full weight within this window
+
+      const postsExcludingCurrent = allPosts.filter((p) => p.slug !== slug);
+
+      // Score each post
+      const scored = postsExcludingCurrent.map((p) => {
+        const overlap = p.tags.filter((t) => post?.tags?.includes(t)).length;
+        const ageDays =
+          (now - new Date(p.published_at || p.created_at).getTime()) /
+          (1000 * 60 * 60 * 24);
+        // Recency score: 1 -> fresh, approaches 0 as it gets older than decay window
+        const recencyScore = Math.max(0, 1 - ageDays / RECENCY_DECAY_DAYS);
+        const score = overlap * TAG_WEIGHT + recencyScore; // simple linear combo
+        return { post: p, overlap, score, recencyScore };
+      });
+
+      // Primary: posts with at least one overlapping tag
+      const primary = scored
+        .filter((s) => s.overlap > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, PRIMARY_LIMIT)
+        .map((s) => s.post);
+
+      // If not enough, fill with highest scoring remaining (even without overlap) by recency / score
+      if (primary.length < PRIMARY_LIMIT) {
+        const remainingNeeded = PRIMARY_LIMIT - primary.length;
+        const fallback = scored
+          .filter((s) => s.overlap === 0)
+          .sort((a, b) => b.recencyScore - a.recencyScore)
+          .slice(0, remainingNeeded)
+          .map((s) => s.post);
+        relatedPosts = [...primary, ...fallback];
+      } else {
+        relatedPosts = primary;
       }
     }
   } catch (err) {
@@ -95,8 +127,25 @@ export default async function Page({ params }: PageProps) {
     } ${date.getDate()}, ${date.getFullYear()}`;
   };
 
+  // Build TOC (server-side) from markdown-like content
+  const toc: { id: string; text: string; level: number }[] = [];
+  post.content.split("\n").forEach((line) => {
+    let level = 0;
+    if (line.startsWith("### ")) level = 3;
+    else if (line.startsWith("## ")) level = 2;
+    else if (line.startsWith("# ")) level = 1;
+    if (level) {
+      const text = line.replace(/^#+\s*/, "").trim();
+      const id = generateSlug(text);
+      toc.push({ id, text, level });
+    }
+  });
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
+      <ReadingProgress />
+      {/* Inject a client-only view incrementer */}
+      <IncrementView slug={slug} />
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
@@ -200,25 +249,28 @@ export default async function Page({ params }: PageProps) {
                   <CardContent className="p-8">
                     <div className="prose prose-lg max-w-none">
                       <div
+                        id="article-content"
                         className="blog-content"
                         dangerouslySetInnerHTML={{
                           __html: post.content
                             .split("\n")
                             .map((line: string) => {
-                              if (line.startsWith("# ")) {
-                                return `<h1 class=\"text-3xl font-bold mt-8 mb-4\">${line.substring(
-                                  2
-                                )}</h1>`;
-                              }
-                              if (line.startsWith("## ")) {
-                                return `<h2 class=\"text-2xl font-semibold mt-6 mb-3\">${line.substring(
-                                  3
-                                )}</h2>`;
-                              }
-                              if (line.startsWith("### ")) {
-                                return `<h3 class=\"text-xl font-medium mt-4 mb-2\">${line.substring(
-                                  4
-                                )}</h3>`;
+                              const headingMatch = /^(#{1,3})\s+(.*)/.exec(
+                                line
+                              );
+                              if (headingMatch) {
+                                const hashes = headingMatch[1];
+                                const text = headingMatch[2];
+                                const id = generateSlug(text);
+                                const tag = `h${hashes.length}`;
+                                const baseClass =
+                                  hashes.length === 1
+                                    ? "text-3xl font-bold mt-8 mb-4"
+                                    : hashes.length === 2
+                                    ? "text-2xl font-semibold mt-6 mb-3"
+                                    : "text-xl font-medium mt-4 mb-2";
+                                return `<${tag} id="${id}" class="group scroll-mt-28 ${baseClass}">
+                                  <a href="#${id}" class="opacity-0 group-hover:opacity-100 text-primary mr-2 text-sm align-middle">#</a>${text}</${tag}>`;
                               }
                               if (line.startsWith("```")) {
                                 return line.includes("```") && line.length > 3
@@ -227,9 +279,7 @@ export default async function Page({ params }: PageProps) {
                                     )}</code></pre>`
                                   : '<pre class="bg-muted p-4 rounded-lg overflow-x-auto my-4"><code>';
                               }
-                              if (line === "```") {
-                                return "</code></pre>";
-                              }
+                              if (line === "```") return "</code></pre>";
                               if (line.startsWith("- ")) {
                                 return `<li class=\"ml-4\">${line.substring(
                                   2
@@ -278,6 +328,26 @@ export default async function Page({ params }: PageProps) {
             </div>
             {/* Sidebar */}
             <div className="space-y-8">
+              {toc.length > 0 && (
+                <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg sticky top-24">
+                  <CardContent className="space-y-4 p-0">
+                    <h3 className="text-lg font-semibold">Table of Contents</h3>
+                    <nav className="text-sm space-y-2">
+                      {toc.map((item) => (
+                        <a
+                          key={item.id}
+                          href={`#${item.id}`}
+                          className={`block hover:text-primary transition-colors pl-${
+                            (item.level - 1) * 3
+                          }`}
+                        >
+                          {item.text}
+                        </a>
+                      ))}
+                    </nav>
+                  </CardContent>
+                </Card>
+              )}
               {/* Article Info Card */}
               <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg">
                 <CardContent className="space-y-6">
@@ -452,4 +522,18 @@ export default async function Page({ params }: PageProps) {
       </section>
     </div>
   );
+}
+
+// Lightweight client component to increment view count once per mount
+("use client");
+import { useEffect } from "react";
+function IncrementView({ slug }: { slug: string }) {
+  useEffect(() => {
+    let aborted = false;
+    fetch(`/api/blogs/${slug}/view`, { method: "POST" }).catch(() => {});
+    return () => {
+      aborted = true;
+    };
+  }, [slug]);
+  return null;
 }

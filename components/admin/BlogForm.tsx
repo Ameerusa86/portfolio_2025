@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import ImagePicker from "@/components/ImagePicker";
 import { BlogPost } from "@/types/blog";
+import { createBlogSchema } from "@/lib/blog-schema";
 import { ImageUploadService } from "@/lib/image-upload";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -55,6 +56,11 @@ export default function BlogForm({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [tagsInput, setTagsInput] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [autosaveStatus, setAutosaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
+  const autosaveTimer = useRef<NodeJS.Timeout | null>(null);
+  const lastSavedRef = useRef<string>("");
 
   const isEdit = !!blog;
 
@@ -82,30 +88,38 @@ export default function BlogForm({
   }, [blog]);
 
   const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = "Blog title is required";
+    try {
+      createBlogSchema.parse({
+        title: formData.title,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        image: formData.image || undefined,
+        tags: formData.tags,
+        read_time: formData.readTime,
+        featured: formData.featured,
+        status: formData.status,
+      });
+      setErrors({});
+      return true;
+    } catch (err: any) {
+      const zodErrors: Record<string, string> = {};
+      if (err?.issues) {
+        err.issues.forEach((issue: any) => {
+          const path = issue.path?.[0];
+          if (path === "read_time") {
+            zodErrors["readTime"] = issue.message;
+          } else if (path) {
+            zodErrors[path] = issue.message;
+          }
+        });
+      }
+      // Additional client-only fields
+      if (!formData.author.trim()) {
+        zodErrors.author = "Author name is required";
+      }
+      setErrors(zodErrors);
+      return false;
     }
-
-    if (!formData.excerpt.trim()) {
-      newErrors.excerpt = "Blog excerpt is required";
-    }
-
-    if (!formData.content.trim()) {
-      newErrors.content = "Blog content is required";
-    }
-
-    if (!formData.author.trim()) {
-      newErrors.author = "Author name is required";
-    }
-
-    if (formData.readTime < 1) {
-      newErrors.readTime = "Read time must be at least 1 minute";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (
@@ -113,11 +127,59 @@ export default function BlogForm({
     value: string | boolean | Date | number | string[]
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
+
+  // Autosave draft to localStorage (client-side only)
+  useEffect(() => {
+    const serialized = JSON.stringify(formData);
+    if (serialized === lastSavedRef.current) return;
+
+    if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    setAutosaveStatus("saving");
+    autosaveTimer.current = setTimeout(() => {
+      try {
+        localStorage.setItem(
+          blog ? `blog_edit_${blog.slug}` : "blog_new_draft",
+          serialized
+        );
+        lastSavedRef.current = serialized;
+        setAutosaveStatus("saved");
+        setTimeout(() => setAutosaveStatus("idle"), 2000);
+      } catch (e) {
+        console.error("Autosave failed", e);
+        setAutosaveStatus("error");
+      }
+    }, 800);
+    return () => {
+      if (autosaveTimer.current) clearTimeout(autosaveTimer.current);
+    };
+  }, [formData, blog]);
+
+  // Restore draft if creating a new blog
+  useEffect(() => {
+    if (!blog) {
+      const draft = localStorage.getItem("blog_new_draft");
+      if (draft) {
+        try {
+          const parsed = JSON.parse(draft);
+          setFormData((prev) => ({ ...prev, ...parsed }));
+          if (parsed.tags) setTagsInput(parsed.tags.join(", "));
+          toast.info("Restored autosaved draft");
+        } catch {}
+      }
+    } else {
+      const editDraft = localStorage.getItem(`blog_edit_${blog.slug}`);
+      if (editDraft) {
+        try {
+          const parsed = JSON.parse(editDraft);
+          setFormData((prev) => ({ ...prev, ...parsed }));
+          if (parsed.tags) setTagsInput(parsed.tags.join(", "));
+          toast.info("Restored autosaved edit draft");
+        } catch {}
+      }
+    }
+  }, [blog]);
 
   const handleTagsChange = (value: string) => {
     setTagsInput(value);
@@ -215,6 +277,19 @@ export default function BlogForm({
               <Eye className="h-5 w-5 text-green-500 drop-shadow-sm" />
               Published
             </span>
+          </div>
+          <div className="flex flex-col items-end min-w-[120px]">
+            {autosaveStatus === "saving" && (
+              <span className="text-xs text-gray-500 animate-pulse">
+                Saving…
+              </span>
+            )}
+            {autosaveStatus === "saved" && (
+              <span className="text-xs text-green-600">Saved</span>
+            )}
+            {autosaveStatus === "error" && (
+              <span className="text-xs text-red-600">Autosave failed</span>
+            )}
           </div>
         </div>
       </div>
