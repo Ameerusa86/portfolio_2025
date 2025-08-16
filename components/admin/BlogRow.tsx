@@ -16,6 +16,7 @@ import {
   User,
   FileText,
   Hash,
+  Heart,
 } from "lucide-react";
 
 interface BlogRowProps {
@@ -108,7 +109,7 @@ export default function BlogRow({
             </div>
 
             {/* Meta Information */}
-            <div className="flex items-center gap-6 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-blue-500" />
                 <span className="font-medium">{blog.author}</span>
@@ -125,6 +126,18 @@ export default function BlogRow({
                 <Clock className="h-4 w-4 text-orange-500" />
                 <span>{blog.read_time} min read</span>
               </div>
+              {typeof blog.views === "number" && (
+                <div className="flex items-center gap-1 text-gray-600">
+                  <Eye className="h-4 w-4 text-purple-500" />
+                  <span>{blog.views.toLocaleString()}</span>
+                </div>
+              )}
+              {typeof blog.likes === "number" && (
+                <div className="flex items-center gap-1 text-gray-600">
+                  <Heart className="h-4 w-4 text-pink-500" />
+                  <span>{blog.likes.toLocaleString()}</span>
+                </div>
+              )}
             </div>
 
             {/* Tags */}

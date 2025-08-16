@@ -13,6 +13,8 @@ import {
   Heart,
   Award,
   Users,
+  Eye,
+  Heart as HeartIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +22,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BlogPost } from "@/types/blog";
 import ReadingProgress from "@/components/ReadingProgress";
 import { generateSlug } from "@/lib/slug-utils";
+import IncrementView from "@/components/IncrementView";
 
 interface PageProps {
   params: Promise<{
@@ -201,6 +204,18 @@ export default async function Page({ params }: PageProps) {
                 <BookOpen className="h-4 w-4 mr-2" />
                 <span>{Math.ceil(post.content.length / 1000)}k words</span>
               </div>
+              {typeof post.views === "number" && (
+                <div className="flex items-center">
+                  <Eye className="h-4 w-4 mr-2" />
+                  <span>{post.views.toLocaleString()} views</span>
+                </div>
+              )}
+              {typeof post.likes === "number" && (
+                <div className="flex items-center">
+                  <HeartIcon className="h-4 w-4 mr-2" />
+                  <span>{post.likes.toLocaleString()} likes</span>
+                </div>
+              )}
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
               <Button variant="outline" className="shadow-lg">
@@ -371,6 +386,22 @@ export default async function Page({ params }: PageProps) {
                         {post.read_time} min
                       </span>
                     </div>
+                    {typeof post.views === "number" && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Views</span>
+                        <span className="text-sm font-medium">
+                          {post.views.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
+                    {typeof post.likes === "number" && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Likes</span>
+                        <span className="text-sm font-medium">
+                          {post.likes.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Tags</span>
                       <span className="text-sm font-medium">
@@ -524,16 +555,4 @@ export default async function Page({ params }: PageProps) {
   );
 }
 
-// Lightweight client component to increment view count once per mount
-("use client");
-import { useEffect } from "react";
-function IncrementView({ slug }: { slug: string }) {
-  useEffect(() => {
-    let aborted = false;
-    fetch(`/api/blogs/${slug}/view`, { method: "POST" }).catch(() => {});
-    return () => {
-      aborted = true;
-    };
-  }, [slug]);
-  return null;
-}
+// (Removed inline IncrementView in favor of shared component import)

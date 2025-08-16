@@ -14,6 +14,8 @@ import {
   Search,
   Filter,
   Sparkles,
+  Eye,
+  Heart,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BlogPost } from "@/types/blog";
@@ -22,6 +24,7 @@ import { getBlogImageUrl } from "@/lib/supabase-storage";
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [popular, setPopular] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState<string>("");
@@ -34,12 +37,16 @@ export default function BlogPage() {
   const loadBlogs = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/blogs?status=published");
-      if (!response.ok) {
-        throw new Error(`Failed to fetch blogs: ${response.statusText}`);
-      }
-      const data = await response.json();
+      const [allRes, popRes] = await Promise.all([
+        fetch("/api/blogs?status=published"),
+        fetch("/api/blogs?status=published&popular=true"),
+      ]);
+      if (!allRes.ok) throw new Error("Failed blogs");
+      if (!popRes.ok) throw new Error("Failed popular");
+      const data = await allRes.json();
+      const popData = await popRes.json();
       setBlogs(data);
+      setPopular(popData);
       setError(null);
     } catch (err) {
       console.error("Failed to load blogs:", err);
@@ -120,6 +127,42 @@ export default function BlogPage() {
 
       <div className="w-full py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+          {/* Add Popular Posts Section */}
+          {!loading && popular.length > 0 && (
+            <section className="mb-20">
+              <div className="flex items-center mb-8">
+                <div className="h-1 bg-gradient-to-r from-purple-500 to-primary rounded-full w-12 mr-4" />
+                <h2 className="text-3xl font-bold">Most Viewed</h2>
+                <div className="h-1 bg-gradient-to-r from-primary to-transparent rounded-full flex-1 ml-4" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {popular.map((post) => (
+                  <Card
+                    key={post.id}
+                    className="relative overflow-hidden group"
+                  >
+                    <div className="p-6 space-y-4">
+                      <Link href={`/blog/${post.slug}`}>
+                        <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                          {post.title}
+                        </h3>
+                      </Link>
+                      <p className="text-sm text-muted-foreground line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t">
+                        <span>
+                          {formatDate(post.published_at || post.created_at)}
+                        </span>
+                        <span>{(post.views ?? 0).toLocaleString()} views</span>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Search and Filter Section */}
           <div className="mb-12">
             <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg">
@@ -325,20 +368,26 @@ function FeaturedPostCard({
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between text-sm text-muted-foreground mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center">
-              <User className="h-4 w-4 mr-1.5" />
-              {post.author || "Admin"}
-            </div>
-            <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-1.5" />
-              {formatDate(post.published_at || post.created_at)}
-            </div>
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-1.5" />
-              {post.read_time} min read
-            </div>
+        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
+          <div className="flex items-center">
+            <User className="h-4 w-4 mr-1.5" />
+            {post.author || "Admin"}
+          </div>
+          <div className="flex items-center">
+            <Calendar className="h-4 w-4 mr-1.5" />
+            {formatDate(post.published_at || post.created_at)}
+          </div>
+          <div className="flex items-center">
+            <Clock className="h-4 w-4 mr-1.5" />
+            {post.read_time} min
+          </div>
+          <div className="flex items-center">
+            <Eye className="h-4 w-4 mr-1.5" />
+            {(post.views ?? 0).toLocaleString()}
+          </div>
+          <div className="flex items-center">
+            <Heart className="h-4 w-4 mr-1.5" />
+            {(post.likes ?? 0).toLocaleString()}
           </div>
         </div>
 
@@ -404,7 +453,7 @@ function BlogPostCard({
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground mb-4">
           <div className="flex items-center">
             <Calendar className="h-3 w-3 mr-1" />
             {formatDate(post.published_at || post.created_at)}
@@ -412,6 +461,14 @@ function BlogPostCard({
           <div className="flex items-center">
             <Clock className="h-3 w-3 mr-1" />
             {post.read_time} min
+          </div>
+          <div className="flex items-center">
+            <Eye className="h-3 w-3 mr-1" />
+            {(post.views ?? 0).toLocaleString()}
+          </div>
+          <div className="flex items-center">
+            <Heart className="h-3 w-3 mr-1" />
+            {(post.likes ?? 0).toLocaleString()}
           </div>
         </div>
 

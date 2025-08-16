@@ -15,11 +15,29 @@ export async function GET(request: NextRequest) {
     const status = url.searchParams.get("status");
     const featured = url.searchParams.get("featured");
     const limit = url.searchParams.get("limit");
+    const popular = url.searchParams.get("popular");
+    const sort = url.searchParams.get("sort");
+    const mostLiked = url.searchParams.get("mostLiked");
 
-    let query = supabase
-      .from("blogs")
-      .select("*")
-      .order("created_at", { ascending: false });
+    let query = supabase.from("blogs").select("*");
+
+    // Sorting logic
+    if (popular === "true" || sort === "views") {
+      query = query.order("views", { ascending: false });
+      query = query.order("created_at", { ascending: false });
+      // default limit for popular
+      if (!limit) {
+        query = query.limit(5);
+      }
+    } else if (mostLiked === "true" || sort === "likes") {
+      query = query.order("likes", { ascending: false });
+      query = query.order("created_at", { ascending: false });
+      if (!limit) {
+        query = query.limit(5);
+      }
+    } else {
+      query = query.order("created_at", { ascending: false });
+    }
 
     if (status && status !== "all") {
       query = query.eq("status", status);

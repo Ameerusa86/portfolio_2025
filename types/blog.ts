@@ -14,6 +14,7 @@ export interface BlogPost {
   featured: boolean;
   status: "published" | "draft";
   views?: number;
+  likes?: number;
 }
 
 export interface BlogFormData {

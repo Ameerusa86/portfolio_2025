@@ -9,7 +9,16 @@ import BlogFormModal from "@/components/admin/BlogFormModal";
 import { BlogFormData } from "@/components/admin/BlogForm";
 import { BlogPost } from "@/types/blog";
 import { toast } from "sonner";
-import { Plus, Search, Filter, Eye, Clock, Star, FileText } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Filter,
+  Eye,
+  Clock,
+  Star,
+  FileText,
+  Heart,
+} from "lucide-react";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -279,6 +288,8 @@ export default function BlogsPage() {
     draft: blogs.filter((b) => b.status === "draft").length,
     featured: blogs.filter((b) => b.featured).length,
     totalReadTime: blogs.reduce((acc, blog) => acc + blog.read_time, 0),
+    totalViews: blogs.reduce((acc, blog) => acc + (blog.views || 0), 0),
+    totalLikes: blogs.reduce((acc, blog) => acc + (blog.likes || 0), 0),
   };
 
   if (isLoading) {
@@ -320,7 +331,7 @@ export default function BlogsPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
         <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -398,6 +409,38 @@ export default function BlogsPage() {
               </div>
               <div className="h-12 w-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl flex items-center justify-center">
                 <Clock className="h-6 w-6 text-orange-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-600">Views</p>
+                <p className="text-3xl font-bold text-purple-600">
+                  {stats.totalViews.toLocaleString()}
+                </p>
+              </div>
+              <div className="h-12 w-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
+                <Eye className="h-6 w-6 text-purple-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-600">Likes</p>
+                <p className="text-3xl font-bold text-pink-600">
+                  {stats.totalLikes.toLocaleString()}
+                </p>
+              </div>
+              <div className="h-12 w-12 bg-gradient-to-br from-pink-100 to-pink-200 rounded-xl flex items-center justify-center">
+                <Heart className="h-6 w-6 text-pink-600" />
               </div>
             </div>
           </CardContent>
