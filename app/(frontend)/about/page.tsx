@@ -7,21 +7,25 @@ import { AboutData } from "@/types/about";
 import { getProfileImageUrl } from "@/lib/supabase-storage";
 
 async function getAboutData(): Promise<AboutData> {
-  const baseUrl =
-    process.env.NODE_ENV === "production"
-      ? process.env.NEXT_PUBLIC_SITE_URL
-      : "http://localhost:3001";
+  // Build an absolute base URL that works in:
+  // - Dev (localhost any port)
+  // - Vercel preview / prod (VERCEL_URL)
+  // - Custom domain (NEXT_PUBLIC_SITE_URL)
+  const baseUrl = (() => {
+    const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+    if (explicit) return explicit.replace(/\/$/, "");
+    const vercel = process.env.VERCEL_URL?.trim();
+    if (vercel) return `https://${vercel.replace(/\/$/, "")}`;
+    const port = process.env.PORT || "3000"; // Next dev default
+    return `http://localhost:${port}`;
+  })();
 
   try {
     const response = await fetch(`${baseUrl}/api/about`, {
-      next: { revalidate: 60 }, // Revalidate every 60 seconds
+      next: { revalidate: 60 },
     });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch about data");
-    }
-
-    return response.json();
+    if (!response.ok) throw new Error(`Status ${response.status}`);
+    return await response.json();
   } catch (error) {
     console.error("Error fetching about data:", error);
     // Return default data if API fails
