@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, User, ArrowRight } from "lucide-react";
+import { Calendar, Clock, User, ArrowRight, Eye, Heart } from "lucide-react";
 import { BlogPost } from "@/types/blog";
 import { getBlogImageUrl } from "@/lib/supabase-storage";
 
@@ -40,7 +40,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 
   if (featured) {
     return (
-      <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full">
+      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full border border-border/60">
         <div className="relative h-64">
           {post.image ? (
             <Image
@@ -54,19 +54,46 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
               <span className="text-4xl">📖</span>
             </div>
           )}
-          <div className="absolute top-4 left-4">
-            <Badge className="bg-primary text-primary-foreground">
+          <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+            <Badge className="bg-primary text-primary-foreground shadow-sm">
               Featured
             </Badge>
+            {typeof post.views === "number" && (
+              <span
+                aria-label={`${post.views} views`}
+                className="flex items-center gap-1 rounded-full bg-background/85 backdrop-blur px-2 py-0.5 text-[11px] font-medium shadow border border-border/60"
+              >
+                <Eye className="h-3 w-3" />
+                {post.views}
+              </span>
+            )}
+            {typeof post.likes === "number" && (
+              <span
+                aria-label={`${post.likes} likes`}
+                className="flex items-center gap-1 rounded-full bg-background/85 backdrop-blur px-2 py-0.5 text-[11px] font-medium shadow border border-border/60"
+              >
+                <Heart className="h-3 w-3" />
+                {post.likes}
+              </span>
+            )}
           </div>
         </div>
         <CardContent className="p-6">
           <div className="flex flex-wrap gap-2 mb-3">
             {post.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="text-[11px] font-medium"
+              >
                 {tag}
               </Badge>
             ))}
+            {post.tags.length > 3 && (
+              <Badge variant="outline" className="text-[11px] font-medium">
+                +{post.tags.length - 3}
+              </Badge>
+            )}
           </div>
 
           <Link href={`/blog/${postSlug}`} className="block group">
@@ -108,7 +135,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
   }
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col">
+    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col border border-border/60">
       <div className="relative h-48">
         {post.image ? (
           <Image
@@ -122,14 +149,43 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             <span className="text-3xl">📖</span>
           </div>
         )}
+        <div className="absolute top-2 right-2 flex gap-2">
+          {typeof post.views === "number" && (
+            <span
+              aria-label={`${post.views} views`}
+              className="flex items-center gap-1 rounded-full bg-background/85 backdrop-blur px-2 py-0.5 text-[10px] font-medium shadow border border-border/60"
+            >
+              <Eye className="h-3 w-3" />
+              {post.views}
+            </span>
+          )}
+          {typeof post.likes === "number" && (
+            <span
+              aria-label={`${post.likes} likes`}
+              className="flex items-center gap-1 rounded-full bg-background/85 backdrop-blur px-2 py-0.5 text-[10px] font-medium shadow border border-border/60"
+            >
+              <Heart className="h-3 w-3" />
+              {post.likes}
+            </span>
+          )}
+        </div>
       </div>
       <CardContent className="p-4 flex-1 flex flex-col">
-        <div className="flex flex-wrap gap-1 mb-3">
+        <div className="flex flex-wrap gap-1.5 mb-3">
           {post.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs">
+            <Badge
+              key={tag}
+              variant="outline"
+              className="text-[10px] font-medium"
+            >
               {tag}
             </Badge>
           ))}
+          {post.tags.length > 2 && (
+            <Badge variant="secondary" className="text-[10px] font-medium">
+              +{post.tags.length - 2}
+            </Badge>
+          )}
         </div>
 
         <Link href={`/blog/${postSlug}`} className="block group flex-1">
@@ -142,7 +198,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2">
           <div className="flex items-center">
             <Calendar className="h-3 w-3 mr-1" />
             {formatDate(post.published_at || post.created_at)}

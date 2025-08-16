@@ -31,7 +31,7 @@ export function ProjectCard({
 
   if (viewMode === "list") {
     return (
-      <Card className="group relative overflow-hidden bg-white/80 backdrop-blur-xl border border-white/40 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:border-blue-200/60">
+      <Card className="group relative overflow-hidden bg-white/85 backdrop-blur-xl border border-border/60 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:border-blue-200/60">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
         <div className="relative flex flex-col lg:flex-row">
@@ -167,7 +167,7 @@ export function ProjectCard({
   }
 
   return (
-    <Card className="group relative overflow-hidden bg-white/90 backdrop-blur-xl border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col hover:border-blue-200/60">
+    <Card className="group relative overflow-hidden bg-white/90 backdrop-blur-xl border border-border/60 shadow-xl hover:shadow-2xl transition-all duration-500 h-full flex flex-col hover:border-blue-200/60">
       {/* Glass morphism background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-purple-500/3 to-indigo-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
@@ -259,17 +259,20 @@ export function ProjectCard({
               </span>
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {project.tech_stack.slice(0, 6).map((tech: string) => (
+              {project.tech_stack.slice(0, 5).map((tech: string) => (
                 <Badge
                   key={tech}
-                  className="bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-200/60 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-300 px-2.5 py-1 text-xs font-medium"
+                  className="bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-200/60 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-300 px-2.5 py-1 text-[11px] font-medium"
                 >
                   {tech}
                 </Badge>
               ))}
-              {project.tech_stack.length > 6 && (
-                <Badge variant="outline" className="text-xs px-2.5 py-1">
-                  +{project.tech_stack.length - 6} more
+              {project.tech_stack.length > 5 && (
+                <Badge
+                  variant="outline"
+                  className="text-[11px] px-2.5 py-1 font-medium"
+                >
+                  +{project.tech_stack.length - 5}
                 </Badge>
               )}
             </div>

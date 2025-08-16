@@ -59,12 +59,19 @@ export default function LikeButton({ slug, initialLikes }: LikeButtonProps) {
       variant={liked ? "default" : "outline"}
       onClick={handleLike}
       disabled={pending}
-      className={`shadow-lg flex items-center gap-2 ${
+      aria-pressed={liked}
+      aria-label={liked ? "You liked this article" : "Like this article"}
+      className={`shadow-lg flex items-center gap-2 relative group ${
         liked ? "bg-pink-600 hover:bg-pink-600 text-white" : ""
       }`}
     >
-      <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
-      {liked ? "Liked" : "Like"} • {likes.toLocaleString()}
+      <Heart
+        className={`h-4 w-4 transition-transform duration-300 ${
+          liked ? "fill-current scale-110" : "group-hover:scale-110"
+        }`}
+      />
+      <span className="tabular-nums">{likes.toLocaleString()}</span>
+      <span className="sr-only">likes</span>
     </Button>
   );
 }

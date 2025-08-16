@@ -165,14 +165,14 @@ export default function BlogPage() {
 
           {/* Search and Filter Section */}
           <div className="mb-12">
-            <div className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg">
+            <div className="bg-white/70 backdrop-blur-sm border border-white/40 rounded-2xl p-6 shadow-lg">
               <div className="flex flex-col md:flex-row gap-4">
                 {/* Search */}
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                   <Input
                     placeholder="Search articles..."
-                    className="pl-12 h-12 bg-white/70 dark:bg-gray-800/70 border-white/30 focus:border-primary/50 rounded-xl"
+                    className="pl-12 h-12 bg-white/80 border border-white/40 focus:border-primary/50 rounded-xl focus:bg-white transition"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -185,7 +185,7 @@ export default function BlogPage() {
                     <select
                       value={selectedTag}
                       onChange={(e) => setSelectedTag(e.target.value)}
-                      className="h-12 w-full pl-10 pr-4 bg-white/70 dark:bg-gray-800/70 border border-white/30 focus:border-primary/50 rounded-xl text-sm appearance-none cursor-pointer"
+                      className="h-12 w-full pl-10 pr-4 bg-white/80 border border-white/40 focus:border-primary/50 rounded-xl text-sm appearance-none cursor-pointer focus:bg-white transition"
                     >
                       <option value="">All Tags</option>
                       {allTags.map((tag) => (
@@ -295,7 +295,7 @@ export default function BlogPage() {
                     <Input
                       placeholder="Enter your email address"
                       type="email"
-                      className="flex-1 h-12 bg-white/80 dark:bg-gray-800/80 border-white/50 focus:border-primary/50 rounded-xl"
+                      className="flex-1 h-12 bg-white/85 border border-white/50 focus:border-primary/50 rounded-xl focus:bg-white transition"
                     />
                     <Button className="h-12 px-8 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl font-medium">
                       Subscribe
@@ -322,7 +322,7 @@ function FeaturedPostCard({
   formatDate: (date: string) => string;
 }) {
   return (
-    <Card className="group relative overflow-hidden bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-white/20 hover:border-primary/30 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+  <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
       <div className="relative h-80 overflow-hidden">
         {post.image ? (
           <Image
@@ -413,7 +413,7 @@ function BlogPostCard({
   formatDate: (date: string) => string;
 }) {
   return (
-    <Card className="group relative overflow-hidden bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-white/20 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
+  <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
       <div className="relative h-56 overflow-hidden">
         {post.image ? (
           <Image

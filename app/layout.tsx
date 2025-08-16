@@ -30,12 +30,22 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="h-full">
       <body
         className={cn(
-          "h-full bg-background font-sans antialiased",
+          "h-full bg-background font-sans antialiased scroll-smooth",
           geistSans.variable,
           geistMono.variable
         )}
       >
-        <ConditionalWrapper>{children}</ConditionalWrapper>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] px-4 py-2 rounded-md bg-primary text-primary-foreground shadow"
+        >
+          Skip to content
+        </a>
+        <ConditionalWrapper>
+          <div id="main-content" className="contents">
+            {children}
+          </div>
+        </ConditionalWrapper>
         <Toaster position="top-center" richColors={true} />
       </body>
     </html>

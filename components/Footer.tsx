@@ -1,8 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import { Github, Linkedin, Mail, Heart, Code } from "lucide-react";
+import { Github, Linkedin, Mail, Heart, Code, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 
 const Footer = () => {
+  const { theme, setTheme } = useTheme();
   // Use a static year to avoid hydration mismatch
   const currentYear = 2025;
 
@@ -36,7 +39,7 @@ const Footer = () => {
     <footer className="border-t bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
@@ -89,8 +92,46 @@ const Footer = () => {
                 </Link>
               ))}
             </div>
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="flex items-center gap-2"
+              >
+                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span>Toggle Theme</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Newsletter */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground">
+              Stay Updated
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Subscribe for occasional updates about new articles & projects.
+            </p>
+            <form
+              className="space-y-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <input
+                type="email"
+                placeholder="you@example.com"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label="Email address"
+              />
+              <Button type="submit" className="w-full" size="sm">
+                Subscribe
+              </Button>
+            </form>
             <p className="text-xs text-muted-foreground">
-              Feel free to reach out for collaborations or just a friendly chat!
+              No spam. Unsubscribe any time.
             </p>
           </div>
         </div>
