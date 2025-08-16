@@ -40,7 +40,12 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 
   if (featured) {
     return (
-      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full border border-border/60">
+      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full border border-border/60 relative">
+        <Link
+          href={`/blog/${postSlug}`}
+          aria-label={`Read article: ${post.title}`}
+          className="absolute inset-0 z-10"
+        />
         <div className="relative h-64">
           {post.image ? (
             <Image
@@ -54,7 +59,8 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
               <span className="text-4xl">📖</span>
             </div>
           )}
-          <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/0 to-background/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="absolute top-4 left-4 flex flex-wrap gap-2 z-20">
             <Badge className="bg-primary text-primary-foreground shadow-sm">
               Featured
             </Badge>
@@ -78,7 +84,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             )}
           </div>
         </div>
-        <CardContent className="p-6">
+        <CardContent className="p-6 relative z-20">
           <div className="flex flex-wrap gap-2 mb-3">
             {post.tags.slice(0, 3).map((tag) => (
               <Badge
@@ -95,12 +101,9 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
               </Badge>
             )}
           </div>
-
-          <Link href={`/blog/${postSlug}`} className="block group">
-            <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
-              {post.title}
-            </h3>
-          </Link>
+          <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
+            {post.title}
+          </h3>
 
           <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
             {post.excerpt}
@@ -123,9 +126,16 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             </div>
           </div>
 
-          <Button variant="outline" className="w-full group" asChild>
-            <Link href={`/blog/${postSlug}`}>
-              Read More
+          <Button
+            variant="outline"
+            className="w-full group relative z-30"
+            asChild
+          >
+            <Link
+              href={`/blog/${postSlug}`}
+              aria-label={`Read full article: ${post.title}`}
+            >
+              Read Article
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>
@@ -135,7 +145,12 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
   }
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col border border-border/60">
+    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col border border-border/60 relative">
+      <Link
+        href={`/blog/${postSlug}`}
+        aria-label={`Read article: ${post.title}`}
+        className="absolute inset-0 z-10"
+      />
       <div className="relative h-48">
         {post.image ? (
           <Image
@@ -149,7 +164,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             <span className="text-3xl">📖</span>
           </div>
         )}
-        <div className="absolute top-2 right-2 flex gap-2">
+        <div className="absolute top-2 right-2 flex gap-2 z-20">
           {typeof post.views === "number" && (
             <span
               aria-label={`${post.views} views`}
@@ -169,6 +184,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             </span>
           )}
         </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/10 to-background/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
       <CardContent className="p-4 flex-1 flex flex-col">
         <div className="flex flex-wrap gap-1.5 mb-3">
@@ -187,12 +203,9 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             </Badge>
           )}
         </div>
-
-        <Link href={`/blog/${postSlug}`} className="block group flex-1">
-          <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-            {post.title}
-          </h3>
-        </Link>
+        <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          {post.title}
+        </h3>
 
         <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
           {post.excerpt}

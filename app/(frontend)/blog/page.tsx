@@ -322,7 +322,7 @@ function FeaturedPostCard({
   formatDate: (date: string) => string;
 }) {
   return (
-  <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+    <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
       <div className="relative h-80 overflow-hidden">
         {post.image ? (
           <Image
@@ -413,7 +413,7 @@ function BlogPostCard({
   formatDate: (date: string) => string;
 }) {
   return (
-  <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
+    <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
       <div className="relative h-56 overflow-hidden">
         {post.image ? (
           <Image
