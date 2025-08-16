@@ -3,25 +3,24 @@
 import { Project } from "@/types/project";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  ExternalLink,
-  Github,
-  Edit,
-  Trash2,
-  Star,
-  Calendar,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Edit, Trash2, Star, Calendar, Eye, EyeOff, Hash } from "lucide-react";
 import { Badge } from "../ui/badge";
 
 interface Props {
   project: Project;
   onEdit: (project: Project) => void;
   onDelete: (project: Project) => void;
+  onTogglePublished?: (project: Project, published: boolean) => void;
+  onToggleFeatured?: (project: Project, featured: boolean) => void;
 }
 
-export function ProjectRow({ project, onEdit, onDelete }: Props) {
+export function ProjectRow({
+  project,
+  onEdit,
+  onDelete,
+  onTogglePublished,
+  onToggleFeatured,
+}: Props) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const months = [
@@ -47,160 +46,150 @@ export function ProjectRow({ project, onEdit, onDelete }: Props) {
   // Use type assertions to access possible snake_case fields from Supabase
   const techStack = ((project as Record<string, unknown>).tech_stack ||
     []) as string[];
-  const githubUrl = ((project as Record<string, unknown>).github_url ||
-    "") as string;
-  const liveUrl = (project.live_url || "") as string;
   const createdAt = (project.created_at || "") as string;
 
+  const getStatusColor = (published: boolean) =>
+    published
+      ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white"
+      : "bg-gradient-to-r from-yellow-500 to-orange-600 text-white";
+
   return (
-    <Card className="group relative overflow-hidden bg-white/90 backdrop-blur-sm border border-gray-200/60 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-blue-200/60">
-      {/* Glass morphism background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/3 via-purple-500/3 to-indigo-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-      <CardContent className="p-6 relative">
-        <div className="flex flex-col space-y-4">
-          {/* Header Row */}
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-4 flex-1">
-              {/* Project Image */}
-              <div className="flex-shrink-0">
-                <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 shadow-md">
-                  {project.image ? (
-                    <Image
-                      src={project.image}
-                      alt={project.title || ""}
-                      fill
-                      className="object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-xl">📁</span>
-                    </div>
-                  )}
-                </div>
+    <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+      <CardContent className="p-0">
+        <div className="flex items-center gap-6 p-6">
+          {/* Image */}
+          <div className="relative flex-shrink-0">
+            {project.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={project.image}
+                alt={project.title || ""}
+                className="w-24 h-24 object-cover rounded-xl border-2 border-gray-200 shadow-md group-hover:shadow-lg transition-all duration-300"
+              />
+            ) : (
+              <div className="w-24 h-24 bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-xl border-2 border-gray-200 flex items-center justify-center shadow-md">
+                <span className="text-xl">📁</span>
               </div>
+            )}
+            {project.featured && (
+              <div className="absolute -top-2 -right-2 h-6 w-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                <Star className="h-3 w-3 text-white drop-shadow-sm" />
+              </div>
+            )}
+          </div>
 
-              {/* Project Title and Badges */}
+          {/* Content */}
+          <div className="flex-1 min-w-0 space-y-3">
+            {/* Title & Status */}
+            <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl font-bold text-gray-900 truncate">
-                    {project.title || ""}
-                  </h3>
-                  {project.featured && (
-                    <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs px-2 py-1">
-                      <Star className="w-3 h-3 mr-1 fill-current" />
-                      Featured
-                    </Badge>
+                <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors duration-200 line-clamp-2 leading-tight">
+                  {project.title}
+                </h3>
+                <p className="text-sm text-gray-600 mt-2 line-clamp-2 leading-relaxed">
+                  {project.description}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge
+                  className={`text-xs font-semibold px-3 py-1 shadow-sm ${getStatusColor(
+                    project.published
+                  )}`}
+                >
+                  {project.published ? (
+                    <Eye className="h-3 w-3 mr-1" />
+                  ) : (
+                    <EyeOff className="h-3 w-3 mr-1" />
                   )}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant={project.published ? "default" : "outline"}
-                    className={`text-xs ${
-                      project.published
-                        ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white"
-                        : "text-gray-600"
-                    }`}
-                  >
-                    {project.published ? "Published" : "Draft"}
-                  </Badge>
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <Calendar className="w-3 h-3" />
-                    {formatDate(createdAt)}
-                  </div>
-                </div>
+                  {project.published ? "published" : "draft"}
+                </Badge>
               </div>
             </div>
 
-            {/* Action Buttons - Top Right */}
-            <div className="flex gap-2">
+            {/* Meta */}
+            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-green-500" />
+                <span>{formatDate(createdAt)}</span>
+              </div>
+              {techStack.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <Hash className="h-4 w-4 text-gray-400" />
+                  {techStack.slice(0, 3).map((tech, i) => (
+                    <Badge
+                      key={i}
+                      variant="secondary"
+                      className="text-xs px-2 py-1 bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-800 border border-indigo-200 shadow-sm"
+                    >
+                      {tech}
+                    </Badge>
+                  ))}
+                  {techStack.length > 3 && (
+                    <span className="text-xs text-gray-500 font-medium">
+                      +{techStack.length - 3} more
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => onEdit(project)}
-                className="hover:bg-gray-50"
+                className="h-10 px-4 border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 text-blue-700 font-medium transition-all duration-200 group/edit"
               >
-                <Edit className="w-4 h-4 mr-1" />
+                <Edit className="h-4 w-4 mr-2 group-hover/edit:scale-110 transition-transform duration-200" />
                 Edit
               </Button>
+              {onTogglePublished && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onTogglePublished(project, !project.published)}
+                  className={`h-10 px-4 border-2 font-medium transition-all duration-200 ${
+                    project.published
+                      ? "border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 text-yellow-700"
+                      : "border-green-200 hover:border-green-400 hover:bg-green-50 text-green-700"
+                  }`}
+                >
+                  {project.published ? (
+                    <>
+                      <EyeOff className="h-4 w-4 mr-2" /> Draft
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="h-4 w-4 mr-2" /> Publish
+                    </>
+                  )}
+                </Button>
+              )}
+              {onToggleFeatured && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onToggleFeatured(project, !project.featured)}
+                  className={`h-10 px-4 border-2 font-medium transition-all duration-200 ${
+                    project.featured
+                      ? "border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 text-yellow-700"
+                      : "border-gray-200 hover:border-gray-400 hover:bg-gray-50 text-gray-700"
+                  }`}
+                >
+                  <Star className="h-4 w-4 mr-2" />
+                  {project.featured ? "Unfeature" : "Feature"}
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => onDelete(project)}
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                className="h-10 px-4 border-2 border-red-200 hover:border-red-400 hover:bg-red-50 text-red-700 font-medium transition-all duration-200 group/delete"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash2 className="h-4 w-4 mr-2 group-hover/delete:scale-110 transition-transform duration-200" />
+                Delete
               </Button>
-            </div>
-          </div>
-
-          {/* Description */}
-          <div className="pl-20">
-            <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-3">
-              {project.description || ""}
-            </p>
-
-            {/* Tech Stack */}
-            {techStack.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {techStack.slice(0, 6).map((tech: string) => (
-                  <Badge
-                    key={tech}
-                    variant="outline"
-                    className="text-xs bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border-blue-200 hover:from-blue-100 hover:to-indigo-100"
-                  >
-                    {tech}
-                  </Badge>
-                ))}
-                {techStack.length > 6 && (
-                  <Badge variant="outline" className="text-xs text-gray-500">
-                    +{techStack.length - 6} more
-                  </Badge>
-                )}
-              </div>
-            )}
-
-            {/* External Links */}
-            <div className="flex gap-3">
-              {githubUrl && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="bg-gray-900 text-white hover:bg-gray-800 border-gray-900"
-                >
-                  <Link
-                    href={githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <Github className="w-4 h-4" />
-                    <span>Source Code</span>
-                  </Link>
-                </Button>
-              )}
-              {liveUrl && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 border-blue-600"
-                >
-                  <Link
-                    href={liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    <span>Live Demo</span>
-                  </Link>
-                </Button>
-              )}
             </div>
           </div>
         </div>

@@ -40,13 +40,13 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 
   if (featured) {
     return (
-      <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden h-full border border-border/60 relative">
+      <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full border border-border/60 relative">
         <Link
           href={`/blog/${postSlug}`}
           aria-label={`Read article: ${post.title}`}
           className="absolute inset-0 z-10"
         />
-        <div className="relative h-64">
+        <div className="relative h-56">
           {post.image ? (
             <Image
               src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
@@ -84,8 +84,8 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             )}
           </div>
         </div>
-        <CardContent className="p-6 relative z-20">
-          <div className="flex flex-wrap gap-2 mb-3">
+        <CardContent className="p-5 relative z-20">
+          <div className="flex flex-wrap gap-1.5 mb-2.5">
             {post.tags.slice(0, 3).map((tag) => (
               <Badge
                 key={tag}
@@ -101,15 +101,15 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
               </Badge>
             )}
           </div>
-          <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="text-lg font-semibold mb-2.5 group-hover:text-primary transition-colors line-clamp-2">
             {post.title}
           </h3>
 
-          <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+          <p className="text-muted-foreground text-sm mb-3 line-clamp-3">
             {post.excerpt}
           </p>
 
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-3">
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
                 <User className="h-3 w-3 mr-1" />
@@ -128,7 +128,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 
           <Button
             variant="outline"
-            className="w-full group relative z-30"
+            className="w-full h-9 text-sm group relative z-30"
             asChild
           >
             <Link
@@ -145,13 +145,13 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
   }
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden h-full flex flex-col border border-border/60 relative">
+    <Card className="group hover:shadow-md transition-all duration-300 overflow-hidden h-full flex flex-col border border-border/60 relative">
       <Link
         href={`/blog/${postSlug}`}
         aria-label={`Read article: ${post.title}`}
         className="absolute inset-0 z-10"
       />
-      <div className="relative h-48">
+      <div className="relative h-40">
         {post.image ? (
           <Image
             src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
@@ -186,8 +186,8 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/10 to-background/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
-      <CardContent className="p-4 flex-1 flex flex-col">
-        <div className="flex flex-wrap gap-1.5 mb-3">
+      <CardContent className="p-3.5 flex-1 flex flex-col">
+        <div className="flex flex-wrap gap-1.5 mb-2.5">
           {post.tags.slice(0, 2).map((tag) => (
             <Badge
               key={tag}
@@ -203,15 +203,15 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             </Badge>
           )}
         </div>
-        <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+        <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
           {post.title}
         </h3>
 
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
+        <p className="text-muted-foreground text-[13px] mb-3 line-clamp-2 flex-1">
           {post.excerpt}
         </p>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2">
+        <div className="flex items-center justify-between text-[11px] text-muted-foreground mt-auto pt-1.5">
           <div className="flex items-center">
             <Calendar className="h-3 w-3 mr-1" />
             {formatDate(post.published_at || post.created_at)}

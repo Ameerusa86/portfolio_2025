@@ -1,11 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import { Github, Linkedin, Mail, Heart, Code, Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Github, Linkedin, Mail, Heart, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Footer = () => {
-  const { theme, setTheme } = useTheme();
   // Use a static year to avoid hydration mismatch
   const currentYear = 2025;
 
@@ -92,18 +90,7 @@ const Footer = () => {
                 </Link>
               ))}
             </div>
-            <div className="pt-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="flex items-center gap-2"
-              >
-                <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span>Toggle Theme</span>
-              </Button>
-            </div>
+            {/* Theme toggle removed (dark mode deprecated) */}
           </div>
 
           {/* Newsletter */}

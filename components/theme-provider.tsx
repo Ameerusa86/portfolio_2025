@@ -1,4 +1,2 @@
-// Theme provider removed – dark mode eliminated. File kept to avoid broken imports during cleanup.
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
-}
+// (Deprecated) ThemeProvider stub - dark mode removed. Safe to delete this file.
+// Intentionally no exports.
