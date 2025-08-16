@@ -61,15 +61,55 @@ export async function GET() {
       .order("created_at", { ascending: false })
       .limit(2);
 
-    // Mock page views and engagement data (you can replace with real analytics later)
-    const pageViews = Math.floor(Math.random() * 2000) + 1000; // Random between 1000-3000
-    const engagement = Math.floor(Math.random() * 20) + 80; // Random between 80-100%
+    // Real aggregates for blogs (views & likes totals)
+    const { data: blogAgg } = await supabase
+      .from("blogs")
+      .select("views, likes, created_at, status")
+      .limit(1000); // safeguard
+    const totalViews = (blogAgg || []).reduce(
+      (acc, b: any) => acc + (b.views || 0),
+      0
+    );
+    const totalLikes = (blogAgg || []).reduce(
+      (acc, b: any) => acc + (b.likes || 0),
+      0
+    );
 
-    // Calculate growth (mock data - you can implement real tracking later)
-    const projectGrowth = Math.floor(Math.random() * 5) + 1;
-    const blogGrowth = Math.floor(Math.random() * 3) + 1;
-    const viewGrowth = Math.floor(Math.random() * 20) + 5;
-    const engagementGrowth = Math.floor(Math.random() * 10) + 1;
+    // Simple engagement proxy: likes per 100 views (percentage)
+    const engagement = totalViews
+      ? Math.min(100, Math.round((totalLikes / totalViews) * 10000) / 100)
+      : 0;
+
+    // Basic growth: compare last 30d vs previous 30d for views & blogs
+    const now = new Date();
+    const dayMs = 86400000;
+    const start30 = new Date(now.getTime() - 30 * dayMs);
+    const start60 = new Date(now.getTime() - 60 * dayMs);
+    const last30 = (blogAgg || []).filter(
+      (b: any) => new Date(b.created_at) >= start30
+    );
+    const prev30 = (blogAgg || []).filter(
+      (b: any) =>
+        new Date(b.created_at) >= start60 && new Date(b.created_at) < start30
+    );
+    const last30Views = last30.reduce(
+      (acc: number, b: any) => acc + (b.views || 0),
+      0
+    );
+    const prev30Views = prev30.reduce(
+      (acc: number, b: any) => acc + (b.views || 0),
+      0
+    );
+    const growthPct = (curr: number, prev: number) =>
+      prev === 0
+        ? curr > 0
+          ? 100
+          : 0
+        : Math.round(((curr - prev) / prev) * 100);
+    const viewGrowth = growthPct(last30Views, prev30Views);
+    const blogGrowth = growthPct(last30.length, prev30.length);
+    const projectGrowth = 0; // unchanged without project date history
+    const engagementGrowth = 0; // could compute delta in future
 
     // Create recent activity from recent projects and blogs
     const recentActivity: (RecentActivity & { created_at_date: Date })[] = [];
@@ -130,7 +170,7 @@ export async function GET() {
       totalBlogs: totalBlogs || 0,
       publishedBlogs: publishedBlogs || 0,
       draftBlogs: draftBlogs || 0,
-      pageViews,
+      pageViews: totalViews,
       engagement,
       growth: {
         projects: projectGrowth,
@@ -139,6 +179,7 @@ export async function GET() {
         engagement: engagementGrowth,
       },
       recentActivity: cleanActivity,
+      totalLikes,
     };
 
     return NextResponse.json(stats);

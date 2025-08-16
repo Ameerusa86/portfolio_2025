@@ -23,6 +23,7 @@ import { BlogPost } from "@/types/blog";
 import ReadingProgress from "@/components/ReadingProgress";
 import { generateSlug } from "@/lib/slug-utils";
 import IncrementView from "@/components/IncrementView";
+import LikeButton from "@/components/LikeButton";
 
 interface PageProps {
   params: Promise<{
@@ -221,9 +222,7 @@ export default async function Page({ params }: PageProps) {
               <Button variant="outline" className="shadow-lg">
                 <Share className="mr-2 h-4 w-4" /> Share Article
               </Button>
-              <Button variant="outline" className="shadow-lg">
-                Save for Later
-              </Button>
+              <LikeButton slug={slug} initialLikes={post.likes || 0} />
             </div>
           </div>
         </div>
@@ -417,13 +416,7 @@ export default async function Page({ params }: PageProps) {
                     >
                       <Share className="h-4 w-4 mr-2" /> Share Article
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                    >
-                      <Heart className="h-4 w-4 mr-2" /> Like Article
-                    </Button>
+                    <LikeButton slug={slug} initialLikes={post.likes || 0} />
                   </div>
                 </CardContent>
               </Card>

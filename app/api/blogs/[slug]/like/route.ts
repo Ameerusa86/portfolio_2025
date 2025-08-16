@@ -12,24 +12,46 @@ export async function POST(
 ) {
   try {
     const { slug } = await context.params;
-    // Atomic increment using a single update with returning
-    const { data, error } = await supabase
-      .from("blogs")
-      .update({ likes: ("likes" as any) + 1 })
-      .eq("slug", slug)
-      .select("likes")
-      .single();
-
+    // Prefer RPC function for atomic increment
+    const { data, error } = await supabase.rpc("increment_blog_likes", {
+      p_slug: slug,
+    });
     if (error) {
-      // Fallback: use rpc or manual select-update sequence if necessary
+      // Fallback to select + update (non-atomic) if function missing
+      if (error.message.includes("increment_blog_likes")) {
+        const { data: current, error: fetchErr } = await supabase
+          .from("blogs")
+          .select("likes")
+          .eq("slug", slug)
+          .single();
+        if (fetchErr) {
+          return NextResponse.json(
+            { error: "Unable to fetch current likes" },
+            { status: 500 }
+          );
+        }
+        const nextLikes = (current?.likes || 0) + 1;
+        const { data: updated, error: updateErr } = await supabase
+          .from("blogs")
+          .update({ likes: nextLikes })
+          .eq("slug", slug)
+          .select("likes")
+          .single();
+        if (updateErr) {
+          return NextResponse.json(
+            { error: "Failed to update likes" },
+            { status: 500 }
+          );
+        }
+        return NextResponse.json({ likes: updated.likes });
+      }
       console.error("Error incrementing like:", error);
       return NextResponse.json(
         { error: "Failed to like post" },
         { status: 500 }
       );
     }
-
-    return NextResponse.json({ likes: data.likes });
+    return NextResponse.json({ likes: data });
   } catch (e) {
     console.error("Error in POST /api/blogs/[slug]/like:", e);
     return NextResponse.json(
