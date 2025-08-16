@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import ImagePicker from "@/components/ImagePicker";
 import { ImageUploadService } from "@/lib/image-upload";
+import { getProfileImageUrl } from "@/lib/supabase-storage";
 
 interface AboutFormProps {
   aboutData?: AboutData | null;
@@ -191,7 +192,10 @@ export default function AboutForm({
                 <div className="space-y-3">
                   <ImagePicker
                     onChange={handleImageUpload}
-                    previewUrl={formData.profile_image}
+                    // Convert stored path (e.g. about/xyz.jpg) to a full public URL for preview
+                    previewUrl={
+                      getProfileImageUrl(formData.profile_image) || undefined
+                    }
                   />
                   {imageUploading && (
                     <div className="flex items-center text-sm text-muted-foreground">
