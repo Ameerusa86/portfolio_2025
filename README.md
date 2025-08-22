@@ -209,8 +209,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 **Ameer Hasan** - Full-Stack Developer
 
 - **Portfolio**: [Live Demo](https://portfolio-2025-jet-seven.vercel.app/)
-- **Email**: your.email@example.com
-- **LinkedIn**: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
+- **LinkedIn**: [LinkedIn Profile](https://www.linkedin.com/in/ameerdev/)
 - **GitHub**: [@Ameerusa86](https://github.com/Ameerusa86)
 
 ## 📄 License
