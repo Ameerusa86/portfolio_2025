@@ -103,7 +103,9 @@ export default function BlogForm({
       return true;
     } catch (err) {
       const zodErrors: Record<string, string> = {};
-      const issues = (err as { issues?: Array<{ path?: unknown[]; message: string }> }).issues;
+      const issues = (
+        err as { issues?: Array<{ path?: unknown[]; message: string }> }
+      ).issues;
       if (issues) {
         issues.forEach((issue) => {
           const path = issue.path?.[0];

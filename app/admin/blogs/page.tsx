@@ -474,7 +474,11 @@ export default function BlogsPage() {
                   ].map((filter) => (
                     <button
                       key={filter.value}
-                      onClick={() => setStatusFilter(filter.value as "all" | "published" | "draft")}
+                      onClick={() =>
+                        setStatusFilter(
+                          filter.value as "all" | "published" | "draft"
+                        )
+                      }
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${
                         statusFilter === filter.value
                           ? filter.value === "all"

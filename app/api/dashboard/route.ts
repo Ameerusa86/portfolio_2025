@@ -62,18 +62,20 @@ export async function GET() {
       .limit(2);
 
     // Real aggregates for blogs (views & likes totals)
+    type BlogAggRow = {
+      views: number | null;
+      likes: number | null;
+      created_at: string | null;
+      status: "published" | "draft" | null;
+    };
+
     const { data: blogAgg } = await supabase
       .from("blogs")
       .select("views, likes, created_at, status")
       .limit(1000); // safeguard
-    const totalViews = (blogAgg || []).reduce(
-      (acc, b: any) => acc + (b.views || 0),
-      0
-    );
-    const totalLikes = (blogAgg || []).reduce(
-      (acc, b: any) => acc + (b.likes || 0),
-      0
-    );
+    const rows: BlogAggRow[] = (blogAgg as BlogAggRow[]) || [];
+    const totalViews = rows.reduce((acc, b) => acc + (b.views ?? 0), 0);
+    const totalLikes = rows.reduce((acc, b) => acc + (b.likes ?? 0), 0);
 
     // Simple engagement proxy: likes per 100 views (percentage)
     const engagement = totalViews
@@ -85,21 +87,16 @@ export async function GET() {
     const dayMs = 86400000;
     const start30 = new Date(now.getTime() - 30 * dayMs);
     const start60 = new Date(now.getTime() - 60 * dayMs);
-    const last30 = (blogAgg || []).filter(
-      (b: any) => new Date(b.created_at) >= start30
+    const last30 = rows.filter((b) =>
+      b.created_at ? new Date(b.created_at) >= start30 : false
     );
-    const prev30 = (blogAgg || []).filter(
-      (b: any) =>
-        new Date(b.created_at) >= start60 && new Date(b.created_at) < start30
+    const prev30 = rows.filter((b) =>
+      b.created_at
+        ? new Date(b.created_at) >= start60 && new Date(b.created_at) < start30
+        : false
     );
-    const last30Views = last30.reduce(
-      (acc: number, b: any) => acc + (b.views || 0),
-      0
-    );
-    const prev30Views = prev30.reduce(
-      (acc: number, b: any) => acc + (b.views || 0),
-      0
-    );
+    const last30Views = last30.reduce((acc, b) => acc + (b.views ?? 0), 0);
+    const prev30Views = prev30.reduce((acc, b) => acc + (b.views ?? 0), 0);
     const growthPct = (curr: number, prev: number) =>
       prev === 0
         ? curr > 0
@@ -116,36 +113,40 @@ export async function GET() {
 
     // Add recent projects
     if (recentProjects) {
-      recentProjects.forEach((project: Record<string, unknown>) => {
-        const createdAt = project.created_at
-          ? new Date(project.created_at as string)
-          : new Date();
-        const timeAgo = getTimeAgo(createdAt);
-        recentActivity.push({
-          action: "Created new project",
-          item: project.title as string,
-          time: timeAgo,
-          created_at: project.created_at as string,
-          created_at_date: createdAt,
-        });
-      });
+      recentProjects.forEach(
+        (project: { title: string | null; created_at: string | null }) => {
+          const createdAt = project.created_at
+            ? new Date(project.created_at)
+            : new Date();
+          const timeAgo = getTimeAgo(createdAt);
+          recentActivity.push({
+            action: "Created new project",
+            item: project.title ?? "Untitled",
+            time: timeAgo,
+            created_at: project.created_at ?? new Date().toISOString(),
+            created_at_date: createdAt,
+          });
+        }
+      );
     }
 
     // Add recent blogs
     if (recentBlogs) {
-      recentBlogs.forEach((blog: Record<string, unknown>) => {
-        const createdAt = blog.created_at
-          ? new Date(blog.created_at as string)
-          : new Date();
-        const timeAgo = getTimeAgo(createdAt);
-        recentActivity.push({
-          action: "Published blog post",
-          item: blog.title as string,
-          time: timeAgo,
-          created_at: blog.created_at as string,
-          created_at_date: createdAt,
-        });
-      });
+      recentBlogs.forEach(
+        (blog: { title: string | null; created_at: string | null }) => {
+          const createdAt = blog.created_at
+            ? new Date(blog.created_at)
+            : new Date();
+          const timeAgo = getTimeAgo(createdAt);
+          recentActivity.push({
+            action: "Published blog post",
+            item: blog.title ?? "Untitled",
+            time: timeAgo,
+            created_at: blog.created_at ?? new Date().toISOString(),
+            created_at_date: createdAt,
+          });
+        }
+      );
     }
 
     // Sort by creation date and take the 4 most recent
