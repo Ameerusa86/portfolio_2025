@@ -21,7 +21,19 @@ export const updateBlogSchema = createBlogSchema.partial();
 export type CreateBlogInput = z.infer<typeof createBlogSchema>;
 export type UpdateBlogInput = z.infer<typeof updateBlogSchema>;
 
-export function mapFormToCreate(data: any): CreateBlogInput {
+type FormLike = Partial<{
+  title: string;
+  excerpt: string;
+  content: string;
+  image?: string | null;
+  tags?: string[];
+  read_time?: number;
+  readTime?: number;
+  featured?: boolean;
+  status?: "published" | "draft";
+}>;
+
+export function mapFormToCreate(data: FormLike): CreateBlogInput {
   return createBlogSchema.parse({
     title: data.title,
     excerpt: data.excerpt,
@@ -34,8 +46,8 @@ export function mapFormToCreate(data: any): CreateBlogInput {
   });
 }
 
-export function mapFormToUpdate(data: any): UpdateBlogInput {
-  const mapped: Record<string, any> = { ...data };
+export function mapFormToUpdate(data: FormLike): UpdateBlogInput {
+  const mapped: Record<string, unknown> = { ...data };
   if (mapped.readTime && !mapped.read_time) mapped.read_time = mapped.readTime;
   return updateBlogSchema.parse(mapped);
 }

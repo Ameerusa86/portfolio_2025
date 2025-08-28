@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import {
-  Menu,
-  X,
-  Code,
-  Home,
-  User,
-  Briefcase,
-  Mail,
-  FileText,
-} from "lucide-react";
+import { Menu, X, Home, User, Briefcase, Mail, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 

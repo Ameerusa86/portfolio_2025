@@ -418,11 +418,13 @@ export default function ProjectForm({
             </CardHeader>
             <CardContent className="space-y-6 p-6">
               {formData.image && (
-                <div className="mb-6">
+                <div className="mb-6 relative w-full h-80">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={formData.image}
                     alt="Project preview"
-                    className="w-full h-80 object-cover rounded-xl border-2 border-gray-200 shadow-lg"
+                    className="w-full h-full object-cover rounded-xl border-2 border-gray-200 shadow-lg"
+                    loading="lazy"
                   />
                 </div>
               )}

@@ -62,11 +62,13 @@ export default function BlogRow({
           {/* Featured Image */}
           <div className="relative flex-shrink-0">
             {blog.image && !imageError ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={blog.image}
                 alt={blog.title}
                 className="w-24 h-24 object-cover rounded-xl border-2 border-gray-200 shadow-md group-hover:shadow-lg transition-all duration-300"
                 onError={() => setImageError(true)}
+                loading="lazy"
               />
             ) : (
               <div className="w-24 h-24 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 rounded-xl border-2 border-gray-200 flex items-center justify-center shadow-md">

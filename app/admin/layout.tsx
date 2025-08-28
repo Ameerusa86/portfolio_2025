@@ -52,7 +52,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   ];
 
   const renderNavGroup = (
-    items: { title: string; url: string; icon: any }[],
+    items: {
+      title: string;
+      url: string;
+      icon: React.ComponentType<{ className?: string }>;
+    }[],
     label: string
   ) => (
     <SidebarGroup>

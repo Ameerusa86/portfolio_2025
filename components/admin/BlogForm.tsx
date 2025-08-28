@@ -101,15 +101,16 @@ export default function BlogForm({
       });
       setErrors({});
       return true;
-    } catch (err: any) {
+    } catch (err) {
       const zodErrors: Record<string, string> = {};
-      if (err?.issues) {
-        err.issues.forEach((issue: any) => {
+      const issues = (err as { issues?: Array<{ path?: unknown[]; message: string }> }).issues;
+      if (issues) {
+        issues.forEach((issue) => {
           const path = issue.path?.[0];
           if (path === "read_time") {
             zodErrors["readTime"] = issue.message;
           } else if (path) {
-            zodErrors[path] = issue.message;
+            zodErrors[String(path)] = issue.message;
           }
         });
       }
