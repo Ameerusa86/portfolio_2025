@@ -1,9 +1,4 @@
-import { NextResponse } from "next/server";
-
-// Simple debug endpoint to verify API works in all environments
+// Deprecated: debug-about endpoint removed.
 export async function GET() {
-  return NextResponse.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-  });
+  return new Response("Gone", { status: 410 });
 }
