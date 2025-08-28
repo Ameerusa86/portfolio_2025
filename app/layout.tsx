@@ -1,13 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Lato, Playfair_Display, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { ConditionalWrapper } from "@/components/ConditionalWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Body text: Lato – readable sans-serif
+const bodySans = Lato({
+  variable: "--font-body",
+  weight: ["300", "400", "700"],
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Headlines: Playfair Display – strong editorial serif
+const headlineDisplay = Playfair_Display({
+  variable: "--font-headline",
+  weight: ["400", "700", "900"],
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -31,7 +42,8 @@ export default function RootLayout({
       <body
         className={cn(
           "h-full bg-background font-sans antialiased scroll-smooth",
-          geistSans.variable,
+          bodySans.variable,
+          headlineDisplay.variable,
           geistMono.variable
         )}
       >
