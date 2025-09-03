@@ -12,6 +12,12 @@ import { Project } from "@/types/project";
 import { toast } from "sonner";
 import { useMemo } from "react";
 import { Loader2, Globe, Github, Star, Eye } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu";
 import { uploadImageFile } from "@/lib/supabase-upload";
 
 interface ProjectFormProps {
@@ -326,26 +332,54 @@ export default function ProjectForm({
                 >
                   Tech Stack
                 </Label>
-                {/* Canonical techs select */}
+                {/* Canonical techs select - styled Dropdown with checkboxes */}
                 {availableTechs.length > 0 && (
-                  <select
-                    multiple
-                    value={formData.tech_stack}
-                    onChange={(e) => {
-                      const opts = Array.from(e.target.selectedOptions).map(
-                        (o) => o.value
-                      );
-                      handleChange("tech_stack", opts);
-                      setTechStackInput(opts.join(", "));
-                    }}
-                    className="h-28 w-full p-2 border-gray-200 rounded-md"
-                  >
-                    {availableTechs.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        className="w-full text-left h-12 px-3 py-2 rounded-md border border-gray-200 flex items-center justify-between"
+                      >
+                        <span className="truncate">
+                          {formData.tech_stack && formData.tech_stack.length > 0
+                            ? formData.tech_stack.join(", ")
+                            : "Select technologies"}
+                        </span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="w-4 h-4 opacity-60"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                          />
+                        </svg>
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="max-h-72 overflow-auto">
+                      {availableTechs.map((t) => (
+                        <DropdownMenuCheckboxItem
+                          key={t}
+                          checked={formData.tech_stack.includes(t)}
+                          onCheckedChange={(checked) => {
+                            const isChecked = Boolean(checked);
+                            const next = isChecked
+                              ? Array.from(new Set([...formData.tech_stack, t]))
+                              : formData.tech_stack.filter((x) => x !== t);
+                            handleChange("tech_stack", next);
+                            setTechStackInput(next.join(", "));
+                          }}
+                        >
+                          {t}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
 
                 <div className="mt-2">
