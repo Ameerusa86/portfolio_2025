@@ -43,7 +43,8 @@ interface Project {
   updated_at?: string;
   technologies: string[];
   features: string[];
-  status: string;
+  status?: string;
+  published?: boolean;
   featured?: boolean;
 }
 
@@ -138,6 +139,12 @@ export default function ProjectPage() {
 
   if (!project) return null;
 
+  // Determine published state: prefer explicit boolean 'published', fall back to status string
+  const isPublished =
+    typeof project.published === "boolean"
+      ? project.published
+      : (project.status || "").toLowerCase() === "published";
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
       {/* Hero Section */}
@@ -200,7 +207,7 @@ export default function ProjectPage() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">
-                  {project.status === "published" ? "Live" : "Dev"}
+                  {isPublished ? "Live" : "Dev"}
                 </div>
                 <div className="text-sm text-muted-foreground">Status</div>
               </div>
@@ -419,16 +426,10 @@ export default function ProjectPage() {
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Status</span>
                       <Badge
-                        variant={
-                          project.status === "published"
-                            ? "default"
-                            : "secondary"
-                        }
+                        variant={isPublished ? "default" : "secondary"}
                         className="font-medium"
                       >
-                        {project.status === "published"
-                          ? "Live & Active"
-                          : "In Development"}
+                        {isPublished ? "Live & Active" : "In Development"}
                       </Badge>
                     </div>
 
