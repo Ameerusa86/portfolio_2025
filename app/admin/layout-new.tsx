@@ -11,6 +11,7 @@ import {
   Home,
   LogOut,
   User,
+  Tag,
 } from "lucide-react";
 import {
   Sidebar,
@@ -43,6 +44,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       title: "Projects",
       url: "/admin/projects",
       icon: FolderOpen,
+    },
+    {
+      title: "Technologies",
+      url: "/admin/technologies",
+      icon: Tag,
     },
     {
       title: "Blog Posts",

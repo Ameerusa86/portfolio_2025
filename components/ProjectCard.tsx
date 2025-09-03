@@ -124,14 +124,16 @@ export function ProjectCard({
                   Technologies
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {project.tech_stack.slice(0, 10).map((tech: string) => (
-                    <span
-                      key={tech}
-                      className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50/60 text-blue-700 hover:bg-blue-100/80 px-2.5 py-0.5 text-[10px] font-medium tracking-wide transition-colors"
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                  {project.tech_stack
+                    .slice(0, 10)
+                    .map((tech: string, i: number) => (
+                      <span
+                        key={`${tech}-${i}`}
+                        className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50/60 text-blue-700 hover:bg-blue-100/80 px-2.5 py-0.5 text-[10px] font-medium tracking-wide transition-colors"
+                      >
+                        {tech}
+                      </span>
+                    ))}
                   {project.tech_stack.length > 10 && (
                     <span className="inline-flex items-center rounded-full border border-blue-200 bg-white px-2.5 py-0.5 text-[10px] font-medium text-blue-700">
                       +{project.tech_stack.length - 10}
@@ -292,9 +294,9 @@ export function ProjectCard({
               </span>
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {project.tech_stack.slice(0, 5).map((tech: string) => (
+              {project.tech_stack.slice(0, 5).map((tech: string, i: number) => (
                 <Badge
-                  key={tech}
+                  key={`${tech}-${i}`}
                   className="bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-200/60 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-300 px-2.5 py-1 text-[11px] font-medium"
                 >
                   {tech}

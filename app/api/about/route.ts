@@ -1,33 +1,57 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AboutData, CreateAboutData } from "@/types/about";
 
-async function getSupabaseAdminClient() {
-  const { createClient } = await import("@supabase/supabase-js");
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-  return supabase;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+function supabaseHeaders() {
+  return {
+    "Content-Type": "application/json",
+    apikey: process.env.NEXT_PUBLIC_SUPABASE_URL
+      ? process.env.NEXT_PUBLIC_SUPABASE_URL
+      : "",
+    Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+    Prefer: "return=representation",
+  } as Record<string, string>;
+}
+
+// Helper to call Supabase REST for the `about` table without importing supabase-js
+async function restFetch(path: string, options?: RequestInit) {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Supabase environment variables are not configured");
+  }
+
+  const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1${path}`;
+  const res = await fetch(url, options);
+  const text = await res.text();
+  try {
+    return { status: res.status, body: text ? JSON.parse(text) : null };
+  } catch (e) {
+    return { status: res.status, body: text };
+  }
 }
 
 // GET /api/about - Fetch about data
 export async function GET() {
   try {
-    const supabase = await getSupabaseAdminClient();
-    const { data: aboutData, error } = await supabase
-      .from("about")
-      .select("*")
-      .single();
+    const { status, body } = await restFetch("/about?select=*&limit=1", {
+      method: "GET",
+      headers: {
+        ...supabaseHeaders(),
+        Prefer: "return=representation",
+      },
+    });
 
-    if (error && error.code !== "PGRST116") {
-      console.error("Error fetching about data:", error);
+    if (status >= 400) {
+      console.error("Error fetching about data: status", status, body);
       return NextResponse.json(
         { error: "Failed to fetch about data" },
         { status: 500 }
       );
     }
 
-    // If no data exists, return default data
+    const aboutData = Array.isArray(body) && body.length > 0 ? body[0] : null;
+
     if (!aboutData) {
       const defaultData: AboutData = {
         id: "default",
@@ -76,27 +100,26 @@ export async function POST(request: NextRequest) {
   try {
     const body: CreateAboutData = await request.json();
 
-    const supabase = await getSupabaseAdminClient();
-    const { data, error } = await supabase
-      .from("about")
-      .insert([
-        {
-          ...body,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ])
-      .select()
-      .single();
+    const { status, body: resBody } = await restFetch("/about", {
+      method: "POST",
+      headers: supabaseHeaders(),
+      body: JSON.stringify({
+        ...body,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }),
+    });
 
-    if (error) {
-      console.error("Error creating about data:", error);
+    if (status >= 400) {
+      console.error("Error creating about data:", status, resBody);
       return NextResponse.json(
         { error: "Failed to create about data" },
         { status: 500 }
       );
     }
 
+    // Supabase returns an array of created rows
+    const data = Array.isArray(resBody) ? resBody[0] : resBody;
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Server error:", error);
@@ -111,7 +134,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, ...updateData } = body;
+    const { id, ...updateData } = body as any;
 
     if (!id) {
       return NextResponse.json(
@@ -120,25 +143,27 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const supabase = await getSupabaseAdminClient();
-    const { data, error } = await supabase
-      .from("about")
-      .update({
-        ...updateData,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", id)
-      .select()
-      .single();
+    const { status, body: resBody } = await restFetch(
+      `/about?id=eq.${encodeURIComponent(id)}`,
+      {
+        method: "PATCH",
+        headers: supabaseHeaders(),
+        body: JSON.stringify({
+          ...updateData,
+          updated_at: new Date().toISOString(),
+        }),
+      }
+    );
 
-    if (error) {
-      console.error("Error updating about data:", error);
+    if (status >= 400) {
+      console.error("Error updating about data:", status, resBody);
       return NextResponse.json(
         { error: "Failed to update about data" },
         { status: 500 }
       );
     }
 
+    const data = Array.isArray(resBody) ? resBody[0] : resBody;
     return NextResponse.json(data);
   } catch (error) {
     console.error("Server error:", error);

@@ -11,6 +11,7 @@ import {
   Home,
   LogOut,
   User,
+  Tag,
 } from "lucide-react";
 import {
   Sidebar,
@@ -42,6 +43,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const mainNavigation = [
     { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
     { title: "Projects", url: "/admin/projects", icon: FolderOpen },
+    { title: "Technologies", url: "/admin/technologies", icon: Tag },
     { title: "Blogs", url: "/admin/blogs", icon: FileText },
     { title: "About", url: "/admin/about", icon: User },
   ];
