@@ -73,7 +73,7 @@ export default async function AboutPage() {
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           <div className="text-center space-y-8">
             {aboutData.profile_image ? (
-              <div className="w-32 h-32 mx-auto mb-8 relative">
+              <div className="w-48 h-48 mx-auto mb-8 relative">
                 <Image
                   src={
                     getProfileImageUrl(aboutData.profile_image) ||
@@ -81,7 +81,7 @@ export default async function AboutPage() {
                   }
                   alt={aboutData.title}
                   fill
-                  className="rounded-full object-cover shadow-2xl ring-4 ring-white/20"
+                  className="rounded-full object-cover shadow-2xl ring-4 ring-white/40"
                 />
               </div>
             ) : (
