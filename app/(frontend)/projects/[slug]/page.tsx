@@ -37,6 +37,7 @@ interface Project {
   content: string;
   image: string;
   demo_url?: string;
+  live_url?: string;
   github_url?: string;
   tags: string[];
   created_at: string;
@@ -151,6 +152,9 @@ export default function ProjectPage() {
       ? project.published
       : (project.status || "").toLowerCase() === "published";
 
+  // Resolve demo link from either demo_url or live_url
+  const demoLink = (project as any)?.demo_url || (project as any)?.live_url;
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
       {/* Hero Section */}
@@ -222,10 +226,10 @@ export default function ProjectPage() {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
-            {project.demo_url && (
+            {demoLink && (
               <Button size="lg" asChild className="text-lg px-8 py-4 shadow-xl">
                 <a
-                  href={project.demo_url as string}
+                  href={demoLink as string}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -278,10 +282,10 @@ export default function ProjectPage() {
 
                   {/* Floating Action Buttons */}
                   <div className="absolute bottom-6 right-6 flex gap-3">
-                    {project.demo_url && (
+                    {demoLink && (
                       <Button size="sm" asChild className="shadow-lg">
                         <Link
-                          href={project.demo_url as any}
+                          href={demoLink as any}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -496,15 +500,15 @@ export default function ProjectPage() {
                       </Button>
                     )}
 
-                    {project.demo_url && (
+                    {demoLink && (
                       <Button size="sm" asChild className="w-full">
                         <Link
-                          href={project.demo_url as any}
+                          href={demoLink as any}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <ExternalLink className="h-4 w-4 mr-2" />
-                          Live Demo
+                          Demo
                         </Link>
                       </Button>
                     )}
