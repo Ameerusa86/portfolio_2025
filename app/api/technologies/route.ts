@@ -57,3 +57,29 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const body = await req.json();
+    const id = body.id;
+    const name = String(body.name || "").trim();
+    if (!id)
+      return NextResponse.json({ error: "id required" }, { status: 400 });
+    if (!name)
+      return NextResponse.json({ error: "name required" }, { status: 400 });
+    if (!supabaseAdmin)
+      return NextResponse.json({ error: "No admin client" }, { status: 500 });
+
+    const { data, error } = await supabaseAdmin
+      .from("technologies")
+      .update({ name })
+      .eq("id", id)
+      .select("id, name")
+      .single();
+    if (error) throw error;
+    return NextResponse.json({ data });
+  } catch (err) {
+    console.error("Failed to update technology", err);
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
+  }
+}
