@@ -122,36 +122,21 @@ export default function ProjectPage() {
     } ${date.getDate()}, ${date.getFullYear()}`;
   };
 
-  if (loading) {
-    return (
-      <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent"></div>
-          <p className="text-muted-foreground text-lg">Loading project...</p>
-        </div>
-      </div>
-    );
-  }
+  // Resolve technologies from multiple possible fields returned by the API
+  const displayTechs: string[] = (() => {
+    const anyP = project as any;
+    if (!anyP) return [];
+    if (Array.isArray(anyP.technologies) && anyP.technologies.length)
+      return anyP.technologies;
+    if (Array.isArray(anyP.tech_stack) && anyP.tech_stack.length)
+      return anyP.tech_stack;
+    if (Array.isArray(anyP.tags) && anyP.tags.length) return anyP.tags;
+    if (Array.isArray(anyP.features) && anyP.features.length)
+      return anyP.features;
+    return [];
+  })();
 
-  if (error || !project) {
-    return (
-      <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 flex items-center justify-center">
-        <div className="text-center space-y-6 max-w-md mx-auto px-4">
-          <div className="text-6xl">😔</div>
-          <h1 className="text-2xl font-bold">Project Not Found</h1>
-          <p className="text-muted-foreground">
-            The project you're looking for doesn't exist or has been removed.
-          </p>
-          <Button asChild>
-            <Link href="/projects">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Projects
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  if (!project) return null;
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
@@ -201,7 +186,7 @@ export default function ProjectPage() {
             <div className="flex flex-wrap justify-center gap-8 pt-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-primary">
-                  {project.technologies?.length || 0}
+                  {displayTechs.length || 0}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Technologies
@@ -300,6 +285,8 @@ export default function ProjectPage() {
         </section>
       )}
 
+      {/* Technologies preview removed — techs will show under Project Overview */}
+
       {/* Main Content */}
       <section className="w-full py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -322,14 +309,14 @@ export default function ProjectPage() {
               </div>
 
               {/* Technology Stack */}
-              {project.technologies && project.technologies.length > 0 && (
+              {displayTechs && displayTechs.length > 0 && (
                 <div className="space-y-6">
                   <h3 className="text-2xl lg:text-3xl font-bold flex items-center gap-3">
                     <Code className="h-8 w-8 text-primary" />
                     Technology Stack
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {project.technologies.map((tech) => (
+                    {displayTechs.map((tech) => (
                       <Card
                         key={tech}
                         className="text-center p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10"
@@ -468,7 +455,7 @@ export default function ProjectPage() {
                         Technologies
                       </span>
                       <span className="text-sm font-medium">
-                        {project.technologies?.length || 0} Stack
+                        {displayTechs.length}
                       </span>
                     </div>
 
