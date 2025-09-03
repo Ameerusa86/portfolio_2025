@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Menu, X, Home, User, Briefcase, Mail, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -46,26 +47,29 @@ const Navbar = () => {
       }
       role="banner"
     >
-      <a
+      <Link
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:rounded-md focus:bg-primary focus:text-primary-foreground"
       >
         Skip to content
-      </a>
+      </Link>
       <div className="mx-auto max-w-6xl">
         <div className="relative rounded-3xl bg-gradient-to-r from-white/85 via-white/80 to-white/70 text-zinc-800 shadow-[0_2px_6px_-1px_rgba(0,0,0,.15),0_0_0_1px_rgba(0,0,0,.05)] ring-1 ring-zinc-200 backdrop-blur-md">
           {/* Desktop Navigation: logo left, links right */}
           <div className="hidden md:flex items-center h-16 px-8 gap-6 justify-between">
             {/* Brand left */}
             <div className="flex items-center">
-              <Link
-                href="/"
-                className="font-extrabold text-lg tracking-wide select-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
-              >
-                AmeerHasan.dev
+              <Link href="/" className="flex items-center" aria-label="Home">
+                <Image
+                  src="/Images/Logo.png"
+                  alt="Ameer Hasan logo"
+                  width={64}
+                  height={64}
+                  className="rounded-lg"
+                  priority
+                />
               </Link>
             </div>
-
             {/* Right nav */}
             <nav
               className="flex items-center gap-6 text-sm font-medium"
@@ -104,11 +108,15 @@ const Navbar = () => {
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center h-16 px-6 justify-between">
-            <Link
-              href="/"
-              className="font-extrabold text-lg tracking-wide bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
-            >
-              AmeerHasan.dev
+            <Link href="/" className="flex items-center" aria-label="Home">
+              <Image
+                src="/Images/Logo.png"
+                alt="Ameer Hasan logo"
+                width={48}
+                height={48}
+                className="rounded-sm"
+                priority
+              />
             </Link>
             <Button
               variant="ghost"
