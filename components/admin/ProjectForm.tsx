@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import ImagePicker from "@/components/ImagePicker";
 import { Project } from "@/types/project";
 import { toast } from "sonner";
+import { useMemo } from "react";
 import { Loader2, Globe, Github, Star, Eye } from "lucide-react";
 import { uploadImageFile } from "@/lib/supabase-upload";
 
@@ -56,6 +57,7 @@ export default function ProjectForm({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [techStackInput, setTechStackInput] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [availableTechs, setAvailableTechs] = useState<string[]>([]);
 
   const isEdit = !!project;
 
@@ -82,6 +84,23 @@ export default function ProjectForm({
     setSelectedFile(null);
     setErrors({});
   }, [project]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/technologies");
+        const json = await res.json();
+        if (!mounted) return;
+        setAvailableTechs((json.data || []).map((d: any) => d.name));
+      } catch (err) {
+        console.error("Failed to load technologies", err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -307,13 +326,37 @@ export default function ProjectForm({
                 >
                   Tech Stack
                 </Label>
-                <Input
-                  id="tech-stack"
-                  placeholder="React, TypeScript, Next.js (comma separated)"
-                  value={techStackInput}
-                  onChange={(e) => handleTechStackChange(e.target.value)}
-                  className="h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-100"
-                />
+                {/* Canonical techs select */}
+                {availableTechs.length > 0 && (
+                  <select
+                    multiple
+                    value={formData.tech_stack}
+                    onChange={(e) => {
+                      const opts = Array.from(e.target.selectedOptions).map(
+                        (o) => o.value
+                      );
+                      handleChange("tech_stack", opts);
+                      setTechStackInput(opts.join(", "));
+                    }}
+                    className="h-28 w-full p-2 border-gray-200 rounded-md"
+                  >
+                    {availableTechs.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                <div className="mt-2">
+                  <Input
+                    id="tech-stack"
+                    placeholder="React, TypeScript, Next.js (comma separated)"
+                    value={techStackInput}
+                    onChange={(e) => handleTechStackChange(e.target.value)}
+                    className="h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                  />
+                </div>
                 {techStackInput && (
                   <div className="flex flex-wrap gap-2 mt-3 p-3 bg-gray-50 rounded-lg border">
                     {techStackInput

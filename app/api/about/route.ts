@@ -1,15 +1,19 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 import { AboutData, CreateAboutData } from "@/types/about";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+async function getSupabaseAdminClient() {
+  const { createClient } = await import("@supabase/supabase-js");
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  return supabase;
+}
 
 // GET /api/about - Fetch about data
 export async function GET() {
   try {
+    const supabase = await getSupabaseAdminClient();
     const { data: aboutData, error } = await supabase
       .from("about")
       .select("*")
@@ -72,6 +76,7 @@ export async function POST(request: NextRequest) {
   try {
     const body: CreateAboutData = await request.json();
 
+    const supabase = await getSupabaseAdminClient();
     const { data, error } = await supabase
       .from("about")
       .insert([
@@ -115,6 +120,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    const supabase = await getSupabaseAdminClient();
     const { data, error } = await supabase
       .from("about")
       .update({

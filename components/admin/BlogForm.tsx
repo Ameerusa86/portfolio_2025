@@ -59,6 +59,7 @@ export default function BlogForm({
   const [autosaveStatus, setAutosaveStatus] = useState<
     "idle" | "saving" | "saved" | "error"
   >("idle");
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
   const autosaveTimer = useRef<NodeJS.Timeout | null>(null);
   const lastSavedRef = useRef<string>("");
 
@@ -86,6 +87,23 @@ export default function BlogForm({
     setSelectedFile(null);
     setErrors({});
   }, [blog]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch("/api/technologies");
+        const json = await res.json();
+        if (!mounted) return;
+        setAvailableTags((json.data || []).map((d: any) => d.name));
+      } catch (err) {
+        console.error("Failed to load tags", err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const validateForm = (): boolean => {
     try {
@@ -400,13 +418,36 @@ export default function BlogForm({
                 >
                   Tags
                 </Label>
-                <Input
-                  id="tags"
-                  placeholder="React, TypeScript, Next.js (comma separated)"
-                  value={tagsInput}
-                  onChange={(e) => handleTagsChange(e.target.value)}
-                  className="h-12 text-base border-gray-200 focus:border-purple-500 focus:ring-purple-100"
-                />
+                {availableTags.length > 0 && (
+                  <select
+                    multiple
+                    value={formData.tags}
+                    onChange={(e) => {
+                      const opts = Array.from(e.target.selectedOptions).map(
+                        (o) => o.value
+                      );
+                      handleChange("tags", opts);
+                      setTagsInput(opts.join(", "));
+                    }}
+                    className="h-28 w-full p-2 border-gray-200 rounded-md"
+                  >
+                    {availableTags.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                <div className="mt-2">
+                  <Input
+                    id="tags"
+                    placeholder="React, TypeScript, Next.js (comma separated)"
+                    value={tagsInput}
+                    onChange={(e) => handleTagsChange(e.target.value)}
+                    className="h-12 text-base border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                  />
+                </div>
                 {tagsInput && (
                   <div className="flex flex-wrap gap-2 mt-3 p-3 bg-gray-50 rounded-lg border">
                     {tagsInput

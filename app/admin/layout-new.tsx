@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                           : "text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50/30 border-transparent hover:border-gray-200/50 hover:shadow-sm"
                       )}
                     >
-                      <Link href={item.url}>
+                      <Link href={item.url as any}>
                         <item.icon
                           className={cn(
                             "transition-all duration-200",
@@ -158,7 +158,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                           : "text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50/30 border-transparent hover:border-gray-200/50 hover:shadow-sm"
                       )}
                     >
-                      <Link href={item.url}>
+                      <Link href={item.url as any}>
                         <item.icon
                           className={cn(
                             "transition-all duration-200",
