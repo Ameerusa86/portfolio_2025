@@ -129,7 +129,7 @@ const Footer = () => {
             <div className="flex items-center space-x-1 text-xs text-muted-foreground">
               <span>© {currentYear} AmeerHasan.dev. Built with</span>
               <Heart className="h-3 w-3 text-red-500 fill-current" />
-              <span>using Next.js & Tailwind CSS</span>
+              <span>using Next.js</span>
             </div>
             <div className="flex items-center space-x-4 text-xs text-muted-foreground">
               <Link

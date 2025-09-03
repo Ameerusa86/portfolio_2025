@@ -54,9 +54,19 @@ const Navbar = () => {
       </a>
       <div className="mx-auto max-w-6xl">
         <div className="relative rounded-3xl bg-gradient-to-r from-white/85 via-white/80 to-white/70 text-zinc-800 shadow-[0_2px_6px_-1px_rgba(0,0,0,.15),0_0_0_1px_rgba(0,0,0,.05)] ring-1 ring-zinc-200 backdrop-blur-md">
-          {/* Desktop Navigation */}
-          <div className="hidden md:grid grid-cols-[1fr_auto_1fr] items-center h-16 px-8 gap-6">
-            {/* Left nav */}
+          {/* Desktop Navigation: logo left, links right */}
+          <div className="hidden md:flex items-center h-16 px-8 gap-6 justify-between">
+            {/* Brand left */}
+            <div className="flex items-center">
+              <Link
+                href="/"
+                className="font-extrabold text-lg tracking-wide select-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+              >
+                AmeerHasan.dev
+              </Link>
+            </div>
+
+            {/* Right nav */}
             <nav
               className="flex items-center gap-6 text-sm font-medium"
               aria-label="Primary"
@@ -90,19 +100,6 @@ const Navbar = () => {
                 );
               })}
             </nav>
-
-            {/* Brand center */}
-            <div className="justify-self-center">
-              <Link
-                href="/"
-                className="font-extrabold text-lg tracking-wide select-none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
-              >
-                AmeerHasan.dev
-              </Link>
-            </div>
-
-            {/* Right side now empty spacer for symmetry */}
-            <div className="flex items-center justify-end gap-6 text-sm font-medium" />
           </div>
 
           {/* Mobile Navigation */}
