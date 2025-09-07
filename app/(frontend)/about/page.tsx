@@ -11,14 +11,14 @@ async function getAboutData(): Promise<AboutData> {
   try {
     // Use Supabase client directly instead of fetch
     const client = supabaseAdmin || supabase;
-    
+
     if (!client) {
       console.error("No Supabase client available in about page");
       throw new Error("Database configuration error");
     }
 
-    console.log('About page: Fetching from Supabase directly...');
-    
+    console.log("About page: Fetching from Supabase directly...");
+
     const { data: aboutData, error } = await client
       .from("about")
       .select("*")
@@ -31,11 +31,11 @@ async function getAboutData(): Promise<AboutData> {
     }
 
     if (aboutData) {
-      console.log('About page: Successfully fetched data:', aboutData.id);
+      console.log("About page: Successfully fetched data:", aboutData.id);
       return aboutData;
     }
 
-    console.log('About page: No data found, using default');
+    console.log("About page: No data found, using default");
     throw new Error("No about data found");
   } catch (error) {
     console.error("About page: Error fetching about data:", error);
