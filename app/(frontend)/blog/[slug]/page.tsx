@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import {
   ArrowLeft,
   Calendar,
@@ -26,41 +27,53 @@ import IncrementView from "@/components/IncrementView";
 import LikeButton from "@/components/LikeButton";
 
 interface PageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: { slug: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({ params }: PageProps) {
-  const { slug } = await params;
+  const rawSlug = params.slug;
+  const slug = decodeURIComponent(rawSlug);
   let post: BlogPost | null = null;
   let relatedPosts: BlogPost[] = [];
 
   try {
-    // Fetch the blog post
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : process.env.NODE_ENV === "production"
-      ? "https://your-domain.vercel.app"
-      : "http://localhost:3000";
+    // Build base URL from request headers so it works with any dev port & production host
+    const hdrs = await headers();
+    const host = hdrs.get("host") || "localhost:3000";
+    const proto =
+      hdrs.get("x-forwarded-proto") ||
+      (host.startsWith("localhost") ? "http" : "https");
+    const baseUrl = `${proto}://${host}`;
 
-    const response = await fetch(`${baseUrl}/api/blogs/${slug}`, {
-      cache: "no-store", // Ensure fresh data
-    });
+    const response = await fetch(
+      `${baseUrl}/api/blogs/${encodeURIComponent(slug)}`,
+      {
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 404) {
+        console.warn(
+          `[blog/[slug]] Post not found for slug='${slug}' (404 from API)`
+        );
         notFound();
       }
-      throw new Error(`Failed to fetch blog: ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch blog: ${response.status} ${response.statusText}`
+      );
     }
     post = await response.json();
 
-    // Fetch and score related posts (tag overlap + recency) with graceful fallback
+    // Fetch related posts
     const allPostsResponse = await fetch(
       `${baseUrl}/api/blogs?status=published`,
-      { cache: "no-store" }
+      {
+        cache: "no-store",
+      }
     );
     if (allPostsResponse.ok) {
       const allPosts: BlogPost[] = await allPostsResponse.json();

@@ -8,10 +8,11 @@ const supabase = createClient(
 
 export async function GET(
   req: NextRequest,
-  context: { params: Promise<{ slug: string }> }
+  context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = await context.params;
+    const { slug: rawSlug } = context.params;
+    const slug = decodeURIComponent(rawSlug);
 
     const { data, error } = await supabase
       .from("blogs")
@@ -36,10 +37,11 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  context: { params: Promise<{ slug: string }> }
+  context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = await context.params;
+    const { slug: rawSlug } = context.params;
+    const slug = decodeURIComponent(rawSlug);
     const body = await req.json();
 
     // Build update object with only provided fields
@@ -137,10 +139,11 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: Promise<{ slug: string }> }
+  context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = await context.params;
+    const { slug: rawSlug } = context.params;
+    const slug = decodeURIComponent(rawSlug);
 
     const { error } = await supabase.from("blogs").delete().eq("slug", slug);
 
