@@ -10,7 +10,8 @@ export async function GET() {
       hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
       hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20) + "...",
+      supabaseUrl:
+        process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20) + "...",
     });
 
     // Use admin client if available, fallback to anon client
@@ -19,7 +20,7 @@ export async function GET() {
     console.log("Client status:", {
       hasAdmin: !!supabaseAdmin,
       hasAnon: !!supabase,
-      usingClient: supabaseAdmin ? 'admin' : 'anon'
+      usingClient: supabaseAdmin ? "admin" : "anon",
     });
 
     if (!client) {
@@ -42,17 +43,17 @@ export async function GET() {
       hasError: !!error,
       errorCode: error?.code,
       errorMessage: error?.message,
-      dataCount: aboutData ? 1 : 0
+      dataCount: aboutData ? 1 : 0,
     });
 
     if (error) {
       console.error("Supabase error fetching about data:", error);
       return NextResponse.json(
-        { 
-          error: "Failed to fetch about data", 
+        {
+          error: "Failed to fetch about data",
           details: error.message,
           code: error.code,
-          hint: error.hint
+          hint: error.hint,
         },
         { status: 500 }
       );
@@ -62,17 +63,17 @@ export async function GET() {
       console.log("No about data found in database, returning default");
       // Since you have the table, let's check if we can insert some test data
       console.log("Attempting to check table structure...");
-      
+
       // Try to get table info
       const { data: tableCheck, error: tableError } = await client
         .from("about")
         .select("id")
         .limit(1);
-        
+
       console.log("Table check result:", {
         tableExists: !tableError,
         hasData: !!tableCheck && tableCheck.length > 0,
-        tableError: tableError?.message
+        tableError: tableError?.message,
       });
 
       const defaultData: AboutData = {
