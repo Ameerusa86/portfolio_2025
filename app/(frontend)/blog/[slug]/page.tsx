@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { headers } from "next/headers";
+// Note: headers() no longer needed after switching to direct Supabase queries
 import {
   ArrowLeft,
   Calendar,
@@ -26,90 +26,74 @@ import { generateSlug } from "@/lib/slug-utils";
 import IncrementView from "@/components/IncrementView";
 import LikeButton from "@/components/LikeButton";
 
+import { supabaseAdmin, supabase } from "@/lib/supabase";
+
 interface PageProps {
-  params: { slug: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export const dynamic = "force-dynamic";
 
 export default async function Page({ params }: PageProps) {
-  const rawSlug = params.slug;
+  const { slug: rawSlug } = await params;
   const slug = decodeURIComponent(rawSlug);
   let post: BlogPost | null = null;
   let relatedPosts: BlogPost[] = [];
 
   try {
-    // Build base URL from request headers so it works with any dev port & production host
-    const hdrs = await headers();
-    const host = hdrs.get("host") || "localhost:3000";
-    const proto =
-      hdrs.get("x-forwarded-proto") ||
-      (host.startsWith("localhost") ? "http" : "https");
-    const baseUrl = `${proto}://${host}`;
-
-    const response = await fetch(
-      `${baseUrl}/api/blogs/${encodeURIComponent(slug)}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        console.warn(
-          `[blog/[slug]] Post not found for slug='${slug}' (404 from API)`
-        );
-        notFound();
-      }
-      throw new Error(
-        `Failed to fetch blog: ${response.status} ${response.statusText}`
-      );
+    const client = supabaseAdmin || supabase;
+    // Fetch target blog
+    const { data: blogData, error: blogError } = await client
+      .from("blogs")
+      .select("*")
+      .eq("slug", slug)
+      .single();
+    if (blogError || !blogData) {
+      console.warn(`[blog/[slug]] blog not found slug='${slug}'`, blogError);
+      notFound();
     }
-    post = await response.json();
+    post = blogData as BlogPost;
 
-    // Fetch related posts
-    const allPostsResponse = await fetch(
-      `${baseUrl}/api/blogs?status=published`,
-      {
-        cache: "no-store",
-      }
-    );
-    if (allPostsResponse.ok) {
-      const allPosts: BlogPost[] = await allPostsResponse.json();
+    // Fetch published blogs for related suggestions
+    const { data: published, error: listError } = await client
+      .from("blogs")
+      .select(
+        "slug,tags,title,excerpt,image,published_at,created_at,read_time,views,likes"
+      )
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(60);
+
+    if (!listError && published) {
+      const allPosts = published.filter((p) => p.slug !== slug) as BlogPost[];
       const now = Date.now();
       const PRIMARY_LIMIT = 3;
-      const TAG_WEIGHT = 10; // weight per overlapping tag
-      const RECENCY_DECAY_DAYS = 30; // full weight within this window
+      const TAG_WEIGHT = 10;
+      const RECENCY_DECAY_DAYS = 30;
 
-      const postsExcludingCurrent = allPosts.filter((p) => p.slug !== slug);
-
-      // Score each post
-      const scored = postsExcludingCurrent.map((p) => {
-        const overlap = p.tags.filter((t) => post?.tags?.includes(t)).length;
+      const scored = allPosts.map((p) => {
+        const overlap = p.tags.filter((t) => post!.tags.includes(t)).length;
         const ageDays =
           (now - new Date(p.published_at || p.created_at).getTime()) /
           (1000 * 60 * 60 * 24);
-        // Recency score: 1 -> fresh, approaches 0 as it gets older than decay window
         const recencyScore = Math.max(0, 1 - ageDays / RECENCY_DECAY_DAYS);
-        const score = overlap * TAG_WEIGHT + recencyScore; // simple linear combo
+        const score = overlap * TAG_WEIGHT + recencyScore;
         return { post: p, overlap, score, recencyScore };
       });
 
-      // Primary: posts with at least one overlapping tag
       const primary = scored
         .filter((s) => s.overlap > 0)
         .sort((a, b) => b.score - a.score)
         .slice(0, PRIMARY_LIMIT)
         .map((s) => s.post);
 
-      // If not enough, fill with highest scoring remaining (even without overlap) by recency / score
       if (primary.length < PRIMARY_LIMIT) {
-        const remainingNeeded = PRIMARY_LIMIT - primary.length;
+        const need = PRIMARY_LIMIT - primary.length;
         const fallback = scored
           .filter((s) => s.overlap === 0)
           .sort((a, b) => b.recencyScore - a.recencyScore)
-          .slice(0, remainingNeeded)
+          .slice(0, need)
           .map((s) => s.post);
         relatedPosts = [...primary, ...fallback];
       } else {
@@ -117,7 +101,7 @@ export default async function Page({ params }: PageProps) {
       }
     }
   } catch (err) {
-    console.error("Error fetching blog post:", err);
+    console.error("[blog/[slug]] Error loading page:", err);
     notFound();
   }
 
