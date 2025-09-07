@@ -5,29 +5,40 @@ import Link from "next/link";
 import Image from "next/image";
 import { AboutData } from "@/types/about";
 import { getProfileImageUrl } from "@/lib/supabase-storage";
+import { supabaseAdmin, supabase } from "@/lib/supabase";
 
 async function getAboutData(): Promise<AboutData> {
-  // Build an absolute base URL that works in:
-  // - Dev (localhost any port)
-  // - Vercel preview / prod (VERCEL_URL)
-  // - Custom domain (NEXT_PUBLIC_SITE_URL)
-  const baseUrl = (() => {
-    const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-    if (explicit) return explicit.replace(/\/$/, "");
-    const vercel = process.env.VERCEL_URL?.trim();
-    if (vercel) return `https://${vercel.replace(/\/$/, "")}`;
-    const port = process.env.PORT || "3000"; // Next dev default
-    return `http://localhost:${port}`;
-  })();
-
   try {
-    const response = await fetch(`${baseUrl}/api/about`, {
-      next: { revalidate: 60 },
-    });
-    if (!response.ok) throw new Error(`Status ${response.status}`);
-    return await response.json();
+    // Use Supabase client directly instead of fetch
+    const client = supabaseAdmin || supabase;
+    
+    if (!client) {
+      console.error("No Supabase client available in about page");
+      throw new Error("Database configuration error");
+    }
+
+    console.log('About page: Fetching from Supabase directly...');
+    
+    const { data: aboutData, error } = await client
+      .from("about")
+      .select("*")
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error("About page: Supabase error:", error);
+      throw new Error(`Supabase error: ${error.message}`);
+    }
+
+    if (aboutData) {
+      console.log('About page: Successfully fetched data:', aboutData.id);
+      return aboutData;
+    }
+
+    console.log('About page: No data found, using default');
+    throw new Error("No about data found");
   } catch (error) {
-    console.error("Error fetching about data:", error);
+    console.error("About page: Error fetching about data:", error);
     // Return default data if API fails
     return {
       id: "default",
