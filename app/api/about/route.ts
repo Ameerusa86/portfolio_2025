@@ -5,9 +5,23 @@ import { supabaseAdmin, supabase } from "@/lib/supabase";
 // GET /api/about - Fetch about data
 export async function GET() {
   try {
+    // Debug environment variables
+    console.log("Environment debug:", {
+      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 20) + "...",
+    });
+
     // Use admin client if available, fallback to anon client
     const client = supabaseAdmin || supabase;
-    
+
+    console.log("Client status:", {
+      hasAdmin: !!supabaseAdmin,
+      hasAnon: !!supabase,
+      usingClient: supabaseAdmin ? 'admin' : 'anon'
+    });
+
     if (!client) {
       console.error("No Supabase client available");
       return NextResponse.json(
@@ -16,27 +30,51 @@ export async function GET() {
       );
     }
 
+    console.log("Attempting to fetch from about table...");
     const { data: aboutData, error } = await client
       .from("about")
       .select("*")
       .limit(1)
       .maybeSingle();
 
+    console.log("Query result:", {
+      hasData: !!aboutData,
+      hasError: !!error,
+      errorCode: error?.code,
+      errorMessage: error?.message,
+      dataCount: aboutData ? 1 : 0
+    });
+
     if (error) {
       console.error("Supabase error fetching about data:", error);
-      // If table doesn't exist or other DB error, return default data
-      if (error.code === "PGRST116" || error.message.includes("relation") || error.message.includes("does not exist")) {
-        console.warn("About table might not exist, returning default data");
-      } else {
-        return NextResponse.json(
-          { error: "Failed to fetch about data", details: error.message },
-          { status: 500 }
-        );
-      }
+      return NextResponse.json(
+        { 
+          error: "Failed to fetch about data", 
+          details: error.message,
+          code: error.code,
+          hint: error.hint
+        },
+        { status: 500 }
+      );
     }
 
     if (!aboutData) {
       console.log("No about data found in database, returning default");
+      // Since you have the table, let's check if we can insert some test data
+      console.log("Attempting to check table structure...");
+      
+      // Try to get table info
+      const { data: tableCheck, error: tableError } = await client
+        .from("about")
+        .select("id")
+        .limit(1);
+        
+      console.log("Table check result:", {
+        tableExists: !tableError,
+        hasData: !!tableCheck && tableCheck.length > 0,
+        tableError: tableError?.message
+      });
+
       const defaultData: AboutData = {
         id: "default",
         title: "About Me",
@@ -69,7 +107,7 @@ export async function GET() {
       return NextResponse.json(defaultData);
     }
 
-    console.log("Successfully fetched about data from Supabase");
+    console.log("Successfully fetched about data from Supabase:", aboutData.id);
     return NextResponse.json(aboutData);
   } catch (error) {
     console.error("Unexpected error in GET /api/about:", error);
@@ -85,7 +123,7 @@ export async function POST(request: NextRequest) {
   try {
     const body: CreateAboutData = await request.json();
     const client = supabaseAdmin || supabase;
-    
+
     if (!client) {
       return NextResponse.json(
         { error: "Database configuration error" },
@@ -127,7 +165,7 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { id, ...updateData } = body;
     const client = supabaseAdmin || supabase;
-    
+
     if (!client) {
       return NextResponse.json(
         { error: "Database configuration error" },
