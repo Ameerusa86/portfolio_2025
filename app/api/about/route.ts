@@ -1,58 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AboutData, CreateAboutData } from "@/types/about";
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-function supabaseHeaders() {
-  return {
-    "Content-Type": "application/json",
-    apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-      : "",
-    Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-    Prefer: "return=representation",
-  } as Record<string, string>;
-}
-
-// Helper to call Supabase REST for the `about` table without importing supabase-js
-async function restFetch(path: string, options?: RequestInit) {
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    throw new Error("Supabase environment variables are not configured");
-  }
-
-  const url = `${SUPABASE_URL.replace(/\/$/, "")}/rest/v1${path}`;
-  const res = await fetch(url, options);
-  const text = await res.text();
-  try {
-    return { status: res.status, body: text ? JSON.parse(text) : null };
-  } catch (e) {
-    return { status: res.status, body: text };
-  }
-}
+import { supabaseAdmin, supabase } from "@/lib/supabase";
 
 // GET /api/about - Fetch about data
 export async function GET() {
   try {
-    const { status, body } = await restFetch("/about?select=*&limit=1", {
-      method: "GET",
-      headers: {
-        ...supabaseHeaders(),
-        Prefer: "return=representation",
-      },
-    });
-
-    if (status >= 400) {
-      console.error("Error fetching about data: status", status, body);
+    // Use admin client if available, fallback to anon client
+    const client = supabaseAdmin || supabase;
+    
+    if (!client) {
+      console.error("No Supabase client available");
       return NextResponse.json(
-        { error: "Failed to fetch about data" },
+        { error: "Database configuration error" },
         { status: 500 }
       );
     }
 
-    const aboutData = Array.isArray(body) && body.length > 0 ? body[0] : null;
+    const { data: aboutData, error } = await client
+      .from("about")
+      .select("*")
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Supabase error fetching about data:", error);
+      // If table doesn't exist or other DB error, return default data
+      if (error.code === "PGRST116" || error.message.includes("relation") || error.message.includes("does not exist")) {
+        console.warn("About table might not exist, returning default data");
+      } else {
+        return NextResponse.json(
+          { error: "Failed to fetch about data", details: error.message },
+          { status: 500 }
+        );
+      }
+    }
 
     if (!aboutData) {
+      console.log("No about data found in database, returning default");
       const defaultData: AboutData = {
         id: "default",
         title: "About Me",
@@ -85,9 +69,10 @@ export async function GET() {
       return NextResponse.json(defaultData);
     }
 
+    console.log("Successfully fetched about data from Supabase");
     return NextResponse.json(aboutData);
   } catch (error) {
-    console.error("Server error:", error);
+    console.error("Unexpected error in GET /api/about:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -99,27 +84,33 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body: CreateAboutData = await request.json();
-
-    const { status, body: resBody } = await restFetch("/about", {
-      method: "POST",
-      headers: supabaseHeaders(),
-      body: JSON.stringify({
-        ...body,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }),
-    });
-
-    if (status >= 400) {
-      console.error("Error creating about data:", status, resBody);
+    const client = supabaseAdmin || supabase;
+    
+    if (!client) {
       return NextResponse.json(
-        { error: "Failed to create about data" },
+        { error: "Database configuration error" },
         { status: 500 }
       );
     }
 
-    // Supabase returns an array of created rows
-    const data = Array.isArray(resBody) ? resBody[0] : resBody;
+    const { data, error } = await client
+      .from("about")
+      .insert({
+        ...body,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating about data:", error);
+      return NextResponse.json(
+        { error: "Failed to create about data", details: error.message },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Server error:", error);
@@ -134,7 +125,15 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, ...updateData } = body as any;
+    const { id, ...updateData } = body;
+    const client = supabaseAdmin || supabase;
+    
+    if (!client) {
+      return NextResponse.json(
+        { error: "Database configuration error" },
+        { status: 500 }
+      );
+    }
 
     if (!id) {
       return NextResponse.json(
@@ -143,27 +142,24 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const { status, body: resBody } = await restFetch(
-      `/about?id=eq.${encodeURIComponent(id)}`,
-      {
-        method: "PATCH",
-        headers: supabaseHeaders(),
-        body: JSON.stringify({
-          ...updateData,
-          updated_at: new Date().toISOString(),
-        }),
-      }
-    );
+    const { data, error } = await client
+      .from("about")
+      .update({
+        ...updateData,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single();
 
-    if (status >= 400) {
-      console.error("Error updating about data:", status, resBody);
+    if (error) {
+      console.error("Error updating about data:", error);
       return NextResponse.json(
-        { error: "Failed to update about data" },
+        { error: "Failed to update about data", details: error.message },
         { status: 500 }
       );
     }
 
-    const data = Array.isArray(resBody) ? resBody[0] : resBody;
     return NextResponse.json(data);
   } catch (error) {
     console.error("Server error:", error);
