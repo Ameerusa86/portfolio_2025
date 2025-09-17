@@ -59,15 +59,21 @@ const Navbar = () => {
           <div className="hidden md:flex items-center h-16 px-8 gap-6 justify-between">
             {/* Brand left */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center" aria-label="Home">
-                <Image
-                  src="/Images/Logo.png"
-                  alt="Ameer Hasan logo"
-                  width={64}
-                  height={64}
-                  className="rounded-lg"
-                  priority
-                />
+              <Link
+                href="/"
+                className="flex items-center group"
+                aria-label="Home"
+              >
+                <span className="relative block h-12 w-12 rounded-xl border border-border bg-card/60 shadow-md overflow-hidden transition-all group-hover:ring-4 group-hover:ring-border/50">
+                  <Image
+                    src="/Images/Logo.png"
+                    alt="Ameer Hasan logo"
+                    fill
+                    sizes="(max-width: 768px) 48px, 64px"
+                    className="object-contain p-1"
+                    priority
+                  />
+                </span>
               </Link>
             </div>
             {/* Right nav */}
@@ -108,15 +114,21 @@ const Navbar = () => {
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden items-center h-16 px-6 justify-between">
-            <Link href="/" className="flex items-center" aria-label="Home">
-              <Image
-                src="/Images/Logo.png"
-                alt="Ameer Hasan logo"
-                width={48}
-                height={48}
-                className="rounded-sm"
-                priority
-              />
+            <Link
+              href="/"
+              className="flex items-center group"
+              aria-label="Home"
+            >
+              <span className="relative block h-10 w-10 rounded-lg border border-border bg-card/60 shadow-md overflow-hidden transition-all group-hover:ring-4 group-hover:ring-border/50">
+                <Image
+                  src="/Images/Logo.png"
+                  alt="Ameer Hasan logo"
+                  fill
+                  sizes="40px"
+                  className="object-contain p-1"
+                  priority
+                />
+              </span>
             </Link>
             <Button
               variant="ghost"
