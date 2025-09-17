@@ -1,4 +1,13 @@
 import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
+
+// Enable MDX support
+const withMDX = createMDX({
+  // You can add remark/rehype plugins here if needed later
+  options: {
+    providerImportSource: "@mdx-js/react",
+  },
+});
 
 const nextConfig: NextConfig = {
   devIndicators: false,
@@ -31,6 +40,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Include MD/MDX in page extensions so route files can be .mdx if desired
+  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);

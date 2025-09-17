@@ -25,6 +25,8 @@ import IncrementView from "@/components/IncrementView";
 import ReadingProgress from "@/components/ReadingProgress";
 import ShareButton from "@/components/ShareButton";
 import PrintButton from "@/components/PrintButton";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export const dynamic = "force-dynamic";
 
@@ -184,11 +186,11 @@ export default async function Page({ params }: PageProps) {
               <CardContent className="py-6">
                 <article
                   id="article-content"
-                  className="prose prose-invert max-w-none"
+                  className="blog-content max-w-none"
                 >
-                  <pre className="whitespace-pre-wrap leading-relaxed bg-background/40 border border-border/60 p-4 rounded-lg">
-                    {post.content}
-                  </pre>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {post.content || ""}
+                  </ReactMarkdown>
                 </article>
               </CardContent>
             </Card>
