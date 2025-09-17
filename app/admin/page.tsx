@@ -185,7 +185,9 @@ const AdminPage = () => {
                       {stat.change}
                     </p>
                   </div>
-                  <div className={`bg-accent/30 text-primary p-4 rounded-2xl shadow-md group-hover:shadow-lg transition-all duration-300`}>
+                  <div
+                    className={`bg-accent/30 text-primary p-4 rounded-2xl shadow-md group-hover:shadow-lg transition-all duration-300`}
+                  >
                     <stat.icon className="h-7 w-7" />
                   </div>
                 </div>
@@ -300,7 +302,11 @@ const AdminPage = () => {
                   </span>
                   <span className="font-medium">{stats.featuredProjects}</span>
                 </div>
-                <Button variant="outline" className="w-full mt-4 border-border hover:bg-accent/30" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full mt-4 border-border hover:bg-accent/30"
+                  asChild
+                >
                   <Link href="/admin/projects">Manage Projects</Link>
                 </Button>
               </div>
@@ -333,7 +339,11 @@ const AdminPage = () => {
                     {stats.pageViews.toLocaleString()}
                   </span>
                 </div>
-                <Button variant="outline" className="w-full mt-4 border-border hover:bg-accent/30" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full mt-4 border-border hover:bg-accent/30"
+                  asChild
+                >
                   <Link href="/">View Site</Link>
                 </Button>
               </div>

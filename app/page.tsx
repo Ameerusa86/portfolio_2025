@@ -62,10 +62,7 @@ export default function HomePage() {
         <div className="relative w-full mx-auto site-container text-center space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold sm:text-6xl lg:text-7xl text-foreground">
-              Hi, I'm{" "}
-              <span className="text-primary">
-                Ameer Hasan
-              </span>
+              Hi, I'm <span className="text-primary">Ameer Hasan</span>
             </h1>
             <p className="max-w-4xl mx-auto text-muted-foreground text-xl lg:text-2xl leading-relaxed">
               A passionate full-stack developer creating modern web applications
@@ -74,7 +71,11 @@ export default function HomePage() {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
-            <Button size="lg" asChild className="text-lg px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              size="lg"
+              asChild
+              className="text-lg px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               <Link href="/projects">
                 <Briefcase className="h-5 w-5 mr-2" />
                 View My Work
@@ -189,7 +190,11 @@ export default function HomePage() {
               technologies.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button size="lg" asChild className="text-lg px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button
+                size="lg"
+                asChild
+                className="text-lg px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90"
+              >
                 <Link href="/contact">Start a Conversation</Link>
               </Button>
               <Button

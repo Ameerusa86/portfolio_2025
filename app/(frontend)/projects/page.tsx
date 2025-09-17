@@ -162,15 +162,24 @@ const ProjectsPage = () => {
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Badge variant="secondary" className="bg-background border border-border text-foreground">
+              <Badge
+                variant="secondary"
+                className="bg-background border border-border text-foreground"
+              >
                 <Code className="w-3 h-3 mr-1 text-primary" />
                 Full Stack Development
               </Badge>
-              <Badge variant="secondary" className="bg-background border border-border text-foreground">
+              <Badge
+                variant="secondary"
+                className="bg-background border border-border text-foreground"
+              >
                 <Zap className="w-3 h-3 mr-1 text-primary" />
                 Modern Technologies
               </Badge>
-              <Badge variant="secondary" className="bg-background border border-border text-foreground">
+              <Badge
+                variant="secondary"
+                className="bg-background border border-border text-foreground"
+              >
                 <Award className="w-3 h-3 mr-1 text-primary" />
                 Production Ready
               </Badge>
@@ -195,7 +204,9 @@ const ProjectsPage = () => {
               <div className="text-3xl font-bold text-primary mb-1">
                 {stats.featured}
               </div>
-              <div className="text-sm text-muted-foreground font-medium">Featured</div>
+              <div className="text-sm text-muted-foreground font-medium">
+                Featured
+              </div>
             </div>
             <div className="bg-card/70 rounded-2xl p-6 border border-border shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="text-3xl font-bold text-primary mb-1">
@@ -209,7 +220,9 @@ const ProjectsPage = () => {
               <div className="text-3xl font-bold text-primary mb-1">
                 {stats.published}
               </div>
-              <div className="text-sm text-muted-foreground font-medium">Published</div>
+              <div className="text-sm text-muted-foreground font-medium">
+                Published
+              </div>
             </div>
           </div>
         </div>

@@ -1,30 +1,30 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { FileX, ArrowLeft } from "lucide-react";
+import { FileText, ArrowLeft } from "lucide-react";
 
-export default function NotFound() {
+export default function ProjectNotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center py-12">
+    <div className="min-h-screen flex items-center justify-center py-12 bg-background text-foreground">
       <div className="max-w-md mx-auto text-center">
-        <Card>
+        <Card className="bg-card/70 border border-border">
           <CardContent className="pt-12 pb-8">
             <div className="flex justify-center mb-6">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                <FileX className="h-8 w-8 text-muted-foreground" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/30">
+                <FileText className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>
 
-            <h1 className="text-2xl font-bold mb-2">Project Not Found</h1>
+            <h1 className="text-2xl font-bold mb-2">Article Not Found</h1>
             <p className="text-muted-foreground mb-8">
-              The project you're looking for doesn't exist or has been moved.
+              The blog post you're looking for doesn't exist or has been moved.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button asChild>
-                <Link href="/projects">
+                <Link href="/blog">
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Projects
+                  Back to Blog
                 </Link>
               </Button>
               <Button variant="outline" asChild>

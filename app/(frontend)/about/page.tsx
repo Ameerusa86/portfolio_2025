@@ -119,7 +119,10 @@ export default async function AboutPage() {
                 {aboutData.story_title}
               </h2>
               {aboutData.story_content.map((paragraph, index) => (
-                <p key={index} className="text-muted-foreground leading-relaxed">
+                <p
+                  key={index}
+                  className="text-muted-foreground leading-relaxed"
+                >
                   {paragraph}
                 </p>
               ))}
@@ -149,7 +152,10 @@ export default async function AboutPage() {
               {aboutData.cta_description}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button
+                asChild
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
                 <Link href="/projects">
                   <Briefcase className="h-4 w-4 mr-2" />
                   View My Work

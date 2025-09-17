@@ -406,7 +406,7 @@ function BlogPostCard({
   formatDate: (date: string) => string;
 }) {
   return (
-  <Card className="group relative overflow-hidden bg-card/70 border border-border hover:border-primary/40 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
+    <Card className="group relative overflow-hidden bg-card/70 border border-border hover:border-primary/40 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
       <div className="relative h-56 overflow-hidden">
         {post.image ? (
           <Image

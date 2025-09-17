@@ -5,12 +5,12 @@ import { FileText, ArrowLeft } from "lucide-react";
 
 export default function BlogNotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center py-12">
+    <div className="min-h-screen flex items-center justify-center py-12 bg-background text-foreground">
       <div className="max-w-md mx-auto text-center">
-        <Card>
+        <Card className="bg-card/70 border border-border">
           <CardContent className="pt-12 pb-8">
             <div className="flex justify-center mb-6">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/30">
                 <FileText className="h-8 w-8 text-muted-foreground" />
               </div>
             </div>

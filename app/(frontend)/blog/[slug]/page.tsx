@@ -1,547 +1,323 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-// Note: headers() no longer needed after switching to direct Supabase queries
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  User,
-  Share,
-  BookOpen,
-  Tag,
-  Heart,
-  Award,
-  Users,
-  Eye,
-  Heart as HeartIcon,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { BlogPost } from "@/types/blog";
-import ReadingProgress from "@/components/ReadingProgress";
-import { generateSlug } from "@/lib/slug-utils";
-import IncrementView from "@/components/IncrementView";
-import LikeButton from "@/components/LikeButton";
-
+import Link from "next/link";
 import { supabaseAdmin, supabase } from "@/lib/supabase";
-
-interface PageProps {
-  params: Promise<{ slug: string }>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}
+import type { BlogPost } from "@/types/blog";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  CalendarDays,
+  Clock,
+  Eye,
+  Heart,
+  Link2,
+  Share2,
+  Tag,
+  ArrowLeft,
+  FileDown,
+  BookOpen,
+} from "lucide-react";
+import LikeButton from "@/components/LikeButton";
+import IncrementView from "@/components/IncrementView";
+import ReadingProgress from "@/components/ReadingProgress";
 
 export const dynamic = "force-dynamic";
 
-export default async function Page({ params }: PageProps) {
-  const { slug: rawSlug } = await params;
-  const slug = decodeURIComponent(rawSlug);
-  let post: BlogPost | null = null;
-  let relatedPosts: BlogPost[] = [];
+type PageProps = { params: Promise<{ slug: string }> };
 
+async function getPost(slug: string): Promise<BlogPost | null> {
+  const client = supabaseAdmin || supabase;
+  const { data, error } = await client
+    .from("blogs")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+  if (error) return null;
+  return data as BlogPost;
+}
+
+function formatDate(input?: string) {
+  if (!input) return "—";
   try {
-    const client = supabaseAdmin || supabase;
-    // Fetch target blog
-    const { data: blogData, error: blogError } = await client
-      .from("blogs")
-      .select("*")
-      .eq("slug", slug)
-      .single();
-    if (blogError || !blogData) {
-      console.warn(`[blog/[slug]] blog not found slug='${slug}'`, blogError);
-      notFound();
-    }
-    post = blogData as BlogPost;
-
-    // Fetch published blogs for related suggestions
-    const { data: published, error: listError } = await client
-      .from("blogs")
-      .select(
-        "slug,tags,title,excerpt,image,published_at,created_at,read_time,views,likes"
-      )
-      .eq("status", "published")
-      .order("created_at", { ascending: false })
-      .limit(60);
-
-    if (!listError && published) {
-      const allPosts = published.filter((p) => p.slug !== slug) as BlogPost[];
-      const now = Date.now();
-      const PRIMARY_LIMIT = 3;
-      const TAG_WEIGHT = 10;
-      const RECENCY_DECAY_DAYS = 30;
-
-      const scored = allPosts.map((p) => {
-        const overlap = p.tags.filter((t) => post!.tags.includes(t)).length;
-        const ageDays =
-          (now - new Date(p.published_at || p.created_at).getTime()) /
-          (1000 * 60 * 60 * 24);
-        const recencyScore = Math.max(0, 1 - ageDays / RECENCY_DECAY_DAYS);
-        const score = overlap * TAG_WEIGHT + recencyScore;
-        return { post: p, overlap, score, recencyScore };
-      });
-
-      const primary = scored
-        .filter((s) => s.overlap > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, PRIMARY_LIMIT)
-        .map((s) => s.post);
-
-      if (primary.length < PRIMARY_LIMIT) {
-        const need = PRIMARY_LIMIT - primary.length;
-        const fallback = scored
-          .filter((s) => s.overlap === 0)
-          .sort((a, b) => b.recencyScore - a.recencyScore)
-          .slice(0, need)
-          .map((s) => s.post);
-        relatedPosts = [...primary, ...fallback];
-      } else {
-        relatedPosts = primary;
-      }
-    }
-  } catch (err) {
-    console.error("[blog/[slug]] Error loading page:", err);
-    notFound();
+    const d = new Date(input);
+    return d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch {
+    return input;
   }
+}
 
+function extractHighlights(content: string, max = 4): string[] {
+  // Grab first few bullet-like lines as highlights
+  const lines = content.split(/\r?\n/);
+  const picks = lines
+    .map((l) => l.trim())
+    .filter((l) => /^(\-|\*|•)\s+/.test(l))
+    .map((l) => l.replace(/^(\-|\*|•)\s+/, ""));
+  return picks.slice(0, max);
+}
+
+export default async function Page({ params }: PageProps) {
+  const { slug: raw } = await params;
+  const slug = decodeURIComponent(raw);
+  const post = await getPost(slug);
   if (!post) notFound();
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    return `${
-      months[date.getMonth()]
-    } ${date.getDate()}, ${date.getFullYear()}`;
-  };
-
-  // Build TOC (server-side) from markdown-like content
-  const toc: { id: string; text: string; level: number }[] = [];
-  post.content.split("\n").forEach((line) => {
-    let level = 0;
-    if (line.startsWith("### ")) level = 3;
-    else if (line.startsWith("## ")) level = 2;
-    else if (line.startsWith("# ")) level = 1;
-    if (level) {
-      const text = line.replace(/^#+\s*/, "").trim();
-      const id = generateSlug(text);
-      toc.push({ id, text, level });
-    }
-  });
+  const views = post.views ?? 0;
+  const likes = post.likes ?? 0;
+  const highlights = extractHighlights(post.content);
 
   return (
-    <div className="w-full min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-background text-foreground">
+      {/* Reading progress + view increment hooks */}
       <ReadingProgress />
-      {/* Inject a client-only view incrementer */}
       <IncrementView slug={slug} />
-      {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center">
-        <div className="absolute top-8 left-0 w-full z-10">
-          <div className="site-container max-w-5xl">
-            <nav className="flex items-center space-x-2 text-sm">
-              <Link
-                href="/blog"
-                className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-              >
-                <ArrowLeft className="h-4 w-4" /> Blog
-              </Link>
-              <span className="text-foreground font-medium">
-                / {post.title}
-              </span>
-            </nav>
+
+      <section className="site-container py-10">
+        <nav className="mb-6 text-sm text-muted-foreground">
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Blog
+          </Link>
+        </nav>
+
+        {/* Title & meta */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold tracking-tight mb-2">
+            {post.title}
+          </h1>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <CalendarDays className="h-4 w-4" />{" "}
+              {formatDate(post.published_at || post.created_at)}
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-4 w-4" /> {post.read_time} min read
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Eye className="h-4 w-4" /> {views.toLocaleString()} views
+            </span>
           </div>
         </div>
-        <div className="relative w-full site-container max-w-5xl text-center space-y-8">
-          <div className="space-y-6 pt-20">
-            <div className="flex flex-wrap justify-center gap-2 mb-2">
-              {post.tags.map((tag: string) => (
-                <Badge
-                  key={tag}
-                  variant="secondary"
-                  className="px-3 py-1 text-xs"
+
+        {/* Grid layout: content + sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Main content */}
+          <div className="lg:col-span-8 space-y-6">
+            {post.excerpt && (
+              <Card className="bg-card/70 border-border">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5 text-primary" /> Article
+                    Overview
+                  </CardTitle>
+                  <CardDescription>{post.excerpt}</CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+
+            {!!post.tags?.length && (
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-lg font-semibold">
+                  <Tag className="h-5 w-5 text-primary" /> Tags
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {post.tags.map((t) => (
+                    <div
+                      key={t}
+                      className="rounded-xl border border-border bg-card/70 px-4 py-3 text-sm flex items-center gap-2"
+                    >
+                      <span className="inline-flex size-6 items-center justify-center rounded-md bg-accent/30 border border-border">
+                        <svg
+                          viewBox="0 0 24 24"
+                          className="size-3 text-primary"
+                          fill="currentColor"
+                        >
+                          <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+                        </svg>
+                      </span>
+                      <span className="truncate">{t}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {highlights.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold mb-3">Key Highlights</h2>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {highlights.map((h, i) => (
+                    <Card key={i} className="bg-card/70">
+                      <CardContent className="py-5">
+                        <div className="flex items-start gap-3">
+                          <span className="mt-1 inline-flex size-6 items-center justify-center rounded-md bg-accent/30 border border-border text-primary">
+                            ⚡
+                          </span>
+                          <div>
+                            <div className="font-medium">{h.split(":")[0]}</div>
+                            {h.includes(":") && (
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {h.split(":").slice(1).join(":").trim()}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <Card className="bg-card/70">
+              <CardContent className="py-6">
+                <article
+                  id="article-content"
+                  className="prose prose-invert max-w-none"
                 >
-                  <Tag className="w-3 h-3 mr-1" />
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-            <h1 className="text-4xl font-bold sm:text-5xl lg:text-6xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              {post.title}
-            </h1>
-            <p className="max-w-3xl mx-auto text-muted-foreground text-lg lg:text-xl leading-relaxed">
-              {post.excerpt}
-            </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground mb-2">
-              <div className="flex items-center">
-                <User className="h-4 w-4 mr-2" />
-                <span className="font-medium">{post.author}</span>
-              </div>
-              <div className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2" />
-                <span>{formatDate(post.published_at || post.created_at)}</span>
-              </div>
-              <div className="flex items-center">
-                <Clock className="h-4 w-4 mr-2" />
-                <span>{post.read_time} min read</span>
-              </div>
-              <div className="flex items-center">
-                <BookOpen className="h-4 w-4 mr-2" />
-                <span>{Math.ceil(post.content.length / 1000)}k words</span>
-              </div>
-              {typeof post.views === "number" && (
-                <div className="flex items-center">
-                  <Eye className="h-4 w-4 mr-2" />
-                  <span>{post.views.toLocaleString()} views</span>
-                </div>
-              )}
-              {typeof post.likes === "number" && (
-                <div className="flex items-center">
-                  <HeartIcon className="h-4 w-4 mr-2" />
-                  <span>{post.likes.toLocaleString()} likes</span>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-              <Button variant="outline" className="shadow-lg">
-                <Share className="mr-2 h-4 w-4" /> Share Article
-              </Button>
-              <LikeButton slug={slug} initialLikes={post.likes || 0} />
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* Featured Image */}
-      {post.image && (
-        <section className="w-full py-10 lg:py-16">
-          <div className="site-container max-w-5xl">
-            <Card className="overflow-hidden border border-border shadow-2xl bg-card/70">
-              <CardContent className="p-0">
-                <div className="relative aspect-video w-full">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                </div>
+                  <pre className="whitespace-pre-wrap leading-relaxed bg-background/40 border border-border/60 p-4 rounded-lg">
+                    {post.content}
+                  </pre>
+                </article>
               </CardContent>
             </Card>
           </div>
-        </section>
-      )}
-      {/* Main Content */}
-      <section className="w-full py-12 lg:py-20">
-        <div className="site-container max-w-5xl">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-            {/* Content Area */}
-            <div className="lg:col-span-2 space-y-12">
-              {/* Blog Content */}
-              <div className="space-y-6">
-                <h2 className="text-3xl lg:text-4xl font-bold flex items-center gap-3">
-                  <Award className="h-8 w-8 text-primary" /> Article Overview
-                </h2>
-                <Card className="border border-border bg-card/70 shadow-lg">
-                  <CardContent className="p-8">
-                    <div className="prose prose-lg max-w-none">
-                      <div
-                        id="article-content"
-                        className="blog-content"
-                        dangerouslySetInnerHTML={{
-                          __html: post.content
-                            .split("\n")
-                            .map((line: string) => {
-                              const headingMatch = /^(#{1,3})\s+(.*)/.exec(
-                                line
-                              );
-                              if (headingMatch) {
-                                const hashes = headingMatch[1];
-                                const text = headingMatch[2];
-                                const id = generateSlug(text);
-                                const tag = `h${hashes.length}`;
-                                const baseClass =
-                                  hashes.length === 1
-                                    ? "text-3xl font-bold mt-8 mb-4"
-                                    : hashes.length === 2
-                                    ? "text-2xl font-semibold mt-6 mb-3"
-                                    : "text-xl font-medium mt-4 mb-2";
-                                return `<${tag} id="${id}" class="group scroll-mt-28 ${baseClass}">
-                                  <a href="#${id}" class="opacity-0 group-hover:opacity-100 text-primary mr-2 text-sm align-middle">#</a>${text}</${tag}>`;
-                              }
-                              if (line.startsWith("```")) {
-                                return line.includes("```") && line.length > 3
-                                  ? `<pre class=\"bg-muted p-4 rounded-lg overflow-x-auto my-4\"><code>${line.substring(
-                                      3
-                                    )}</code></pre>`
-                                  : '<pre class="bg-muted p-4 rounded-lg overflow-x-auto my-4"><code>';
-                              }
-                              if (line === "```") return "</code></pre>";
-                              if (line.startsWith("- ")) {
-                                return `<li class=\"ml-4\">${line.substring(
-                                  2
-                                )}</li>`;
-                              }
-                              if (line.trim() && !line.startsWith("<")) {
-                                return `<p class=\"mb-4 leading-relaxed\">${line}</p>`;
-                              }
-                              return line;
-                            })
-                            .join(""),
-                        }}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-              {/* Author Card */}
-              <Card className="bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xl font-bold">
-                      {post.author.charAt(0)}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg mb-1">
-                        {post.author}
-                      </h3>
-                      <p className="text-muted-foreground text-sm mb-3">
-                        Full-stack developer passionate about creating
-                        exceptional digital experiences with modern
-                        technologies.
-                      </p>
-                      <div className="flex gap-3">
-                        <Button variant="outline" size="sm">
-                          Follow
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          View Profile
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            {/* Sidebar */}
-            <div className="space-y-8">
-              {toc.length > 0 && (
-                <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg sticky top-24">
-                  <CardContent className="space-y-4 p-0">
-                    <h3 className="text-lg font-semibold">Table of Contents</h3>
-                    <nav className="text-sm space-y-2">
-                      {toc.map((item) => (
-                        <a
-                          key={item.id}
-                          href={`#${item.id}`}
-                          className={`block hover:text-primary transition-colors pl-${
-                            (item.level - 1) * 3
-                          }`}
-                        >
-                          {item.text}
-                        </a>
-                      ))}
-                    </nav>
-                  </CardContent>
-                </Card>
-              )}
-              {/* Article Info Card */}
-              <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg">
-                <CardContent className="space-y-6">
-                  <h3 className="text-xl font-bold flex items-center gap-2">
-                    <Tag className="h-5 w-5 text-primary" /> Article Details
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Author</span>
-                      <span className="text-sm font-medium">{post.author}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Published</span>
-                      <span className="text-sm font-medium">
-                        {formatDate(post.published_at || post.created_at)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Read Time</span>
-                      <span className="text-sm font-medium">
-                        {post.read_time} min
-                      </span>
-                    </div>
-                    {typeof post.views === "number" && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Views</span>
-                        <span className="text-sm font-medium">
-                          {post.views.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-                    {typeof post.likes === "number" && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-muted-foreground">Likes</span>
-                        <span className="text-sm font-medium">
-                          {post.likes.toLocaleString()}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Tags</span>
-                      <span className="text-sm font-medium">
-                        {post.tags.length}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="space-y-3 pt-4 border-t">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                    >
-                      <Share className="h-4 w-4 mr-2" /> Share Article
-                    </Button>
-                    <LikeButton slug={slug} initialLikes={post.likes || 0} />
-                  </div>
-                </CardContent>
-              </Card>
-              {/* Navigation */}
-              <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg">
-                <CardContent className="space-y-4">
-                  <h3 className="text-xl font-bold">Explore More</h3>
-                  <div className="space-y-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="w-full justify-start"
-                    >
-                      <Link href="/blog">
-                        <ArrowLeft className="h-4 w-4 mr-2" /> All Articles
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="w-full justify-start"
-                    >
-                      <Link href="/contact">
-                        <Heart className="h-4 w-4 mr-2" /> Work Together
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="w-full justify-start"
-                    >
-                      <Link href="/about">
-                        <Users className="h-4 w-4 mr-2" /> About Me
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* Related Posts */}
-      {relatedPosts.length > 0 && (
-        <section className="w-full py-12 lg:py-20 bg-gradient-to-br from-primary/5 via-blue-50/50 to-indigo-100/30">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedPosts.map((relatedPost) => (
-                <Card
-                  key={relatedPost.slug}
-                  className="group hover:shadow-lg transition-shadow"
-                >
-                  <div className="relative h-40">
-                    {relatedPost.image ? (
-                      <Image
-                        src={relatedPost.image}
-                        alt={relatedPost.title}
-                        fill
-                        className="object-cover rounded-t-lg"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center rounded-t-lg">
-                        <span className="text-2xl">📖</span>
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <Link
-                      href={`/blog/${relatedPost.slug}`}
-                      className="block group"
-                    >
-                      <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                        {relatedPost.title}
-                      </h3>
-                    </Link>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                      {relatedPost.excerpt}
-                    </p>
-                    <div className="flex items-center text-xs text-muted-foreground">
-                      <Clock className="h-3 w-3 mr-1" />
-                      {relatedPost.read_time} min read
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-      {/* Call to Action Section */}
-      <section className="w-full py-20 lg:py-32 bg-gradient-to-br from-primary/5 via-blue-50/50 to-indigo-100/30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center bg-white/80 backdrop-blur-sm rounded-3xl p-12 lg:p-20 shadow-xl border border-white/50">
-            <div className="space-y-6">
-              <div className="flex justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80 text-white">
-                  <Heart className="h-8 w-8" />
+
+          {/* Sidebar */}
+          <div className="lg:col-span-4 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  Article Details
+                </CardTitle>
+                <CardDescription>Quick facts about this post</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground inline-flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4" /> Published
+                  </span>
+                  <span>
+                    {formatDate(post.published_at || post.created_at)}
+                  </span>
                 </div>
-              </div>
-              <h2 className="text-3xl lg:text-4xl font-bold">
-                Enjoyed this article?
-              </h2>
-              <p className="text-muted-foreground text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
-                Subscribe to get notified when I publish new articles about web
-                development and technology.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                <Button size="lg" className="text-lg px-8 py-4">
-                  Subscribe to Newsletter
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground inline-flex items-center gap-2">
+                    <Clock className="h-4 w-4" /> Read time
+                  </span>
+                  <span>{post.read_time} min</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground inline-flex items-center gap-2">
+                    <Eye className="h-4 w-4" /> Views
+                  </span>
+                  <span>{views.toLocaleString()}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground inline-flex items-center gap-2">
+                    <Heart className="h-4 w-4" /> Likes
+                  </span>
+                  <span>{likes.toLocaleString()}</span>
+                </div>
+
+                <div className="pt-2 flex gap-2">
+                  <LikeButton slug={slug} initialLikes={likes} />
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(
+                          typeof window !== "undefined"
+                            ? window.location.href
+                            : ""
+                        );
+                      } catch {}
+                    }}
+                  >
+                    <Share2 className="h-4 w-4" /> Share
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  Quick Actions
+                </CardTitle>
+                <CardDescription>Share or save this article</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
+                  <a href={`#article-content`}>
+                    <Link2 className="h-4 w-4" /> Jump to content
+                  </a>
                 </Button>
                 <Button
-                  variant="outline"
-                  size="lg"
-                  asChild
-                  className="text-lg px-8 py-4"
+                  variant="secondary"
+                  className="w-full justify-center"
+                  onClick={() => window.print()}
                 >
-                  <Link href="/blog">Read More Articles</Link>
+                  <FileDown className="h-4 w-4" /> Save/Print
                 </Button>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  Explore More
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
+                  <Link href="/blog">
+                    <span className="mr-2">📝</span> All Blogs
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
+                  <Link href="/contact">
+                    <span className="mr-2">🤝</span> Work Together
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full justify-start"
+                >
+                  <Link href="/about">
+                    <span className="mr-2">👤</span> About Me
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
-
-// (Removed inline IncrementView in favor of shared component import)

@@ -311,9 +311,7 @@ export default function BlogsPage() {
                 <FileText className="h-7 w-7 text-background drop-shadow-sm" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold">
-                  Blog Management
-                </h1>
+                <h1 className="text-3xl font-bold">Blog Management</h1>
                 <p className="text-muted-foreground font-medium">
                   Create, edit, and manage your blog posts
                 </p>
@@ -336,7 +334,9 @@ export default function BlogsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Total Posts</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Total Posts
+                </p>
                 <p className="text-3xl font-bold text-foreground">
                   {stats.total}
                 </p>
@@ -352,7 +352,9 @@ export default function BlogsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Published</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Published
+                </p>
                 <p className="text-3xl font-bold text-emerald-400">
                   {stats.published}
                 </p>
@@ -368,7 +370,9 @@ export default function BlogsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Drafts</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Drafts
+                </p>
                 <p className="text-3xl font-bold text-amber-400">
                   {stats.draft}
                 </p>
@@ -384,7 +388,9 @@ export default function BlogsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Featured</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Featured
+                </p>
                 <p className="text-3xl font-bold text-primary">
                   {stats.featured}
                 </p>
@@ -418,7 +424,9 @@ export default function BlogsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Views</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Views
+                </p>
                 <p className="text-3xl font-bold text-primary">
                   {stats.totalViews.toLocaleString()}
                 </p>
@@ -434,7 +442,9 @@ export default function BlogsPage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Likes</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Likes
+                </p>
                 <p className="text-3xl font-bold text-pink-400">
                   {stats.totalLikes.toLocaleString()}
                 </p>

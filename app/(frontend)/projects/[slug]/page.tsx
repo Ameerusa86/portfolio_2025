@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -63,12 +63,8 @@ export default function ProjectPage() {
         setLoading(true);
         const response = await fetch(`/api/projects/${params.slug}`);
         if (!response.ok) {
-          if (response.status === 404) {
-            // Use a runtime redirect to avoid typedRoutes compile-time type mismatch
-            if (typeof window !== "undefined") window.location.href = "/404";
-            return;
-          }
-          throw new Error(`Failed to fetch project: ${response.statusText}`);
+          notFound();
+          return;
         }
         const data = await response.json();
         setProject(data);
@@ -159,7 +155,6 @@ export default function ProjectPage() {
     <div className="w-full min-h-screen bg-background text-foreground">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center">
-
         {/* Navigation Breadcrumb */}
         <div className="absolute top-8 left-0 w-full z-10">
           <div className="site-container">
@@ -226,7 +221,11 @@ export default function ProjectPage() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
             {demoLink && (
-              <Button size="lg" asChild className="text-lg px-8 py-4 shadow-xl bg-primary text-background hover:bg-primary/90">
+              <Button
+                size="lg"
+                asChild
+                className="text-lg px-8 py-4 shadow-xl bg-primary text-background hover:bg-primary/90"
+              >
                 <a
                   href={demoLink as string}
                   target="_blank"
@@ -282,7 +281,11 @@ export default function ProjectPage() {
                   {/* Floating Action Buttons */}
                   <div className="absolute bottom-6 right-6 flex gap-3">
                     {demoLink && (
-                      <Button size="sm" asChild className="shadow-lg bg-primary text-background hover:bg-primary/90">
+                      <Button
+                        size="sm"
+                        asChild
+                        className="shadow-lg bg-primary text-background hover:bg-primary/90"
+                      >
                         <Link
                           href={demoLink as any}
                           target="_blank"
@@ -500,7 +503,11 @@ export default function ProjectPage() {
                     )}
 
                     {demoLink && (
-                      <Button size="sm" asChild className="w-full bg-primary text-background hover:bg-primary/90">
+                      <Button
+                        size="sm"
+                        asChild
+                        className="w-full bg-primary text-background hover:bg-primary/90"
+                      >
                         <Link
                           href={demoLink as any}
                           target="_blank"
@@ -647,7 +654,12 @@ export default function ProjectPage() {
                     Start Your Project
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" asChild className="text-lg px-8 py-4 border-border hover:bg-accent/30">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  asChild
+                  className="text-lg px-8 py-4 border-border hover:bg-accent/30"
+                >
                   <Link href="/projects">
                     <Code className="h-5 w-5 mr-2" />
                     View More Work
