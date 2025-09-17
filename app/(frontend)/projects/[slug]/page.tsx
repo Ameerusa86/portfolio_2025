@@ -156,14 +156,13 @@ export default function ProjectPage() {
   const demoLink = (project as any)?.demo_url || (project as any)?.live_url;
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
+    <div className="w-full min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
+      <section className="relative min-h-[60vh] flex items-center justify-center">
 
         {/* Navigation Breadcrumb */}
         <div className="absolute top-8 left-0 w-full z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="site-container">
             <nav className="flex items-center space-x-2 text-sm">
               <Link
                 href="/projects"
@@ -180,18 +179,18 @@ export default function ProjectPage() {
           </div>
         </div>
 
-        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+        <div className="relative w-full site-container text-center space-y-8">
           <div className="space-y-6">
             {project.featured && (
               <div className="flex justify-center">
-                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-2 text-sm">
+                <Badge className="bg-primary text-background px-4 py-2 text-sm">
                   <Star className="h-4 w-4 mr-1" />
                   Featured Project
                 </Badge>
               </div>
             )}
 
-            <h1 className="text-4xl font-bold sm:text-5xl lg:text-6xl bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold sm:text-5xl lg:text-6xl text-foreground">
               {project.title}
             </h1>
 
@@ -227,7 +226,7 @@ export default function ProjectPage() {
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4 pt-8">
             {demoLink && (
-              <Button size="lg" asChild className="text-lg px-8 py-4 shadow-xl">
+              <Button size="lg" asChild className="text-lg px-8 py-4 shadow-xl bg-primary text-background hover:bg-primary/90">
                 <a
                   href={demoLink as string}
                   target="_blank"
@@ -245,7 +244,7 @@ export default function ProjectPage() {
                 variant="outline"
                 size="lg"
                 asChild
-                className="text-lg px-8 py-4 bg-white/80 backdrop-blur-sm border-white/50 shadow-xl"
+                className="text-lg px-8 py-4 bg-background border-border shadow-xl hover:bg-accent/30"
               >
                 <a
                   href={project.github_url as string}
@@ -264,8 +263,8 @@ export default function ProjectPage() {
       {/* Project Showcase Image */}
       {project.image && (
         <section className="w-full py-16 lg:py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="overflow-hidden border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
+          <div className="site-container">
+            <Card className="overflow-hidden border border-border shadow-2xl bg-card/70">
               <CardContent className="p-0">
                 <div className="relative aspect-video lg:aspect-[21/9] w-full">
                   <Image
@@ -278,12 +277,12 @@ export default function ProjectPage() {
                     className="object-cover"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
 
                   {/* Floating Action Buttons */}
                   <div className="absolute bottom-6 right-6 flex gap-3">
                     {demoLink && (
-                      <Button size="sm" asChild className="shadow-lg">
+                      <Button size="sm" asChild className="shadow-lg bg-primary text-background hover:bg-primary/90">
                         <Link
                           href={demoLink as any}
                           target="_blank"
@@ -305,8 +304,8 @@ export default function ProjectPage() {
       {/* Technologies preview removed — techs will show under Project Overview */}
 
       {/* Main Content */}
-      <section className="w-full py-16 lg:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="w-full py-16 lg:py-24 bg-background">
+        <div className="site-container">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Content Area */}
             <div className="lg:col-span-2 space-y-12">
@@ -316,7 +315,7 @@ export default function ProjectPage() {
                   <Award className="h-8 w-8 text-primary" />
                   Project Overview
                 </h2>
-                <Card className="border-0 bg-gradient-to-br from-white to-blue-50/30 shadow-lg">
+                <Card className="border border-border bg-card/70 shadow-lg">
                   <CardContent className="p-8">
                     <p className="text-muted-foreground text-lg leading-relaxed">
                       {project.description}
@@ -336,7 +335,7 @@ export default function ProjectPage() {
                     {uniqueTechs.map((tech, idx) => (
                       <Card
                         key={`${tech}-${idx}`}
-                        className="text-center p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10"
+                        className="text-center p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 border border-border bg-card/70"
                       >
                         <CardContent className="space-y-3">
                           <div className="flex justify-center">
@@ -359,7 +358,7 @@ export default function ProjectPage() {
                   Key Features & Highlights
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Card className="p-6 border border-primary/20 bg-gradient-to-br from-white to-primary/5 hover:shadow-lg transition-all duration-300">
+                  <Card className="p-6 border border-border bg-card/70 hover:shadow-lg transition-all duration-300">
                     <CardContent className="space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -374,7 +373,7 @@ export default function ProjectPage() {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 border border-primary/20 bg-gradient-to-br from-white to-primary/5 hover:shadow-lg transition-all duration-300">
+                  <Card className="p-6 border border-border bg-card/70 hover:shadow-lg transition-all duration-300">
                     <CardContent className="space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -389,7 +388,7 @@ export default function ProjectPage() {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 border border-primary/20 bg-gradient-to-br from-white to-primary/5 hover:shadow-lg transition-all duration-300">
+                  <Card className="p-6 border border-border bg-card/70 hover:shadow-lg transition-all duration-300">
                     <CardContent className="space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -404,7 +403,7 @@ export default function ProjectPage() {
                     </CardContent>
                   </Card>
 
-                  <Card className="p-6 border border-primary/20 bg-gradient-to-br from-white to-primary/5 hover:shadow-lg transition-all duration-300">
+                  <Card className="p-6 border border-border bg-card/70 hover:shadow-lg transition-all duration-300">
                     <CardContent className="space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -425,7 +424,7 @@ export default function ProjectPage() {
             {/* Sidebar */}
             <div className="space-y-8">
               {/* Project Info Card */}
-              <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg">
+              <Card className="p-6 bg-card/70 border border-border shadow-lg">
                 <CardContent className="space-y-6">
                   <h3 className="text-xl font-bold flex items-center gap-2">
                     <Tag className="h-5 w-5 text-primary" />
@@ -473,7 +472,7 @@ export default function ProjectPage() {
                     {project.featured && (
                       <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Featured</span>
-                        <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                        <Badge className="bg-primary text-background">
                           <Star className="h-3 w-3 mr-1" />
                           Yes
                         </Badge>
@@ -487,7 +486,7 @@ export default function ProjectPage() {
                         variant="outline"
                         size="sm"
                         asChild
-                        className="w-full"
+                        className="w-full border-border hover:bg-accent/30"
                       >
                         <Link
                           href={project.github_url as any}
@@ -501,7 +500,7 @@ export default function ProjectPage() {
                     )}
 
                     {demoLink && (
-                      <Button size="sm" asChild className="w-full">
+                      <Button size="sm" asChild className="w-full bg-primary text-background hover:bg-primary/90">
                         <Link
                           href={demoLink as any}
                           target="_blank"
@@ -517,7 +516,7 @@ export default function ProjectPage() {
               </Card>
 
               {/* Quick Actions */}
-              <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg">
+              <Card className="p-6 bg-card/70 border border-border shadow-lg">
                 <CardContent className="space-y-4">
                   <h3 className="text-xl font-bold flex items-center gap-2">
                     <Share2 className="h-5 w-5 text-primary" />
@@ -528,7 +527,7 @@ export default function ProjectPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:bg-accent/30"
                       onClick={handleShare}
                     >
                       <Share2 className="h-4 w-4 mr-2" />
@@ -538,7 +537,7 @@ export default function ProjectPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:bg-accent/30"
                       onClick={() => {
                         const projectInfo = `Project: ${
                           project.title
@@ -572,7 +571,7 @@ export default function ProjectPage() {
               </Card>
 
               {/* Navigation */}
-              <Card className="p-6 bg-white/80 backdrop-blur-sm border border-primary/20 shadow-lg">
+              <Card className="p-6 bg-card/70 border border-border shadow-lg">
                 <CardContent className="space-y-4">
                   <h3 className="text-xl font-bold">Explore More</h3>
 
@@ -581,7 +580,7 @@ export default function ProjectPage() {
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:bg-accent/30"
                     >
                       <Link href="/projects">
                         <ArrowLeft className="h-4 w-4 mr-2" />
@@ -593,7 +592,7 @@ export default function ProjectPage() {
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:bg-accent/30"
                     >
                       <Link href="/contact">
                         <Heart className="h-4 w-4 mr-2" />
@@ -605,7 +604,7 @@ export default function ProjectPage() {
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:bg-accent/30"
                     >
                       <Link href="/about">
                         <Users className="h-4 w-4 mr-2" />
@@ -621,12 +620,12 @@ export default function ProjectPage() {
       </section>
 
       {/* Call to Action Section */}
-      <section className="w-full py-20 lg:py-32 bg-gradient-to-br from-primary/5 via-blue-50/50 to-indigo-100/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center bg-white/80 backdrop-blur-sm rounded-3xl p-12 lg:p-20 shadow-xl border border-white/50">
+      <section className="w-full py-20 lg:py-32 bg-accent/30">
+        <div className="site-container">
+          <div className="text-center bg-card/70 rounded-3xl p-12 lg:p-20 shadow-xl border border-border">
             <div className="space-y-6">
               <div className="flex justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-primary to-primary/80 text-white">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-background">
                   <Heart className="h-8 w-8" />
                 </div>
               </div>
@@ -648,12 +647,7 @@ export default function ProjectPage() {
                     Start Your Project
                   </Link>
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  asChild
-                  className="text-lg px-8 py-4"
-                >
+                <Button variant="outline" size="lg" asChild className="text-lg px-8 py-4 border-border hover:bg-accent/30">
                   <Link href="/projects">
                     <Code className="h-5 w-5 mr-2" />
                     View More Work

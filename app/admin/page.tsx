@@ -121,12 +121,12 @@ const AdminPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/20 w-full">
-      <div className="w-full px-6 lg:px-8 py-8 space-y-8 max-w-none">
+    <div className="min-h-screen bg-background text-foreground w-full">
+      <div className="w-full site-container py-8 space-y-8 max-w-none">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
+            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
               Dashboard
             </h1>
             <p className="text-muted-foreground mt-3 text-lg max-w-2xl">
@@ -137,7 +137,7 @@ const AdminPage = () => {
             <Button
               variant="outline"
               asChild
-              className="hover:bg-gray-50 border-gray-300"
+              className="hover:bg-accent/30 border-border"
             >
               <Link href="/">
                 <Eye className="mr-2 h-4 w-4" />
@@ -146,7 +146,7 @@ const AdminPage = () => {
             </Button>
             <Button
               asChild
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200"
+              className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200 text-background"
             >
               <Link href="/admin/projects">
                 <Plus className="mr-2 h-4 w-4" />
@@ -155,7 +155,7 @@ const AdminPage = () => {
             </Button>
             <Button
               asChild
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200"
+              className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200 text-background"
             >
               <Link href="/admin/blogs">
                 <Plus className="mr-2 h-4 w-4" />
@@ -170,24 +170,22 @@ const AdminPage = () => {
           {dashboardStats.map((stat, index) => (
             <Card
               key={index}
-              className="bg-white/70 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
+              className="bg-card/70 border border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group"
             >
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600 group-hover:text-gray-700 transition-colors">
+                    <p className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                       {stat.title}
                     </p>
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text-3xl font-bold text-foreground">
                       {stat.value}
                     </p>
                     <p className="text-xs text-muted-foreground mt-2">
                       {stat.change}
                     </p>
                   </div>
-                  <div
-                    className={`${stat.bgColor} ${stat.color} p-4 rounded-2xl shadow-md group-hover:shadow-lg transition-all duration-300`}
-                  >
+                  <div className={`bg-accent/30 text-primary p-4 rounded-2xl shadow-md group-hover:shadow-lg transition-all duration-300`}>
                     <stat.icon className="h-7 w-7" />
                   </div>
                 </div>
@@ -198,7 +196,7 @@ const AdminPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Quick Actions */}
-          <Card className="bg-white/70 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-card/70 border border-border shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader>
               <CardTitle className="flex items-center text-lg font-semibold">
                 <Plus className="mr-2 h-5 w-5" />
@@ -208,7 +206,7 @@ const AdminPage = () => {
             <CardContent className="space-y-3">
               <Button
                 variant="outline"
-                className="w-full justify-start"
+                className="w-full justify-start border-border hover:bg-accent/30"
                 asChild
               >
                 <Link href="/admin/projects">
@@ -218,7 +216,7 @@ const AdminPage = () => {
               </Button>
               <Button
                 variant="outline"
-                className="w-full justify-start"
+                className="w-full justify-start border-border hover:bg-accent/30"
                 asChild
               >
                 <Link href="/admin/blogs">
@@ -228,7 +226,7 @@ const AdminPage = () => {
               </Button>
               <Button
                 variant="outline"
-                className="w-full justify-start"
+                className="w-full justify-start border-border hover:bg-accent/30"
                 asChild
               >
                 <Link href="/">
@@ -280,7 +278,7 @@ const AdminPage = () => {
 
         {/* Content Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-white/70 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-card/70 border border-border shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader>
               <CardTitle>Projects Overview</CardTitle>
             </CardHeader>
@@ -302,14 +300,14 @@ const AdminPage = () => {
                   </span>
                   <span className="font-medium">{stats.featuredProjects}</span>
                 </div>
-                <Button variant="outline" className="w-full mt-4" asChild>
+                <Button variant="outline" className="w-full mt-4 border-border hover:bg-accent/30" asChild>
                   <Link href="/admin/projects">Manage Projects</Link>
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/70 backdrop-blur-sm border border-gray-200/50 shadow-lg hover:shadow-xl transition-all duration-300">
+          <Card className="bg-card/70 border border-border shadow-lg hover:shadow-xl transition-all duration-300">
             <CardHeader>
               <CardTitle>Content Statistics</CardTitle>
             </CardHeader>
@@ -335,7 +333,7 @@ const AdminPage = () => {
                     {stats.pageViews.toLocaleString()}
                   </span>
                 </div>
-                <Button variant="outline" className="w-full mt-4" asChild>
+                <Button variant="outline" className="w-full mt-4 border-border hover:bg-accent/30" asChild>
                   <Link href="/">View Site</Link>
                 </Button>
               </div>

@@ -143,15 +143,14 @@ export default async function Page({ params }: PageProps) {
   });
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
+    <div className="w-full min-h-screen bg-background text-foreground">
       <ReadingProgress />
       {/* Inject a client-only view incrementer */}
       <IncrementView slug={slug} />
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
         <div className="absolute top-8 left-0 w-full z-10">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="site-container max-w-5xl">
             <nav className="flex items-center space-x-2 text-sm">
               <Link
                 href="/blog"
@@ -165,7 +164,7 @@ export default async function Page({ params }: PageProps) {
             </nav>
           </div>
         </div>
-        <div className="relative w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+        <div className="relative w-full site-container max-w-5xl text-center space-y-8">
           <div className="space-y-6 pt-20">
             <div className="flex flex-wrap justify-center gap-2 mb-2">
               {post.tags.map((tag: string) => (
@@ -227,8 +226,8 @@ export default async function Page({ params }: PageProps) {
       {/* Featured Image */}
       {post.image && (
         <section className="w-full py-10 lg:py-16">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Card className="overflow-hidden border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
+          <div className="site-container max-w-5xl">
+            <Card className="overflow-hidden border border-border shadow-2xl bg-card/70">
               <CardContent className="p-0">
                 <div className="relative aspect-video w-full">
                   <Image
@@ -238,7 +237,7 @@ export default async function Page({ params }: PageProps) {
                     className="object-cover"
                     priority
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
               </CardContent>
             </Card>
@@ -246,8 +245,8 @@ export default async function Page({ params }: PageProps) {
         </section>
       )}
       {/* Main Content */}
-      <section className="w-full py-12 lg:py-20 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="w-full py-12 lg:py-20">
+        <div className="site-container max-w-5xl">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Content Area */}
             <div className="lg:col-span-2 space-y-12">
@@ -256,7 +255,7 @@ export default async function Page({ params }: PageProps) {
                 <h2 className="text-3xl lg:text-4xl font-bold flex items-center gap-3">
                   <Award className="h-8 w-8 text-primary" /> Article Overview
                 </h2>
-                <Card className="border-0 bg-gradient-to-br from-white to-blue-50/30 shadow-lg">
+                <Card className="border border-border bg-card/70 shadow-lg">
                   <CardContent className="p-8">
                     <div className="prose prose-lg max-w-none">
                       <div
