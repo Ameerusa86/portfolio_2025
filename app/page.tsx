@@ -3,14 +3,33 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowRight, Code, Briefcase, User, BookOpen } from "lucide-react";
+import {
+  ArrowRight,
+  Code,
+  Briefcase,
+  User,
+  BookOpen,
+  Eye,
+  Heart,
+} from "lucide-react";
 import { BlogCard } from "@/components/BlogCard";
 import { BlogPost } from "@/types/blog";
+import { Project } from "@/types/project";
+import { ProjectCard } from "@/components/ProjectCard";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const [featuredBlogPosts, setFeaturedBlogPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
+  const [loadingProjects, setLoadingProjects] = useState(true);
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    publishedBlogs: 0,
+    pageViews: 0,
+    totalLikes: 0,
+  });
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     const fetchFeaturedBlogs = async () => {
@@ -32,6 +51,45 @@ export default function HomePage() {
     };
 
     fetchFeaturedBlogs();
+
+    const fetchFeaturedProjects = async () => {
+      try {
+        setLoadingProjects(true);
+        const res = await fetch("/api/projects");
+        if (!res.ok) throw new Error("Failed to fetch projects");
+        const projects: Project[] = await res.json();
+        // Prefer featured; fallback to first 2
+        const featured = projects.filter((p) => p.featured);
+        const picks = (featured.length > 0 ? featured : projects).slice(0, 2);
+        setFeaturedProjects(picks);
+      } catch (err) {
+        console.error("Failed to fetch projects:", err);
+      } finally {
+        setLoadingProjects(false);
+      }
+    };
+
+    const fetchStats = async () => {
+      try {
+        setLoadingStats(true);
+        const res = await fetch("/api/dashboard");
+        if (!res.ok) throw new Error("Failed to fetch stats");
+        const data = await res.json();
+        setStats({
+          totalProjects: data.totalProjects ?? 0,
+          publishedBlogs: data.publishedBlogs ?? 0,
+          pageViews: data.pageViews ?? 0,
+          totalLikes: data.totalLikes ?? 0,
+        });
+      } catch (err) {
+        console.error("Failed to fetch stats:", err);
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    fetchFeaturedProjects();
+    fetchStats();
   }, []);
   const features = [
     {
@@ -58,7 +116,27 @@ export default function HomePage() {
     <div className="w-full bg-background">
       {/* Hero Section */}
       <section className="relative min-h-[80vh] flex items-center justify-center">
-        <div className="absolute inset-0 pointer-events-none" />
+        {/* Decorative background */}
+        <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+          {/* soft radial glow */}
+          <div
+            className="absolute -top-24 left-1/2 -translate-x-1/2 h-[36rem] w-[36rem] rounded-full blur-3xl opacity-25"
+            style={{
+              background:
+                "radial-gradient(closest-side, var(--color-primary), transparent 70%)",
+            }}
+          />
+          {/* subtle grid overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.08]"
+            style={{
+              backgroundImage:
+                "linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
+              backgroundPosition: "-1px -1px",
+            }}
+          />
+        </div>
         <div className="relative w-full mx-auto site-container text-center space-y-8">
           <div className="space-y-4">
             <h1 className="text-4xl font-bold sm:text-6xl lg:text-7xl text-foreground">
@@ -94,8 +172,58 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Quick Stats */}
+      <section className="w-full py-8" data-fade>
+        <div className="site-container">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              {
+                label: "Projects",
+                value: stats.totalProjects,
+                icon: <Briefcase className="h-4 w-4" />,
+              },
+              {
+                label: "Published Blogs",
+                value: stats.publishedBlogs,
+                icon: <BookOpen className="h-4 w-4" />,
+              },
+              {
+                label: "Total Views",
+                value: stats.pageViews,
+                icon: <Eye className="h-4 w-4" />,
+              },
+              {
+                label: "Total Likes",
+                value: stats.totalLikes,
+                icon: <Heart className="h-4 w-4" />,
+              },
+            ].map((s, i) => (
+              <Card key={i} className="bg-card/70 border border-border">
+                <CardContent className="p-4 md:p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="text-2xl md:text-3xl font-bold text-foreground">
+                      {loadingStats ? (
+                        <span className="inline-block h-6 w-16 bg-muted/40 rounded animate-pulse" />
+                      ) : (
+                        s.value.toLocaleString()
+                      )}
+                    </div>
+                    <div className="inline-flex items-center justify-center size-9 rounded-md bg-accent/40 border border-border text-primary">
+                      {s.icon}
+                    </div>
+                  </div>
+                  <div className="mt-1 text-xs md:text-sm text-muted-foreground">
+                    {s.label}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="w-full py-20 lg:py-32">
+      <section className="w-full py-20 lg:py-32" data-fade>
         <div className="site-container">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-foreground">
@@ -132,9 +260,51 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Featured Projects */}
+      {featuredProjects.length > 0 && (
+        <section className="w-full py-20 lg:py-32" data-fade>
+          <div className="site-container">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+                Featured Projects
+              </h2>
+              <p className="text-muted-foreground text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
+                A selection of my favorite work — performant, accessible, and
+                thoughtfully designed.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mb-12">
+              {loadingProjects ? (
+                <>
+                  <div className="bg-muted/40 rounded-xl h-80 animate-pulse" />
+                  <div className="bg-muted/40 rounded-xl h-80 animate-pulse" />
+                </>
+              ) : (
+                featuredProjects.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))
+              )}
+            </div>
+            <div className="text-center">
+              <Button
+                variant="outline"
+                size="lg"
+                asChild
+                className="text-lg px-8 py-4 border-border hover:bg-accent hover:text-accent-foreground"
+              >
+                <Link href="/projects">
+                  Explore All Projects
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Latest Blog Posts */}
       {featuredBlogPosts.length > 0 && (
-        <section className="w-full py-20 lg:py-32">
+        <section className="w-full py-20 lg:py-32" data-fade>
           <div className="site-container">
             <div className="text-center mb-16">
               <h2 className="text-3xl lg:text-4xl font-bold mb-6">
@@ -179,7 +349,7 @@ export default function HomePage() {
       )}
 
       {/* CTA Section */}
-      <section className="w-full py-20 lg:py-32">
+      <section className="w-full py-20 lg:py-32" data-fade>
         <div className="site-container">
           <div className="text-center bg-accent/40 rounded-3xl p-12 lg:p-20 border border-border">
             <h2 className="text-3xl lg:text-4xl font-bold mb-6">
