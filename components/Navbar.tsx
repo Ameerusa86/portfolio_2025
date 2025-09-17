@@ -53,8 +53,8 @@ const Navbar = () => {
       >
         Skip to content
       </Link>
-      <div className="mx-auto max-w-6xl">
-        <div className="relative rounded-3xl bg-gradient-to-r from-white/85 via-white/80 to-white/70 text-zinc-800 shadow-[0_2px_6px_-1px_rgba(0,0,0,.15),0_0_0_1px_rgba(0,0,0,.05)] ring-1 ring-zinc-200 backdrop-blur-md">
+      <div className="site-container">
+        <div className="relative rounded-3xl bg-card/70 text-foreground shadow-[0_2px_6px_-1px_rgba(0,0,0,.30),0_0_0_1px_rgba(0,0,0,.25)] border border-border backdrop-blur-md">
           {/* Desktop Navigation: logo left, links right */}
           <div className="hidden md:flex items-center h-16 px-8 gap-6 justify-between">
             {/* Brand left */}
@@ -85,17 +85,17 @@ const Navbar = () => {
                     key={item.name}
                     href={item.href}
                     className={
-                      "relative px-3 py-2 rounded-lg transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-zinc-900 " +
+                      "group relative px-3 py-2 rounded-lg transition-all duration-200 " +
                       (active
-                        ? "text-zinc-900 bg-gradient-to-r from-blue-50 to-purple-50"
-                        : "text-zinc-500")
+                        ? "text-foreground bg-accent/30"
+                        : "text-muted-foreground hover:bg-accent/30 hover:text-foreground")
                     }
                     aria-current={active ? "page" : undefined}
                   >
                     {item.name}
                     <span
                       className={
-                        "absolute left-3 right-3 -bottom-1 h-[2px] rounded-full bg-gradient-to-r from-blue-500/80 to-purple-500/80 transform origin-left scale-x-0 transition-transform duration-300 " +
+                        "absolute left-3 right-3 -bottom-1 h-[2px] rounded-full bg-primary/90 transform origin-left scale-x-0 transition-transform duration-300 " +
                         (active ? "scale-x-100" : "group-hover:scale-x-100")
                       }
                       aria-hidden="true"
@@ -122,7 +122,7 @@ const Navbar = () => {
               variant="ghost"
               size="sm"
               onClick={toggleMenu}
-              className="h-9 w-9 p-0 text-zinc-700 hover:bg-zinc-900/5"
+              className="h-9 w-9 p-0 text-foreground hover:bg-accent/30"
               aria-expanded={isMenuOpen}
               aria-label="Toggle navigation menu"
             >
@@ -141,7 +141,7 @@ const Navbar = () => {
               isMenuOpen ? "max-h-72" : "max-h-0"
             }`}
           >
-            <div className="px-6 py-4 space-y-1 border-t border-zinc-200/70">
+            <div className="px-6 py-4 space-y-1 border-t border-border bg-card/70">
               <nav className="flex flex-col gap-3" aria-label="Mobile Primary">
                 {navigationItems.map((item) => {
                   const active =
@@ -153,11 +153,12 @@ const Navbar = () => {
                       key={item.name}
                       href={item.href}
                       className={
-                        "px-3 py-2 rounded-lg text-base font-medium transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-zinc-900 " +
+                        "px-3 py-2 rounded-lg text-base font-medium transition-all duration-200 " +
                         (active
-                          ? "text-zinc-900 bg-gradient-to-r from-blue-50 to-purple-50"
-                          : "text-zinc-600")
+                          ? "text-foreground bg-accent/30"
+                          : "text-muted-foreground hover:bg-accent/30 hover:text-foreground")
                       }
+                      aria-current={active ? "page" : undefined}
                     >
                       {item.name}
                     </Link>
