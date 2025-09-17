@@ -101,23 +101,20 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50">
+    <div className="w-full min-h-screen bg-background text-foreground">
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-teal-600/10" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]" />
-
-        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16 sm:py-24">
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-white/50 shadow-lg text-blue-600 text-sm font-medium mb-6">
+        <div className="relative w-full site-container text-center py-16 sm:py-24">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-accent/40 border border-border shadow-lg text-primary text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4 mr-2" />
             Latest Insights & Tutorials
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 text-foreground leading-tight">
             Blog
           </h1>
 
-          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             Discover insights, tutorials, and thoughts on web development,
             technology, and the craft of building exceptional digital
             experiences.
@@ -126,7 +123,7 @@ export default function BlogPage() {
       </section>
 
       <div className="w-full py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="site-container pb-20">
           {/* Add Popular Posts Section */}
           {!loading && popular.length > 0 && (
             <section className="mb-20">
@@ -165,14 +162,14 @@ export default function BlogPage() {
 
           {/* Search and Filter Section */}
           <div className="mb-12">
-            <div className="bg-white/70 backdrop-blur-sm border border-white/40 rounded-2xl p-6 shadow-lg">
+            <div className="bg-card/70 border border-border rounded-2xl p-6 shadow-lg">
               <div className="flex flex-col md:flex-row gap-4">
                 {/* Search */}
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                   <Input
                     placeholder="Search articles..."
-                    className="pl-12 h-12 bg-white/80 border border-white/40 focus:border-primary/50 rounded-xl focus:bg-white transition"
+                    className="pl-12 h-12 bg-background border border-border focus:border-primary/50 rounded-xl transition"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -185,7 +182,7 @@ export default function BlogPage() {
                     <select
                       value={selectedTag}
                       onChange={(e) => setSelectedTag(e.target.value)}
-                      className="h-12 w-full pl-10 pr-4 bg-white/80 border border-white/40 focus:border-primary/50 rounded-xl text-sm appearance-none cursor-pointer focus:bg-white transition"
+                      className="h-12 w-full pl-10 pr-4 bg-background border border-border focus:border-primary/50 rounded-xl text-sm appearance-none cursor-pointer transition"
                     >
                       <option value="">All Tags</option>
                       {allTags.map((tag) => (
@@ -276,14 +273,10 @@ export default function BlogPage() {
 
           {/* Newsletter Signup */}
           <section className="mt-24">
-            <Card className="relative overflow-hidden bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border-0 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-50" />
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl transform translate-x-20 -translate-y-20" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 rounded-full blur-3xl transform -translate-x-10 translate-y-10" />
-
+            <Card className="relative overflow-hidden bg-accent/30 border border-border shadow-2xl">
               <CardContent className="relative p-12 text-center">
                 <div className="max-w-2xl mx-auto">
-                  <h3 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  <h3 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
                     Stay in the Loop
                   </h3>
                   <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
@@ -295,9 +288,9 @@ export default function BlogPage() {
                     <Input
                       placeholder="Enter your email address"
                       type="email"
-                      className="flex-1 h-12 bg-white/85 border border-white/50 focus:border-primary/50 rounded-xl focus:bg-white transition"
+                      className="flex-1 h-12 bg-background border border-border focus:border-primary/50 rounded-xl transition"
                     />
-                    <Button className="h-12 px-8 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 rounded-xl font-medium">
+                    <Button className="h-12 px-8 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-medium">
                       Subscribe
                     </Button>
                   </div>
@@ -322,7 +315,7 @@ function FeaturedPostCard({
   formatDate: (date: string) => string;
 }) {
   return (
-    <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
+    <Card className="group relative overflow-hidden bg-card/70 border border-border hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10">
       <div className="relative h-80 overflow-hidden">
         {post.image ? (
           <Image
@@ -332,13 +325,13 @@ function FeaturedPostCard({
             className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+          <div className="w-full h-full bg-primary/10 flex items-center justify-center">
             <span className="text-6xl opacity-50">📖</span>
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute top-6 left-6">
-          <Badge className="bg-gradient-to-r from-primary to-secondary text-white shadow-lg px-3 py-1">
+          <Badge className="bg-primary text-primary-foreground shadow-lg px-3 py-1">
             <Sparkles className="w-3 h-3 mr-1" />
             Featured
           </Badge>
@@ -413,7 +406,7 @@ function BlogPostCard({
   formatDate: (date: string) => string;
 }) {
   return (
-    <Card className="group relative overflow-hidden bg-white/70 backdrop-blur-sm border border-white/40 hover:border-primary/40 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
+    <Card className="group relative overflow-hidden bg-card/70 border border-border hover:border-primary/40 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 h-full flex flex-col">
       <div className="relative h-56 overflow-hidden">
         {post.image ? (
           <Image
@@ -423,7 +416,7 @@ function BlogPostCard({
             className="object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center">
+          <div className="w-full h-full bg-muted/40 flex items-center justify-center">
             <span className="text-4xl opacity-50">📖</span>
           </div>
         )}

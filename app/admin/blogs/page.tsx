@@ -301,20 +301,18 @@ export default function BlogsPage() {
   }
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="site-container py-8 space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-50 via-pink-50 to-orange-50 rounded-2xl p-8 border border-purple-200/50 shadow-lg backdrop-blur-sm">
+      <div className="rounded-2xl p-8 border border-border shadow-lg bg-card/70">
         <div className="flex items-center justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-4">
-              <div className="h-14 w-14 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-700 rounded-2xl flex items-center justify-center shadow-lg ring-4 ring-white/50">
-                <FileText className="h-7 w-7 text-white drop-shadow-sm" />
+              <div className="h-14 w-14 bg-primary rounded-2xl flex items-center justify-center shadow-lg ring-4 ring-border/50">
+                <FileText className="h-7 w-7 text-background drop-shadow-sm" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-700 bg-clip-text text-transparent">
-                  Blog Management
-                </h1>
-                <p className="text-gray-600 font-medium">
+                <h1 className="text-3xl font-bold">Blog Management</h1>
+                <p className="text-muted-foreground font-medium">
                   Create, edit, and manage your blog posts
                 </p>
               </div>
@@ -322,7 +320,7 @@ export default function BlogsPage() {
           </div>
           <Button
             onClick={handleCreateBlog}
-            className="h-12 px-6 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-700 hover:from-purple-700 hover:via-pink-700 hover:to-orange-800 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+            className="h-12 px-6 bg-primary hover:bg-primary/90 text-background shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
           >
             <Plus className="h-5 w-5 mr-3" />
             Create New Blog Post
@@ -332,115 +330,127 @@ export default function BlogsPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-600">Total Posts</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Total Posts
+                </p>
+                <p className="text-3xl font-bold text-foreground">
                   {stats.total}
                 </p>
               </div>
-              <div className="h-12 w-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
-                <FileText className="h-6 w-6 text-blue-600" />
+              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                <FileText className="h-6 w-6 text-primary" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-600">Published</p>
-                <p className="text-3xl font-bold text-green-600">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Published
+                </p>
+                <p className="text-3xl font-bold text-emerald-400">
                   {stats.published}
                 </p>
               </div>
-              <div className="h-12 w-12 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center">
-                <Eye className="h-6 w-6 text-green-600" />
+              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                <Eye className="h-6 w-6 text-emerald-400" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-600">Drafts</p>
-                <p className="text-3xl font-bold text-yellow-600">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Drafts
+                </p>
+                <p className="text-3xl font-bold text-amber-400">
                   {stats.draft}
                 </p>
               </div>
-              <div className="h-12 w-12 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl flex items-center justify-center">
-                <Clock className="h-6 w-6 text-yellow-600" />
+              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                <Clock className="h-6 w-6 text-amber-400" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-600">Featured</p>
-                <p className="text-3xl font-bold text-purple-600">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Featured
+                </p>
+                <p className="text-3xl font-bold text-primary">
                   {stats.featured}
                 </p>
               </div>
-              <div className="h-12 w-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
-                <Star className="h-6 w-6 text-purple-600" />
+              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                <Star className="h-6 w-6 text-primary" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-600">
+                <p className="text-sm font-medium text-muted-foreground">
                   Total Read Time
                 </p>
-                <p className="text-3xl font-bold text-orange-600">
+                <p className="text-3xl font-bold text-orange-400">
                   {stats.totalReadTime}m
                 </p>
               </div>
-              <div className="h-12 w-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl flex items-center justify-center">
-                <Clock className="h-6 w-6 text-orange-600" />
+              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                <Clock className="h-6 w-6 text-orange-400" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-600">Views</p>
-                <p className="text-3xl font-bold text-purple-600">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Views
+                </p>
+                <p className="text-3xl font-bold text-primary">
                   {stats.totalViews.toLocaleString()}
                 </p>
               </div>
-              <div className="h-12 w-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
-                <Eye className="h-6 w-6 text-purple-600" />
+              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                <Eye className="h-6 w-6 text-primary" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-600">Likes</p>
-                <p className="text-3xl font-bold text-pink-600">
+                <p className="text-sm font-medium text-muted-foreground">
+                  Likes
+                </p>
+                <p className="text-3xl font-bold text-pink-400">
                   {stats.totalLikes.toLocaleString()}
                 </p>
               </div>
-              <div className="h-12 w-12 bg-gradient-to-br from-pink-100 to-pink-200 rounded-xl flex items-center justify-center">
-                <Heart className="h-6 w-6 text-pink-600" />
+              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                <Heart className="h-6 w-6 text-pink-400" />
               </div>
             </div>
           </CardContent>
@@ -448,21 +458,21 @@ export default function BlogsPage() {
       </div>
 
       {/* Filters */}
-      <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+      <Card className="border border-border shadow-lg bg-card/70">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
               <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
                   placeholder="Search blog posts..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                  className="pl-10 h-12 border-border focus:border-primary/50"
                 />
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <Filter className="h-4 w-4" />
                   Status:
                 </span>
@@ -481,16 +491,8 @@ export default function BlogsPage() {
                       }
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${
                         statusFilter === filter.value
-                          ? filter.value === "all"
-                            ? "bg-gray-500 text-white shadow-md border-gray-600 hover:bg-gray-600"
-                            : filter.value === "published"
-                            ? "bg-green-500 text-white shadow-md border-green-600 hover:bg-green-600"
-                            : "bg-yellow-500 text-white shadow-md border-yellow-600 hover:bg-yellow-600"
-                          : filter.value === "all"
-                          ? "bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-200"
-                          : filter.value === "published"
-                          ? "bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
-                          : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-yellow-200"
+                          ? "bg-primary text-background shadow-md border-primary hover:bg-primary/90"
+                          : "bg-background text-foreground hover:bg-accent/30 border-border"
                       }`}
                     >
                       {filter.label}
@@ -499,7 +501,7 @@ export default function BlogsPage() {
                 </div>
               </div>
             </div>
-            <div className="text-sm text-gray-500 font-medium">
+            <div className="text-sm text-muted-foreground font-medium">
               Showing {filteredBlogs.length} of {blogs.length} posts
             </div>
           </div>
