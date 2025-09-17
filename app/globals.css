@@ -44,40 +44,58 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Simplified, high-contrast light theme */
+/* Dark theme based on provided palette (Yellow + Dark/Grey scales) */
 :root {
   --radius: 0.625rem;
-  --background: #ffffff;
-  --foreground: #111827; /* slate-900 */
-  --card: #ffffff;
-  --card-foreground: #111827;
-  --popover: #ffffff;
-  --popover-foreground: #111827;
-  --primary: #1d4ed8; /* blue-700 */
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9; /* slate-100 */
-  --secondary-foreground: #1e293b; /* slate-800 */
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b; /* slate-500 */
-  --accent: #f1f5f9;
-  --accent-foreground: #1e293b;
-  --destructive: #dc2626; /* red-600 */
-  --border: #e2e8f0; /* slate-200 */
-  --input: #e2e8f0;
-  --ring: #3b82f6; /* blue-500 */
-  --chart-1: #2563eb;
-  --chart-2: #16a34a;
-  --chart-3: #d97706;
-  --chart-4: #dc2626;
-  --chart-5: #7c3aed;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #111827;
-  --sidebar-primary: #1d4ed8;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #1e293b;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #3b82f6;
+
+  /* Core surface & text */
+  --background: #0f0f0f; /* near-dark background */
+  --foreground: #f5f5f5; /* light text */
+
+  /* Surfaces */
+  --card: #141414; /* Dark 08 */
+  --card-foreground: #f5f5f5;
+  --popover: #141414;
+  --popover-foreground: #f5f5f5;
+
+  /* Brand (Yellow Shades) */
+  --primary: #fdd11a; /* Yellow 55 */
+  --primary-foreground: #0f0f0f; /* readable on yellow */
+
+  /* Secondary/Muted (Greys) */
+  --secondary: #1a1a1a; /* Dark 10 */
+  --secondary-foreground: #e5e5e5; /* Grey 95 */
+  --muted: #1a1a1a; /* panels */
+  --muted-foreground: #a3a3a3; /* Grey 70 */
+
+  /* Accent blocks */
+  --accent: #252525; /* Dark 15 */
+  --accent-foreground: #f0f0f0;
+
+  /* Feedback */
+  --destructive: #ef4444; /* red-500 */
+
+  /* Borders/Inputs/Ring */
+  --border: #262626; /* ~Dark 20 */
+  --input: #262626;
+  --ring: #fee066; /* Yellow 70 as focus ring */
+
+  /* Charts keep a colorful yet balanced set */
+  --chart-1: #fdd11a; /* brand yellow */
+  --chart-2: #16a34a; /* green-600 */
+  --chart-3: #60a5fa; /* blue-400 for variety */
+  --chart-4: #ef4444; /* red-500 */
+  --chart-5: #a78bfa; /* violet-400 */
+
+  /* Sidebar */
+  --sidebar: #141414;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #fdd11a;
+  --sidebar-primary-foreground: #0f0f0f;
+  --sidebar-accent: #1f1f1f;
+  --sidebar-accent-foreground: #e5e5e5;
+  --sidebar-border: #262626;
+  --sidebar-ring: #fee066;
 }
 
 @layer base {

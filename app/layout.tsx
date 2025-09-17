@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-import { Lato, Playfair_Display, Geist_Mono } from "next/font/google";
+import { Inter, Kumbh_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { ConditionalWrapper } from "@/components/ConditionalWrapper";
 
-// Body text: Lato – readable sans-serif
-const bodySans = Lato({
+// Body text: Inter (regular, medium, semibold, bold)
+const bodySans = Inter({
   variable: "--font-body",
-  weight: ["300", "400", "700"],
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
 });
 
-// Headlines: Playfair Display – strong editorial serif
-const headlineDisplay = Playfair_Display({
+// Headlines: Kumbh Sans (regular, medium)
+const headlineDisplay = Kumbh_Sans({
   variable: "--font-headline",
-  weight: ["400", "700", "900"],
+  weight: ["400", "500"],
   subsets: ["latin"],
   display: "swap",
 });
