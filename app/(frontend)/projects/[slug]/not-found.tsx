@@ -15,16 +15,16 @@ export default function ProjectNotFound() {
               </div>
             </div>
 
-            <h1 className="text-2xl font-bold mb-2">Article Not Found</h1>
+            <h1 className="text-2xl font-bold mb-2">Project Not Found</h1>
             <p className="text-muted-foreground mb-8">
-              The blog post you're looking for doesn't exist or has been moved.
+              The project you're looking for doesn't exist or has been moved.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button asChild>
-                <Link href="/blog">
+                <Link href="/projects">
                   <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Blog
+                  Back to Projects
                 </Link>
               </Button>
               <Button variant="outline" asChild>

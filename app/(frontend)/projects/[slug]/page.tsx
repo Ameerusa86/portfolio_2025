@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { notFound, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,6 +28,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getProjectImageUrl } from "@/lib/supabase-storage";
 import { toast } from "sonner";
+import ProjectNotFound from "./not-found";
 
 interface Project {
   id: string;
@@ -56,6 +57,7 @@ export default function ProjectPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [missing, setMissing] = useState(false);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -63,10 +65,19 @@ export default function ProjectPage() {
         setLoading(true);
         const response = await fetch(`/api/projects/${params.slug}`);
         if (!response.ok) {
-          notFound();
+          setMissing(true);
+          setProject(null);
+          setError(null);
           return;
         }
         const data = await response.json();
+        if (!data) {
+          setMissing(true);
+          setProject(null);
+          setError(null);
+          return;
+        }
+        setMissing(false);
         setProject(data);
         setError(null);
       } catch (err) {
@@ -140,7 +151,15 @@ export default function ProjectPage() {
     .map((t) => String(t).trim())
     .filter((t, i, a) => t.length > 0 && a.indexOf(t) === i);
 
-  if (!project) return null;
+  if (missing) {
+    return <ProjectNotFound />;
+  }
+  if (!project) {
+    // Optional: simple spacer to avoid layout shift during fetch
+    return (
+      <div className="w-full min-h-screen bg-background" aria-busy="true" />
+    );
+  }
 
   // Determine published state: prefer explicit boolean 'published', fall back to status string
   const isPublished =

@@ -16,15 +16,15 @@ import {
   Eye,
   Heart,
   Link2,
-  Share2,
   Tag,
   ArrowLeft,
-  FileDown,
   BookOpen,
 } from "lucide-react";
 import LikeButton from "@/components/LikeButton";
 import IncrementView from "@/components/IncrementView";
 import ReadingProgress from "@/components/ReadingProgress";
+import ShareButton from "@/components/ShareButton";
+import PrintButton from "@/components/PrintButton";
 
 export const dynamic = "force-dynamic";
 
@@ -233,21 +233,7 @@ export default async function Page({ params }: PageProps) {
 
                 <div className="pt-2 flex gap-2">
                   <LikeButton slug={slug} initialLikes={likes} />
-                  <Button
-                    variant="outline"
-                    className="flex-1"
-                    onClick={async () => {
-                      try {
-                        await navigator.clipboard.writeText(
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : ""
-                        );
-                      } catch {}
-                    }}
-                  >
-                    <Share2 className="h-4 w-4" /> Share
-                  </Button>
+                  <ShareButton variant="outline" className="flex-1" />
                 </div>
               </CardContent>
             </Card>
@@ -269,13 +255,10 @@ export default async function Page({ params }: PageProps) {
                     <Link2 className="h-4 w-4" /> Jump to content
                   </a>
                 </Button>
-                <Button
+                <PrintButton
                   variant="secondary"
                   className="w-full justify-center"
-                  onClick={() => window.print()}
-                >
-                  <FileDown className="h-4 w-4" /> Save/Print
-                </Button>
+                />
               </CardContent>
             </Card>
 
