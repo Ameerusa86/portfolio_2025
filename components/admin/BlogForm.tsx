@@ -251,15 +251,15 @@ export default function BlogForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Blog Status */}
-      <div className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-50/80 via-pink-50/60 to-orange-50/80 rounded-2xl border border-purple-200/50 shadow-lg backdrop-blur-sm">
+      <div className="flex items-center justify-between p-6 rounded-2xl border border-border shadow-lg bg-card/70">
         <div className="space-y-2">
-          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-purple-500 via-pink-600 to-orange-700 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-white/50">
-              <FileText className="h-5 w-5 text-white drop-shadow-sm" />
+          <h3 className="text-xl font-bold text-foreground flex items-center gap-3">
+            <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center shadow-lg ring-4 ring-border/50">
+              <FileText className="h-5 w-5 text-background drop-shadow-sm" />
             </div>
             Blog Status
           </h3>
-          <p className="text-sm text-gray-600 font-medium">
+          <p className="text-sm text-muted-foreground font-medium">
             Control visibility and highlighting
           </p>
         </div>
@@ -272,10 +272,10 @@ export default function BlogForm({
                 onChange={(e) => handleChange("featured", e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-12 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-yellow-300/50 rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-orange-500 shadow-lg transition-all duration-300 group-hover:scale-105"></div>
+              <div className="w-12 h-7 bg-border/60 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-primary/40 rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-lg transition-all duration-300 group-hover:scale-105"></div>
             </label>
-            <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Star className="h-5 w-5 text-yellow-500 drop-shadow-sm" />
+            <span className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Star className="h-5 w-5 text-primary drop-shadow-sm" />
               Featured
             </span>
           </div>
@@ -292,24 +292,24 @@ export default function BlogForm({
                 }
                 className="sr-only peer"
               />
-              <div className="w-12 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-green-300/50 rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-green-500 peer-checked:to-emerald-600 shadow-lg transition-all duration-300 group-hover:scale-105"></div>
+              <div className="w-12 h-7 bg-border/60 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-primary/40 rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-lg transition-all duration-300 group-hover:scale-105"></div>
             </label>
-            <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Eye className="h-5 w-5 text-green-500 drop-shadow-sm" />
+            <span className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Eye className="h-5 w-5 text-primary drop-shadow-sm" />
               Published
             </span>
           </div>
           <div className="flex flex-col items-end min-w-[120px]">
             {autosaveStatus === "saving" && (
-              <span className="text-xs text-gray-500 animate-pulse">
+              <span className="text-xs text-muted-foreground animate-pulse">
                 Saving…
               </span>
             )}
             {autosaveStatus === "saved" && (
-              <span className="text-xs text-green-600">Saved</span>
+              <span className="text-xs text-emerald-400">Saved</span>
             )}
             {autosaveStatus === "error" && (
-              <span className="text-xs text-red-600">Autosave failed</span>
+              <span className="text-xs text-red-500">Autosave failed</span>
             )}
           </div>
         </div>
@@ -319,11 +319,11 @@ export default function BlogForm({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Basic Info */}
         <div className="space-y-8">
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-purple-50/30 border-b border-gray-100">
-              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                <div className="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-sm">📝</span>
+          <Card className="border border-border shadow-lg bg-card/70">
+            <CardHeader className="border-b border-border bg-card/60">
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-background font-bold text-sm">📝</span>
                 </div>
                 Blog Information
               </CardTitle>
@@ -333,7 +333,7 @@ export default function BlogForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="title"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-foreground"
                 >
                   Blog Title <span className="text-red-500">*</span>
                 </Label>
@@ -344,8 +344,8 @@ export default function BlogForm({
                   onChange={(e) => handleChange("title", e.target.value)}
                   className={`h-12 text-base ${
                     errors.title
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.title && (
@@ -360,7 +360,7 @@ export default function BlogForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="excerpt"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-foreground"
                 >
                   Excerpt <span className="text-red-500">*</span>
                 </Label>
@@ -371,8 +371,8 @@ export default function BlogForm({
                   onChange={(e) => handleChange("excerpt", e.target.value)}
                   className={`min-h-[100px] resize-none text-base ${
                     errors.excerpt
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.excerpt && (
@@ -387,7 +387,7 @@ export default function BlogForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="content"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-foreground"
                 >
                   Content <span className="text-red-500">*</span>
                 </Label>
@@ -398,8 +398,8 @@ export default function BlogForm({
                   onChange={(e) => handleChange("content", e.target.value)}
                   className={`min-h-[200px] resize-none text-base ${
                     errors.content
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.content && (
@@ -414,7 +414,7 @@ export default function BlogForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="tags"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-foreground"
                 >
                   Tags
                 </Label>
@@ -429,7 +429,7 @@ export default function BlogForm({
                       handleChange("tags", opts);
                       setTagsInput(opts.join(", "));
                     }}
-                    className="h-28 w-full p-2 border-gray-200 rounded-md"
+                    className="h-28 w-full p-2 border border-border rounded-md bg-background text-foreground"
                   >
                     {availableTags.map((t) => (
                       <option key={t} value={t}>
@@ -445,11 +445,11 @@ export default function BlogForm({
                     placeholder="React, TypeScript, Next.js (comma separated)"
                     value={tagsInput}
                     onChange={(e) => handleTagsChange(e.target.value)}
-                    className="h-12 text-base border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                    className="h-12 text-base border-border focus:border-primary focus:ring-primary/20"
                   />
                 </div>
                 {tagsInput && (
-                  <div className="flex flex-wrap gap-2 mt-3 p-3 bg-gray-50 rounded-lg border">
+                  <div className="flex flex-wrap gap-2 mt-3 p-3 bg-accent/10 rounded-lg border border-border">
                     {tagsInput
                       .split(",")
                       .map((tag) => tag.trim())
@@ -458,7 +458,7 @@ export default function BlogForm({
                         <Badge
                           key={index}
                           variant="secondary"
-                          className="text-xs px-3 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200 shadow-sm"
+                          className="text-xs px-3 py-1 bg-accent/20 text-foreground border border-border shadow-sm"
                         >
                           {tag}
                         </Badge>
@@ -470,11 +470,11 @@ export default function BlogForm({
           </Card>
 
           {/* Blog Meta */}
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-b border-gray-100">
-              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-sm">📊</span>
+          <Card className="border border-border shadow-lg bg-card/70">
+            <CardHeader className="border-b border-border bg-card/60">
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-background font-bold text-sm">📊</span>
                 </div>
                 Blog Meta
               </CardTitle>
@@ -483,7 +483,7 @@ export default function BlogForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="author"
-                  className="flex items-center gap-2 text-sm font-semibold text-gray-700"
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
                 >
                   <Calendar className="h-4 w-4" />
                   Author <span className="text-red-500">*</span>
@@ -495,8 +495,8 @@ export default function BlogForm({
                   onChange={(e) => handleChange("author", e.target.value)}
                   className={`h-12 text-base ${
                     errors.author
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.author && (
@@ -510,7 +510,7 @@ export default function BlogForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="readTime"
-                  className="flex items-center gap-2 text-sm font-semibold text-gray-700"
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
                 >
                   <Clock className="h-4 w-4" />
                   Read Time (minutes)
@@ -526,8 +526,8 @@ export default function BlogForm({
                   }
                   className={`h-12 text-base ${
                     errors.readTime
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.readTime && (
@@ -543,11 +543,11 @@ export default function BlogForm({
 
         {/* Right Column - Image */}
         <div className="space-y-8">
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-green-50/30 border-b border-gray-100">
-              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                <div className="h-8 w-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-sm">🖼️</span>
+          <Card className="border border-border shadow-lg bg-card/70">
+            <CardHeader className="border-b border-border bg-card/60">
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-background font-bold text-sm">🖼️</span>
                 </div>
                 Featured Image
               </CardTitle>
@@ -559,7 +559,7 @@ export default function BlogForm({
                     src={formData.image}
                     alt="Blog featured image"
                     fill
-                    className="object-cover rounded-xl border-2 border-gray-200 shadow-lg"
+                    className="object-cover rounded-xl border border-border shadow-lg"
                   />
                 </div>
               )}
@@ -568,11 +568,11 @@ export default function BlogForm({
                   onChange={(file) => setSelectedFile(file)}
                   previewUrl={formData.image}
                 />
-                <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
-                  <p className="text-sm text-gray-600 font-medium">
+                <div className="p-4 bg-accent/10 rounded-lg border border-border">
+                  <p className="text-sm text-muted-foreground font-medium">
                     📸 Upload a featured image for your blog post
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Recommended size: 1200x630px • Formats: JPG, PNG, WebP
                   </p>
                 </div>
@@ -583,14 +583,14 @@ export default function BlogForm({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
+      <div className="flex justify-end gap-4 pt-8 border-t border-border">
         {onCancel && (
           <Button
             type="button"
             variant="outline"
             onClick={onCancel}
             disabled={isSubmitting}
-            className="px-8 py-3 h-12 text-base font-medium border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+            className="px-8 py-3 h-12 text-base font-medium border-2 border-border hover:bg-accent/10 transition-all duration-200 text-foreground"
           >
             Cancel
           </Button>

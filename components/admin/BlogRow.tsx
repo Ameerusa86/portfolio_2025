@@ -56,7 +56,7 @@ export default function BlogRow({
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+    <Card className="group hover:shadow-xl transition-all duration-300 border border-border bg-card/70 overflow-hidden">
       <CardContent className="p-0">
         <div className="flex items-center gap-6 p-6">
           {/* Featured Image */}
@@ -66,17 +66,17 @@ export default function BlogRow({
               <img
                 src={blog.image}
                 alt={blog.title}
-                className="w-24 h-24 object-cover rounded-xl border-2 border-gray-200 shadow-md group-hover:shadow-lg transition-all duration-300"
+                className="w-24 h-24 object-cover rounded-xl border border-border shadow-md group-hover:shadow-lg transition-all duration-300"
                 onError={() => setImageError(true)}
                 loading="lazy"
               />
             ) : (
-              <div className="w-24 h-24 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 rounded-xl border-2 border-gray-200 flex items-center justify-center shadow-md">
-                <FileText className="h-8 w-8 text-gray-400" />
+              <div className="w-24 h-24 bg-accent/10 rounded-xl border border-border flex items-center justify-center shadow-md">
+                <FileText className="h-8 w-8 text-muted-foreground" />
               </div>
             )}
             {blog.featured && (
-              <div className="absolute -top-2 -right-2 h-6 w-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+              <div className="absolute -top-2 -right-2 h-6 w-6 bg-primary rounded-full flex items-center justify-center shadow-lg border-2 border-background">
                 <Star className="h-3 w-3 text-white drop-shadow-sm" />
               </div>
             )}
@@ -87,10 +87,10 @@ export default function BlogRow({
             {/* Title and Status */}
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-gray-900 group-hover:text-purple-700 transition-colors duration-200 line-clamp-2 leading-tight">
+                <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-200 line-clamp-2 leading-tight">
                   {blog.title}
                 </h3>
-                <p className="text-sm text-gray-600 mt-2 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-muted-foreground mt-2 line-clamp-2 leading-relaxed">
                   {blog.excerpt}
                 </p>
               </div>
@@ -111,7 +111,7 @@ export default function BlogRow({
             </div>
 
             {/* Meta Information */}
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-blue-500" />
                 <span className="font-medium">{blog.author}</span>
@@ -129,13 +129,13 @@ export default function BlogRow({
                 <span>{blog.read_time} min read</span>
               </div>
               {typeof blog.views === "number" && (
-                <div className="flex items-center gap-1 text-gray-600">
+                <div className="flex items-center gap-1 text-muted-foreground">
                   <Eye className="h-4 w-4 text-purple-500" />
                   <span>{blog.views.toLocaleString()}</span>
                 </div>
               )}
               {typeof blog.likes === "number" && (
-                <div className="flex items-center gap-1 text-gray-600">
+                <div className="flex items-center gap-1 text-muted-foreground">
                   <Heart className="h-4 w-4 text-pink-500" />
                   <span>{blog.likes.toLocaleString()}</span>
                 </div>
@@ -145,18 +145,18 @@ export default function BlogRow({
             {/* Tags */}
             {blog.tags && blog.tags.length > 0 && (
               <div className="flex items-center gap-2 flex-wrap">
-                <Hash className="h-4 w-4 text-gray-400" />
+                <Hash className="h-4 w-4 text-muted-foreground" />
                 {blog.tags.slice(0, 3).map((tag, index) => (
                   <Badge
                     key={index}
                     variant="secondary"
-                    className="text-xs px-2 py-1 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200 shadow-sm"
+                    className="text-xs px-2 py-1 bg-accent/20 text-foreground border border-border shadow-sm"
                   >
                     {tag}
                   </Badge>
                 ))}
                 {blog.tags.length > 3 && (
-                  <span className="text-xs text-gray-500 font-medium">
+                  <span className="text-xs text-muted-foreground font-medium">
                     +{blog.tags.length - 3} more
                   </span>
                 )}
@@ -170,7 +170,7 @@ export default function BlogRow({
               variant="outline"
               size="sm"
               onClick={() => onEdit(blog)}
-              className="h-10 px-4 border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 text-purple-700 font-medium transition-all duration-200 group/edit"
+              className="h-10 px-4 border-2 border-border hover:bg-accent/10 text-foreground font-medium transition-all duration-200 group/edit"
             >
               <Edit3 className="h-4 w-4 mr-2 group-hover/edit:scale-110 transition-transform duration-200" />
               Edit
@@ -185,11 +185,7 @@ export default function BlogRow({
                   blog.status === "published" ? "draft" : "published"
                 )
               }
-              className={`h-10 px-4 border-2 font-medium transition-all duration-200 ${
-                blog.status === "published"
-                  ? "border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 text-yellow-700"
-                  : "border-green-200 hover:border-green-400 hover:bg-green-50 text-green-700"
-              }`}
+              className={`h-10 px-4 border-2 font-medium transition-all duration-200 border-border hover:bg-accent/10 text-foreground`}
             >
               {blog.status === "published" ? (
                 <>
@@ -208,11 +204,7 @@ export default function BlogRow({
               variant="outline"
               size="sm"
               onClick={() => onToggleFeatured(blog.slug, !blog.featured)}
-              className={`h-10 px-4 border-2 font-medium transition-all duration-200 ${
-                blog.featured
-                  ? "border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 text-yellow-700"
-                  : "border-gray-200 hover:border-gray-400 hover:bg-gray-50 text-gray-700"
-              }`}
+              className={`h-10 px-4 border-2 font-medium transition-all duration-200 border-border hover:bg-accent/10 text-foreground`}
             >
               <Star className="h-4 w-4 mr-2" />
               {blog.featured ? "Unfeature" : "Feature"}
@@ -222,7 +214,7 @@ export default function BlogRow({
               variant="outline"
               size="sm"
               onClick={() => onDelete(blog.slug)}
-              className="h-10 px-4 border-2 border-red-200 hover:border-red-400 hover:bg-red-50 text-red-700 font-medium transition-all duration-200 group/delete"
+              className="h-10 px-4 border-2 border-border hover:bg-accent/10 text-foreground font-medium transition-all duration-200 group/delete"
             >
               <Trash2 className="h-4 w-4 mr-2 group-hover/delete:scale-110 transition-transform duration-200" />
               Delete

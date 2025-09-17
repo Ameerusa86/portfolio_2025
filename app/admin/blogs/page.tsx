@@ -301,230 +301,234 @@ export default function BlogsPage() {
   }
 
   return (
-    <div className="site-container py-8 space-y-8">
-      {/* Header */}
-      <div className="rounded-2xl p-8 border border-border shadow-lg bg-card/70">
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-background text-foreground w-full">
+      <div className="w-full site-container py-8 space-y-8 max-w-none">
+        {/* Header */}
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
           <div className="space-y-3">
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 bg-primary rounded-2xl flex items-center justify-center shadow-lg ring-4 ring-border/50">
-                <FileText className="h-7 w-7 text-background drop-shadow-sm" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold">Blog Management</h1>
-                <p className="text-muted-foreground font-medium">
-                  Create, edit, and manage your blog posts
-                </p>
-              </div>
-            </div>
+            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight">
+              Blogs
+            </h1>
+            <p className="text-muted-foreground text-lg max-w-2xl">
+              Create, edit, and manage your blog posts with a unified admin
+              experience.
+            </p>
           </div>
           <Button
             onClick={handleCreateBlog}
-            className="h-12 px-6 bg-primary hover:bg-primary/90 text-background shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+            className="w-full lg:w-auto px-8 py-3 text-base bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-200 border-0 text-background"
+            size="lg"
           >
             <Plus className="h-5 w-5 mr-3" />
             Create New Blog Post
           </Button>
         </div>
-      </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
-        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Total Posts
-                </p>
-                <p className="text-3xl font-bold text-foreground">
-                  {stats.total}
-                </p>
-              </div>
-              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
-                <FileText className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Published
-                </p>
-                <p className="text-3xl font-bold text-emerald-400">
-                  {stats.published}
-                </p>
-              </div>
-              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
-                <Eye className="h-6 w-6 text-emerald-400" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Drafts
-                </p>
-                <p className="text-3xl font-bold text-amber-400">
-                  {stats.draft}
-                </p>
-              </div>
-              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
-                <Clock className="h-6 w-6 text-amber-400" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Featured
-                </p>
-                <p className="text-3xl font-bold text-primary">
-                  {stats.featured}
-                </p>
-              </div>
-              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
-                <Star className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Total Read Time
-                </p>
-                <p className="text-3xl font-bold text-orange-400">
-                  {stats.totalReadTime}m
-                </p>
-              </div>
-              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
-                <Clock className="h-6 w-6 text-orange-400" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Views
-                </p>
-                <p className="text-3xl font-bold text-primary">
-                  {stats.totalViews.toLocaleString()}
-                </p>
-              </div>
-              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
-                <Eye className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">
-                  Likes
-                </p>
-                <p className="text-3xl font-bold text-pink-400">
-                  {stats.totalLikes.toLocaleString()}
-                </p>
-              </div>
-              <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
-                <Heart className="h-6 w-6 text-pink-400" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card className="border border-border shadow-lg bg-card/70">
-        <CardContent className="p-6">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input
-                  placeholder="Search blog posts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-12 border-border focus:border-primary/50"
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Filter className="h-4 w-4" />
-                  Status:
-                </span>
-                <div className="flex gap-2">
-                  {[
-                    { value: "all", label: "All" },
-                    { value: "published", label: "Published" },
-                    { value: "draft", label: "Draft" },
-                  ].map((filter) => (
-                    <button
-                      key={filter.value}
-                      onClick={() =>
-                        setStatusFilter(
-                          filter.value as "all" | "published" | "draft"
-                        )
-                      }
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border ${
-                        statusFilter === filter.value
-                          ? "bg-primary text-background shadow-md border-primary hover:bg-primary/90"
-                          : "bg-background text-foreground hover:bg-accent/30 border-border"
-                      }`}
-                    >
-                      {filter.label}
-                    </button>
-                  ))}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-6">
+          <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Total Posts
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {stats.total}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                  <FileText className="h-6 w-6 text-primary" />
                 </div>
               </div>
-            </div>
-            <div className="text-sm text-muted-foreground font-medium">
-              Showing {filteredBlogs.length} of {blogs.length} posts
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
 
-      {/* Blog Table */}
-      <BlogTable
-        blogs={filteredBlogs}
-        onEdit={handleEditBlog}
-        onDelete={handleDeleteBlog}
-        onToggleStatus={handleToggleStatus}
-        onToggleFeatured={handleToggleFeatured}
-      />
+          <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Published
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {stats.published}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                  <Eye className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Modal */}
-      <BlogFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        blog={selectedBlog}
-        onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-      />
+          <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Drafts
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {stats.draft}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Featured
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {stats.featured}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                  <Star className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Total Read Time
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {stats.totalReadTime}m
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                  <Clock className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Views
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {stats.totalViews.toLocaleString()}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                  <Eye className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-border shadow-lg bg-card/70 overflow-hidden">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Likes
+                  </p>
+                  <p className="text-3xl font-bold text-foreground">
+                    {stats.totalLikes.toLocaleString()}
+                  </p>
+                </div>
+                <div className="h-12 w-12 bg-accent/30 rounded-xl flex items-center justify-center">
+                  <Heart className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Filters */}
+        <Card className="border border-border shadow-lg bg-card/70">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center flex-1">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                  <Input
+                    placeholder="Search blog posts..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 h-12 border-border focus:border-primary/50"
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    Status:
+                  </span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={statusFilter === "all" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setStatusFilter("all")}
+                      className="min-w-[80px]"
+                    >
+                      All
+                    </Button>
+                    <Button
+                      variant={
+                        statusFilter === "published" ? "default" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setStatusFilter("published")}
+                      className="min-w-[80px]"
+                    >
+                      Published
+                    </Button>
+                    <Button
+                      variant={statusFilter === "draft" ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setStatusFilter("draft")}
+                      className="min-w-[80px]"
+                    >
+                      Draft
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="text-sm text-muted-foreground font-medium">
+                Showing {filteredBlogs.length} of {blogs.length} posts
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Blog Table */}
+        <div className="bg-card/70 border border-border rounded-xl shadow-sm overflow-hidden">
+          <BlogTable
+            blogs={filteredBlogs}
+            onEdit={handleEditBlog}
+            onDelete={handleDeleteBlog}
+            onToggleStatus={handleToggleStatus}
+            onToggleFeatured={handleToggleFeatured}
+          />
+        </div>
+
+        {/* Modal */}
+        <BlogFormModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          blog={selectedBlog}
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+        />
+      </div>
     </div>
   );
 }

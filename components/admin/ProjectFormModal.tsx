@@ -90,25 +90,23 @@ export default function ProjectFormModal({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="w-[95vw] max-h-[95vh] overflow-y-auto bg-white/95 backdrop-blur-xl border-0 shadow-2xl !max-w-[95vw]"
+        className="w-[95vw] max-h-[95vh] overflow-y-auto !max-w-[95vw] bg-card/90 backdrop-blur-xl border border-border shadow-2xl"
         style={{
           width: "95vw",
           maxWidth: "95vw",
           margin: "2.5vh auto",
         }}
       >
-        <DialogHeader className="space-y-4 pb-6 border-b border-gray-200/50">
-          <div className="flex items-center space-x-4">
-            <div className="h-12 w-12 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-blue-100">
-              <span className="text-white font-bold text-lg">
-                {isEdit ? "E" : "N"}
-              </span>
+        <DialogHeader className="space-y-4 pb-6 border-b border-border">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-xl flex items-center justify-center bg-accent/30 border border-border text-primary shadow-lg">
+              <span className="font-bold text-lg">{isEdit ? "E" : "N"}</span>
             </div>
             <div>
-              <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
+              <DialogTitle className="text-3xl font-bold text-foreground">
                 {isEdit ? "Edit Project" : "Create New Project"}
               </DialogTitle>
-              <p className="text-gray-500 font-medium">
+              <p className="text-muted-foreground font-medium">
                 {isEdit
                   ? "Update project details and settings"
                   : "Add a new project to your portfolio"}

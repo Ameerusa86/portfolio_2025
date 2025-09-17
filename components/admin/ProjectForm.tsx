@@ -210,15 +210,15 @@ export default function ProjectForm({
   return (
     <form onSubmit={handleSubmit} className={`space-y-8 ${className}`}>
       {/* Project Status */}
-      <div className="flex items-center justify-between p-6 bg-gradient-to-r from-blue-50/80 via-indigo-50/60 to-purple-50/80 rounded-2xl border border-blue-200/50 shadow-lg backdrop-blur-sm">
+      <div className="flex items-center justify-between p-6 rounded-2xl border border-border shadow-lg bg-card/70">
         <div className="space-y-2">
-          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-3">
-            <div className="h-10 w-10 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-white/50">
-              <Star className="h-5 w-5 text-white drop-shadow-sm" />
+          <h3 className="text-xl font-bold text-foreground flex items-center gap-3">
+            <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center shadow-lg ring-4 ring-border/50">
+              <Star className="h-5 w-5 text-background drop-shadow-sm" />
             </div>
             Project Status
           </h3>
-          <p className="text-sm text-gray-600 font-medium">
+          <p className="text-sm text-muted-foreground font-medium">
             Control visibility and highlighting
           </p>
         </div>
@@ -231,10 +231,10 @@ export default function ProjectForm({
                 onChange={(e) => handleChange("featured", e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-12 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-yellow-300/50 rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-yellow-400 peer-checked:to-orange-500 shadow-lg transition-all duration-300 group-hover:scale-105"></div>
+              <div className="w-12 h-7 bg-border/60 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-primary/40 rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-lg transition-all duration-300 group-hover:scale-105"></div>
             </label>
-            <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Star className="h-5 w-5 text-yellow-500 drop-shadow-sm" />
+            <span className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Star className="h-5 w-5 text-primary drop-shadow-sm" />
               Featured
             </span>
           </div>
@@ -246,10 +246,10 @@ export default function ProjectForm({
                 onChange={(e) => handleChange("published", e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-12 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-green-300/50 rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-green-500 peer-checked:to-emerald-600 shadow-lg transition-all duration-300 group-hover:scale-105"></div>
+              <div className="w-12 h-7 bg-border/60 peer-focus:outline-none peer-focus:ring-3 peer-focus:ring-primary/40 rounded-full peer peer-checked:after:translate-x-5 after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-lg transition-all duration-300 group-hover:scale-105"></div>
             </label>
-            <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-              <Eye className="h-5 w-5 text-green-500 drop-shadow-sm" />
+            <span className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Eye className="h-5 w-5 text-primary drop-shadow-sm" />
               Published
             </span>
           </div>
@@ -260,11 +260,11 @@ export default function ProjectForm({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Basic Info */}
         <div className="space-y-8">
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-blue-50/30 border-b border-gray-100">
-              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                <div className="h-8 w-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-sm">📝</span>
+          <Card className="border border-border shadow-lg bg-card/70">
+            <CardHeader className="border-b border-border bg-card/60">
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-background font-bold text-sm">📝</span>
                 </div>
                 Project Information
               </CardTitle>
@@ -274,7 +274,7 @@ export default function ProjectForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="title"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-foreground"
                 >
                   Project Title <span className="text-red-500">*</span>
                 </Label>
@@ -285,8 +285,8 @@ export default function ProjectForm({
                   onChange={(e) => handleChange("title", e.target.value)}
                   className={`h-12 text-base ${
                     errors.title
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.title && (
@@ -301,7 +301,7 @@ export default function ProjectForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="description"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-foreground"
                 >
                   Description <span className="text-red-500">*</span>
                 </Label>
@@ -312,8 +312,8 @@ export default function ProjectForm({
                   onChange={(e) => handleChange("description", e.target.value)}
                   className={`min-h-[140px] resize-none text-base ${
                     errors.description
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.description && (
@@ -328,7 +328,7 @@ export default function ProjectForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="tech-stack"
-                  className="text-sm font-semibold text-gray-700"
+                  className="text-sm font-semibold text-foreground"
                 >
                   Tech Stack
                 </Label>
@@ -338,7 +338,7 @@ export default function ProjectForm({
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        className="w-full text-left h-12 px-3 py-2 rounded-md border border-gray-200 flex items-center justify-between"
+                        className="w-full text-left h-12 px-3 py-2 rounded-md border border-border bg-background text-foreground flex items-center justify-between"
                       >
                         <span className="truncate">
                           {formData.tech_stack && formData.tech_stack.length > 0
@@ -361,7 +361,7 @@ export default function ProjectForm({
                         </svg>
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="max-h-72 overflow-auto">
+                    <DropdownMenuContent className="max-h-72 overflow-auto bg-card border border-border text-foreground">
                       {availableTechs.map((t) => (
                         <DropdownMenuCheckboxItem
                           key={t}
@@ -388,11 +388,11 @@ export default function ProjectForm({
                     placeholder="React, TypeScript, Next.js (comma separated)"
                     value={techStackInput}
                     onChange={(e) => handleTechStackChange(e.target.value)}
-                    className="h-12 text-base border-gray-200 focus:border-blue-500 focus:ring-blue-100"
+                    className="h-12 text-base border-border focus:border-primary focus:ring-primary/20"
                   />
                 </div>
                 {techStackInput && (
-                  <div className="flex flex-wrap gap-2 mt-3 p-3 bg-gray-50 rounded-lg border">
+                  <div className="flex flex-wrap gap-2 mt-3 p-3 bg-accent/10 rounded-lg border border-border">
                     {techStackInput
                       .split(",")
                       .map((tech) => tech.trim())
@@ -401,7 +401,7 @@ export default function ProjectForm({
                         <Badge
                           key={index}
                           variant="secondary"
-                          className="text-xs px-3 py-1 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200 shadow-sm"
+                          className="text-xs px-3 py-1 bg-accent/20 text-foreground border border-border shadow-sm"
                         >
                           {tech}
                         </Badge>
@@ -413,11 +413,11 @@ export default function ProjectForm({
           </Card>
 
           {/* Project Links */}
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-purple-50/30 border-b border-gray-100">
-              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                <div className="h-8 w-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-sm">🔗</span>
+          <Card className="border border-border shadow-lg bg-card/70">
+            <CardHeader className="border-b border-border bg-card/60">
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-background font-bold text-sm">🔗</span>
                 </div>
                 Project Links
               </CardTitle>
@@ -426,7 +426,7 @@ export default function ProjectForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="github-url"
-                  className="flex items-center gap-2 text-sm font-semibold text-gray-700"
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
                 >
                   <Github className="h-4 w-4" />
                   GitHub URL
@@ -439,8 +439,8 @@ export default function ProjectForm({
                   type="url"
                   className={`h-12 text-base ${
                     errors.github_url
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.github_url && (
@@ -454,7 +454,7 @@ export default function ProjectForm({
               <div className="space-y-3">
                 <Label
                   htmlFor="live-url"
-                  className="flex items-center gap-2 text-sm font-semibold text-gray-700"
+                  className="flex items-center gap-2 text-sm font-semibold text-foreground"
                 >
                   <Globe className="h-4 w-4" />
                   Live Demo URL
@@ -467,8 +467,8 @@ export default function ProjectForm({
                   type="url"
                   className={`h-12 text-base ${
                     errors.live_url
-                      ? "border-red-500 ring-red-100"
-                      : "border-gray-200 focus:border-purple-500 focus:ring-purple-100"
+                      ? "border-red-500 ring-red-200/30"
+                      : "border-border focus:border-primary focus:ring-primary/20"
                   }`}
                 />
                 {errors.live_url && (
@@ -484,11 +484,11 @@ export default function ProjectForm({
 
         {/* Right Column - Image */}
         <div className="space-y-8">
-          <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-gray-50 to-green-50/30 border-b border-gray-100">
-              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                <div className="h-8 w-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-sm">🖼️</span>
+          <Card className="border border-border shadow-lg bg-card/70">
+            <CardHeader className="border-b border-border bg-card/60">
+              <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-3">
+                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-background font-bold text-sm">🖼️</span>
                 </div>
                 Project Image
               </CardTitle>
@@ -500,7 +500,7 @@ export default function ProjectForm({
                   <img
                     src={formData.image}
                     alt="Project preview"
-                    className="w-full h-full object-cover rounded-xl border-2 border-gray-200 shadow-lg"
+                    className="w-full h-full object-cover rounded-xl border border-border shadow-lg"
                     loading="lazy"
                   />
                 </div>
@@ -510,11 +510,11 @@ export default function ProjectForm({
                   onChange={(file) => setSelectedFile(file)}
                   previewUrl={formData.image}
                 />
-                <div className="p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
-                  <p className="text-sm text-gray-600 font-medium">
+                <div className="p-4 bg-accent/10 rounded-lg border border-border">
+                  <p className="text-sm text-muted-foreground font-medium">
                     📸 Upload a project screenshot or demo image
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Recommended size: 800x600px • Formats: JPG, PNG, WebP
                   </p>
                 </div>
@@ -526,14 +526,14 @@ export default function ProjectForm({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="flex justify-end gap-4 pt-8 border-t border-gray-200">
+        <div className="flex justify-end gap-4 pt-8 border-t border-border">
           {onCancel && (
             <Button
               type="button"
               variant="outline"
               onClick={onCancel}
               disabled={isSubmitting}
-              className="px-8 py-3 h-12 text-base font-medium border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+              className="px-8 py-3 h-12 text-base font-medium border-2 border-border hover:bg-accent/10 transition-all duration-200 text-foreground"
             >
               Cancel
             </Button>

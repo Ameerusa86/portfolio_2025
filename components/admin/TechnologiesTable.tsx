@@ -107,9 +107,9 @@ export default function TechnologiesTable() {
   };
 
   return (
-    <Card className="border-0 shadow-lg">
-      <CardHeader>
-        <CardTitle>Technologies</CardTitle>
+    <Card className="border border-border shadow-lg bg-card/70">
+      <CardHeader className="border-b border-border bg-card/60">
+        <CardTitle className="text-foreground">Technologies</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex gap-2 mb-4">
@@ -124,14 +124,16 @@ export default function TechnologiesTable() {
         </div>
 
         <div className="space-y-2">
-          {loading && <div className="text-sm text-gray-500">Loading…</div>}
+          {loading && (
+            <div className="text-sm text-muted-foreground">Loading…</div>
+          )}
           {!loading && items.length === 0 && (
-            <div className="text-sm text-gray-500">No technologies</div>
+            <div className="text-sm text-muted-foreground">No technologies</div>
           )}
           {items.map((t) => (
             <div
               key={t.id}
-              className="flex items-center justify-between p-2 rounded-md hover:bg-gray-50"
+              className="flex items-center justify-between p-2 rounded-md border border-transparent hover:bg-accent/10 hover:border-border transition-colors"
             >
               <div className="flex-1">
                 {editingId === t.id ? (
@@ -148,7 +150,9 @@ export default function TechnologiesTable() {
                     </Button>
                   </div>
                 ) : (
-                  <div className="text-sm font-medium">{t.name}</div>
+                  <div className="text-sm font-medium text-foreground">
+                    {t.name}
+                  </div>
                 )}
               </div>
               <div className="flex gap-2">
@@ -166,10 +170,12 @@ export default function TechnologiesTable() {
                     open={confirmDeleteId === t.id}
                     onOpenChange={(open) => !open && setConfirmDeleteId(null)}
                   >
-                    <DialogContent>
+                    <DialogContent className="bg-card border border-border">
                       <DialogHeader>
-                        <DialogTitle>Delete technology</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="text-foreground">
+                          Delete technology
+                        </DialogTitle>
+                        <DialogDescription className="text-muted-foreground">
                           Are you sure you want to delete "{t.name}"?
                         </DialogDescription>
                       </DialogHeader>
