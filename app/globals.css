@@ -196,7 +196,10 @@
 
 /* Responsive utilities */
 .site-container {
-  @apply mx-auto w-full px-4 sm:px-6 lg:px-8 max-w-7xl;
+  /* Make content wider but still centered and responsive */
+  --container-7xl: 90rem; /* 1440px */
+  @apply mx-auto w-full px-4 sm:px-6 lg:px-8;
+  max-width: var(--container-7xl);
 }
 
 /* Smooth fade-in for sections */
