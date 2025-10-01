@@ -151,13 +151,13 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
         aria-label={`Read article: ${post.title}`}
         className="absolute inset-0 z-10"
       />
-      <div className="relative h-32">
+      <div className="relative h-40">
         {post.image ? (
           <Image
             src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
             alt={post.title}
             fill
-            className="object-contain group-hover:scale-105 transition-transform duration-300"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center">
