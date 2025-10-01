@@ -151,7 +151,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
         aria-label={`Read article: ${post.title}`}
         className="absolute inset-0 z-10"
       />
-      <div className="relative h-40">
+      <div className="relative h-32">
         {post.image ? (
           <Image
             src={getBlogImageUrl(post.image) || "/placeholder-blog.jpg"}
