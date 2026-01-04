@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   description:
     "Portfolio site built with Next.js 15, TypeScript, and Tailwind CSS.",
   verification: {
-    google: "DinZqnFK7e0yyatABNoYCJVaVataoLbAcLwsRRqpj2U",
+    google: "qDqjQjmueLtFMvCHW8tpsoiBo7a19z_ilSoqeE3PqZg",
   },
 };
 
