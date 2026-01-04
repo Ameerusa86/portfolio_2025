@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   title: "Ameer Hasan – Portfolio",
   description:
     "Portfolio site built with Next.js 15, TypeScript, and Tailwind CSS.",
-};
+},{verification: {google:"<meta name="google-site-verification" content="DinZqnFK7e0yyatABNoYCJVaVataoLbAcLwsRRqpj2U" />"};
 
 export default function RootLayout({
   children,
